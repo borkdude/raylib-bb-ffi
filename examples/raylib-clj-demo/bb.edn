@@ -1,0 +1,349 @@
+;; Task runner for raylib-clj-demo: 113 raylib examples in Clojure, one sub-project each.
+;;
+;; Run these from the repo root with `bb <task>`.
+;;
+;;   bb info               grouped cheat-sheet, every demo included
+;;   bb <demo>             run one demo, e.g. bb asteroids
+;;   bb run <demo>         the same, by argument
+;;   bb list               flat list of demos with descriptions
+;;   bb run-all [secs]     every demo for N seconds each (default 4), unattended
+;;   bb check              compile every scene, no window
+;;   bb lint               clj-kondo over every demo; errors fail, warnings are reported
+;;   bb lint:strict        bb lint, but warnings fail too
+;;   bb doctor             java 22+, clojure, the raylib-clj dependency, libraylib
+;;   bb gen [--check]      rebuild deps.edn, check.clj, these tasks and the gallery
+;;   bb record [opts]      record demo GIFs with screen-grab (maintainer-only), then sync
+;;   bb sync-recordings    copy docs/demos/ recordings into each demo's own docs/demos/
+;;
+;; Every demo runs from its own directory (`clojure -M:run`), because the ones
+;; with assets load them from ./resources by relative path. The demo list is
+;; demos.edn, edited by hand, and the per-demo tasks at the bottom are written
+;; from it by `bb gen`.
+;;
+;; GUI apps need `clojure`, not `clj`: rlwrap breaks them.
+;;
+;; NOTE: task bodies are EDN-parsed. No #"regex", no @deref, no #(...).
+{:min-bb-version "1.3.0"
+ :paths ["scripts"]
+ :tasks
+ {:requires ([babashka.fs :as fs]
+             [babashka.process :as p]
+             [clojure.edn :as edn]
+             [clojure.string :as str])
+
+  :init
+  (do
+    ;; [{:name :category :title :desc :controls :ported} ...], edited by hand.
+    (def demos (if (fs/exists? "demos.edn") (edn/read-string (slurp "demos.edn")) []))
+
+    (defn find-demo [s]
+      (first (filter (fn [d] (= s (:name d))) demos)))
+
+    (defn demo! [name]
+      (or (find-demo name)
+          (do (binding [*out* *err*]
+                (println (str "No demo named " name ". `bb list` shows them all.")))
+              (System/exit 1))))
+
+    (defn run-demo
+      "Run one demo from its own directory, where its resources/ resolve."
+      [name]
+      (let [d (demo! name)]
+        (shell {:continue true :dir (:name d)} "clojure" "-M:run")))
+
+    (defn exit-with [{:keys [exit]}]
+      (when-not (zero? exit) (System/exit exit)))
+
+    ;; Every source root clj-kondo should see: the check namespace and each demo.
+    (defn lint-dirs []
+      (concat ["src"] (map (fn [d] (str (:name d) "/src")) demos)))
+
+    (defn kondo! []
+      (when-not (fs/which "clj-kondo")
+        (binding [*out* *err*]
+          (println "bb lint needs clj-kondo on PATH: https://github.com/clj-kondo/clj-kondo/blob/master/doc/install.md"))
+        (System/exit 1))
+      (apply shell {:continue true} "clj-kondo" "--lint" (lint-dirs))))
+
+  info
+  {:doc "Grouped cheat-sheet, every demo included (start here)"
+   :task
+   (let [esc (str (char 27) "[")
+         col (fn [c s] (str esc c "m" s esc "0m"))
+         hdr (fn [s] (println (str "\n" (col "35" (str "── " s " ──")))))
+         row (fn [t d] (println (str "  " (col "36" (format "%-32s" (str "bb " t))) d)))]
+     (println (col "1;35" "\nraylib-clj-demo: 113 raylib examples in Clojure, one sub-project each"))
+     (hdr "Run")
+     (row "<demo>" "run one demo, e.g. asteroids")
+     (row "run <demo>" "the same, by argument")
+     (row "list" "flat list of demos with descriptions")
+     (row "run-all [secs]" "every demo for N seconds each (default 4), unattended")
+     (hdr "Verify")
+     (row "doctor" "java 22+, clojure, the raylib-clj dependency, libraylib")
+     (row "check" "compile every scene, no window")
+     (row "lint" "clj-kondo over every demo; errors fail (lint:strict: warnings too)")
+     (hdr "Maintenance")
+     (row "gen [--check]" "rebuild deps.edn, check.clj, demo tasks and gallery from demos.edn")
+     (row "record [--only a,b] [--force]" "record demo GIFs with screen-grab (maintainer-only)")
+     (row "sync-recordings [--check]" "copy docs/demos/ recordings into each demo's docs/demos/")
+     (doseq [[category ds] (sort-by key (group-by :category demos))]
+       (hdr (str category " (" (count ds) ")"))
+       (doseq [d ds] (row (:name d) (or (:desc d) ""))))
+     (println (str "\n" (col "2" "first run: bb doctor, then bb asteroids"))))}
+
+  list
+  {:doc "Flat list of demos with descriptions"
+   :task (let [w (apply max (map (fn [d] (count (:name d))) demos))]
+           (doseq [d demos]
+             (println (format (str "%-" w "s  %-9s  %s") (:name d) (:category d) (or (:desc d) "")))))}
+
+  run
+  {:doc "Run one demo by name: run <demo>"
+   :override-builtin true
+   :task (if-let [name (first *command-line-args*)]
+           (exit-with (run-demo name))
+           (do (println "usage: bb run <demo>   (bb list shows them)")
+               (System/exit 1)))}
+
+  run-all
+  {:doc "Every demo for N seconds each (default 4), unattended; exits 1 if any fail"
+   ;; The examples have no auto-quit, so this stops each one itself. Its clock
+   ;; starts when raylib logs "DISPLAY: Device initialized", so JVM start-up
+   ;; costs nothing extra. A demo still running at the end passed. One that
+   ;; exits non-zero, or never opens its window within 60s, failed.
+   :task (let [secs (Long/parseLong (or (first *command-line-args*) "4"))
+               run-one (fn [n]
+                         (let [proc (p/process {:dir n :err :out} "clojure" "-M:run")
+                               rdr (java.io.BufferedReader. (java.io.InputStreamReader. (:out proc)))
+                               ready (promise)
+                               ;; Keeps draining stdout after the window is up, so
+                               ;; a full pipe never blocks the demo.
+                               _ (future
+                                   (try (loop []
+                                          (when-let [l (.readLine rdr)]
+                                            (when (str/includes? l "DISPLAY: Device initialized")
+                                              (deliver ready true))
+                                            (recur)))
+                                        (catch Exception _ nil))
+                                   (deliver ready false))
+                               up (deref ready 60000 false)]
+                           (if up
+                             (do (Thread/sleep (* 1000 secs))
+                                 (if (p/alive? proc)
+                                   (do (p/destroy-tree proc) 0)
+                                   (:exit (deref proc))))
+                             (do (p/destroy-tree proc)
+                                 (let [e (:exit (deref proc 5000 nil))]
+                                   (if (and e (not (zero? e))) e 99))))))
+               failed (vec (for [d demos
+                                 :let [_ (println (str "▶ " (:name d)))
+                                       exit (run-one (:name d))]
+                                 :when (not (zero? exit))]
+                             (str (:name d) " (exit " exit ")")))]
+           (println (str "\n" (- (count demos) (count failed)) "/" (count demos) " demos ran without failing"))
+           (when (seq failed)
+             (println (str "failed: " (str/join ", " failed)))
+             (System/exit 1)))}
+
+  check
+  {:doc "Compile every scene, no window"
+   :task (exit-with (shell {:continue true} "clojure" "-M:check"))}
+
+  lint
+  {:doc "clj-kondo over every demo: warnings are reported, errors fail"
+   ;; Same gate raylib-clj uses. clj-kondo exits 2 for warnings and 3 for
+   ;; errors. The 68 warnings in the demos (mostly unused bindings) came over
+   ;; with the code from raylib-clj, where they were reported the same way.
+   :task (let [{:keys [exit]} (kondo!)]
+           (cond (zero? exit) (println "OK clj-kondo: no errors or warnings")
+                 (= 2 exit) (println "clj-kondo: warnings above, not failing; the gate is errors")
+                 :else (System/exit exit)))}
+
+  lint:strict
+  {:doc "bb lint, but exit non-zero on any warning or error"
+   :task (exit-with (kondo!))}
+
+  doctor
+  {:doc "Check java 22+, clojure, the raylib-clj dependency and libraylib"
+   :task (let [java-major (try (let [v (:err (shell {:err :string :continue true} "java" "-version"))
+                                     m (re-find (re-pattern "version \"(\\d+)") (or v ""))]
+                                 (some-> m second Long/parseLong))
+                               (catch Exception _ nil))
+               lib-paths ["/opt/homebrew/lib/libraylib.6.0.0.dylib" "/usr/local/lib/libraylib.6.0.0.dylib"
+                          "/usr/lib/libraylib.so" "/usr/local/lib/libraylib.so"
+                          "/usr/lib/x86_64-linux-gnu/libraylib.so"]
+               checks [["java 22+ (coffi needs the final FFM API)" (and java-major (>= java-major 22))
+                        "install a JDK 22 or newer"]
+                       ["clojure on PATH" (fs/which "clojure") "install the Clojure CLI: https://clojure.org/guides/install_clojure"]
+                       ;; Resolving the classpath fetches the pinned raylib-clj the
+                       ;; first time, so this also proves the network can reach it.
+                       ["raylib-clj (the bindings, pinned in common/deps.edn)"
+                        (and (fs/which "clojure")
+                             (str/includes? (:out (shell {:out :string :err :string :continue true} "clojure" "-Spath"))
+                                            "raylib-clj"))
+                        "check network access to github.com, then common/deps.edn's :git/sha"]
+                       ["libraylib 6.0" (some fs/exists? lib-paths)
+                        "brew install raylib, or your distro's raylib package (6.0+)"]
+                       ["demos.edn" (fs/exists? "demos.edn") "restore it from git"]]]
+           (doseq [[what ok fix] checks]
+             (println (str (if ok "  ok    " "  MISSING ") what (when-not ok (str "  -> " fix)))))
+           (when-not (every? second checks) (System/exit 1)))}
+
+  demos:examples
+  {:doc "Print every demo as EDN for screen-grab's :examples-cmd"
+   ;; screen-grab's working directory is per manifest, not per item, so each
+   ;; item cds into its demo. exec keeps the window in the process it spawned.
+   :task (prn (vec (for [d demos
+                         :let [n (:name d)]]
+                     {:id n
+                      :group (:category d)
+                      :desc (:desc d)
+                      :src (str n "/src/net/b12n/raylib_clj/scenes/" (str/replace n "-" "_") ".clj")
+                      :run (str "sh -c 'cd " n " && exec clojure -M:run'")})))}
+
+  record
+  {:doc "Record demo GIFs into docs/demos/ (screen-grab), then sync each demo's copy and the gallery"
+   :task (if-not (fs/which "screen-grab")
+           (binding [*out* *err*]
+             (println "bb record needs the `screen-grab` capture CLI on your PATH.")
+             (println "That tool is internal and not publicly released yet, so this task is")
+             (println "maintainer-only. Every recording is committed, so you never need it to")
+             (println "view the demos.")
+             (System/exit 1))
+           (let [{:keys [exit]} (apply shell {:continue true}
+                                       "screen-grab" "record"
+                                       "--manifest" "scripts/demo_manifest.edn"
+                                       *command-line-args*)]
+             ;; Sync even after a partial failure: the items that did record
+             ;; should reach their demo's folder and the gallery.
+             (when-not (some #{"--dry-run" "--list"} *command-line-args*)
+               (shell "bb" "sync-recordings")
+               (shell "bb" "gen"))
+             (when-not (zero? exit) (System/exit exit))))}
+
+  sync-recordings
+  {:doc "Copy docs/demos/ recordings into each demo's own docs/demos/: sync-recordings [--check]"
+   :requires ([sync-recordings])
+   :task (apply sync-recordings/-main *command-line-args*)}
+
+  gen
+  {:doc "Rebuild deps.edn, check.clj, demo tasks and gallery from demos.edn: gen [--check]"
+   :requires ([gen])
+   :task (apply gen/-main *command-line-args*)}
+
+  ;; BEGIN per-demo tasks, generated by `bb gen`
+  ascii-rendering           {:doc "▶ Post-process the scene into ASCII glyphs via a render texture" :task (exit-with (run-demo "ascii-rendering"))}
+  asteroids                 {:doc "▶ Shoot asteroids" :task (exit-with (run-demo "asteroids"))}
+  asteroids2                {:doc "▶ Alternate version" :task (exit-with (run-demo "asteroids2"))}
+  audio-module              {:doc "▶ Music visualization" :task (exit-with (run-demo "audio-module"))}
+  background-scrolling      {:doc "▶ Parallax demo" :task (exit-with (run-demo "background-scrolling"))}
+  ball-physics              {:doc "▶ Grab and throw balls" :task (exit-with (run-demo "ball-physics"))}
+  basic-lighting            {:doc "▶ Dynamic lighting" :task (exit-with (run-demo "basic-lighting"))}
+  basic-shapes              {:doc "▶ Circles, rectangles, triangles, polygons" :task (exit-with (run-demo "basic-shapes"))}
+  basic-voxel               {:doc "▶ First-person 8x8x8 voxel world, left-click to remove a cube" :task (exit-with (run-demo "basic-voxel"))}
+  billboard-rendering       {:doc "▶ Camera-facing sprites drawn far-to-near so alpha blends correctly" :task (exit-with (run-demo "billboard-rendering"))}
+  bouncing-ball             {:doc "▶ Physics demo" :task (exit-with (run-demo "bouncing-ball"))}
+  bouncing-spheres          {:doc "▶ Physics in 3D box" :task (exit-with (run-demo "bouncing-spheres"))}
+  box-collisions            {:doc "▶ 3D collision detection" :task (exit-with (run-demo "box-collisions"))}
+  bullet-hell               {:doc "▶ Throughput test firing rows of bullets from a rotating circle" :task (exit-with (run-demo "bullet-hell"))}
+  camera-2d                 {:doc "▶ 2D camera" :task (exit-with (run-demo "camera-2d"))}
+  camera-2d-platformer      {:doc "▶ 5 camera follow modes" :task (exit-with (run-demo "camera-2d-platformer"))}
+  camera-2d-split-screen    {:doc "▶ Two players, two cameras, one grid" :task (exit-with (run-demo "camera-2d-split-screen"))}
+  camera-3d-free            {:doc "▶ Free 3D camera" :task (exit-with (run-demo "camera-3d-free"))}
+  camera-3d-mode            {:doc "▶ Minimal 3D scene - cube on a grid" :task (exit-with (run-demo "camera-3d-mode"))}
+  camera-fps                {:doc "▶ FPS with physics" :task (exit-with (run-demo "camera-fps"))}
+  camera-modes              {:doc "▶ Free/Orbital/FPS cameras" :task (exit-with (run-demo "camera-modes"))}
+  circle-sector-drawing     {:doc "▶ Circle sector angles, radius and segments on raygui sliders" :task (exit-with (run-demo "circle-sector-drawing"))}
+  clipboard-text            {:doc "▶ Cut, copy and paste against the system clipboard" :task (exit-with (run-demo "clipboard-text"))}
+  clock-of-clocks           {:doc "▶ Digits drawn from a grid of analogue clocks" :task (exit-with (run-demo "clock-of-clocks"))}
+  collision-area            {:doc "▶ Collision detection" :task (exit-with (run-demo "collision-area"))}
+  colors-palette            {:doc "▶ Color showcase" :task (exit-with (run-demo "colors-palette"))}
+  cubicmap-rendering        {:doc "▶ A 3D maze mesh generated from a 32x16 PNG, one cube per lit pixel" :task (exit-with (run-demo "cubicmap-rendering"))}
+  dashed-line               {:doc "▶ Interactive dashed line" :task (exit-with (run-demo "dashed-line"))}
+  delta-time                {:doc "▶ Frame-rate independent vs fixed-step motion" :task (exit-with (run-demo "delta-time"))}
+  dna-helix                 {:doc "▶ Double helix" :task (exit-with (run-demo "dna-helix"))}
+  double-pendulum           {:doc "▶ Chaotic pendulum simulation" :task (exit-with (run-demo "double-pendulum"))}
+  easings-ball              {:doc "▶ Easing function animation" :task (exit-with (run-demo "easings-ball"))}
+  easings-box               {:doc "▶ Box animation with easing functions" :task (exit-with (run-demo "easings-box"))}
+  easings-rectangles        {:doc "▶ Grid animation with easing functions" :task (exit-with (run-demo "easings-rectangles"))}
+  easings-testbed           {:doc "▶ All 28 easing curves, one per axis" :task (exit-with (run-demo "easings-testbed"))}
+  ellipse-collision         {:doc "▶ Steer one ellipse into another" :task (exit-with (run-demo "ellipse-collision"))}
+  first-person-3d           {:doc "▶ FPS camera" :task (exit-with (run-demo "first-person-3d"))}
+  first-person-maze         {:doc "▶ Navigate 3D maze" :task (exit-with (run-demo "first-person-maze"))}
+  floppy                    {:doc "▶ Flappy bird clone" :task (exit-with (run-demo "floppy"))}
+  following-eyes            {:doc "▶ Mouse tracking" :task (exit-with (run-demo "following-eyes"))}
+  format-text               {:doc "▶ Formatted score/timer display" :task (exit-with (run-demo "format-text"))}
+  geometric-shapes          {:doc "▶ 3D primitives" :task (exit-with (run-demo "geometric-shapes"))}
+  gestures-testbed          {:doc "▶ Touch gestures" :task (exit-with (run-demo "gestures-testbed"))}
+  heightmap-rendering       {:doc "▶ Terrain mesh generated from a greyscale PNG, brightness as elevation" :task (exit-with (run-demo "heightmap-rendering"))}
+  hello-world               {:doc "▶ Basic window test" :task (exit-with (run-demo "hello-world"))}
+  hilbert-curve             {:doc "▶ Space-filling curve drawn stroke by stroke with hue along its length" :task (exit-with (run-demo "hilbert-curve"))}
+  input-actions             {:doc "▶ Remappable action layer over keys and gamepad buttons" :task (exit-with (run-demo "input-actions"))}
+  input-box                 {:doc "▶ Text input field" :task (exit-with (run-demo "input-box"))}
+  input-gamepad             {:doc "▶ Gamepad demo" :task (exit-with (run-demo "input-gamepad"))}
+  input-gestures            {:doc "▶ Log of detected touch gestures" :task (exit-with (run-demo "input-gestures"))}
+  input-keys                {:doc "▶ Keyboard input" :task (exit-with (run-demo "input-keys"))}
+  input-mouse               {:doc "▶ Mouse input" :task (exit-with (run-demo "input-mouse"))}
+  input-multitouch          {:doc "▶ Numbered circle per touch point" :task (exit-with (run-demo "input-multitouch"))}
+  input-virtual-controls    {:doc "▶ On-screen D-pad" :task (exit-with (run-demo "input-virtual-controls"))}
+  kaleidoscope              {:doc "▶ Mouse strokes repeated around six-fold symmetry and mirrored" :task (exit-with (run-demo "kaleidoscope"))}
+  keyboard-testbed          {:doc "▶ On-screen ENG-US keyboard showing what raylib reports per key" :task (exit-with (run-demo "keyboard-testbed"))}
+  lines-bezier              {:doc "▶ Interactive bezier curve" :task (exit-with (run-demo "lines-bezier"))}
+  lines-drawing             {:doc "▶ Draw rainbow lines on canvas" :task (exit-with (run-demo "lines-drawing"))}
+  lissajous-3d              {:doc "▶ Parametric curves" :task (exit-with (run-demo "lissajous-3d"))}
+  logo-anim                 {:doc "▶ Logo animation" :task (exit-with (run-demo "logo-anim"))}
+  logo-raylib               {:doc "▶ Raylib logo drawn with shapes" :task (exit-with (run-demo "logo-raylib"))}
+  logo-raylib-anim          {:doc "▶ Animated logo construction" :task (exit-with (run-demo "logo-raylib-anim"))}
+  lorenz-attractor          {:doc "▶ Chaos theory" :task (exit-with (run-demo "lorenz-attractor"))}
+  math-angle-rotation       {:doc "▶ Fixed and sweeping angle lines" :task (exit-with (run-demo "math-angle-rotation"))}
+  math-sine-cosine          {:doc "▶ Unit circle with sine, cosine, tangent and related angles drawn live" :task (exit-with (run-demo "math-sine-cosine"))}
+  mesh-generation           {:doc "▶ Procedural 3D shapes" :task (exit-with (run-demo "mesh-generation"))}
+  mouse-trail               {:doc "▶ Circles following mouse cursor" :task (exit-with (run-demo "mouse-trail"))}
+  mouse-wheel               {:doc "▶ Scroll input" :task (exit-with (run-demo "mouse-wheel"))}
+  music-stream              {:doc "▶ MP3 streaming" :task (exit-with (run-demo "music-stream"))}
+  orthographic-projection   {:doc "▶ Perspective vs orthographic" :task (exit-with (run-demo "orthographic-projection"))}
+  palette-switch            {:doc "▶ Fragment shader remaps index-encoded bands through a palette" :task (exit-with (run-demo "palette-switch"))}
+  particle-system           {:doc "▶ 3D particles" :task (exit-with (run-demo "particle-system"))}
+  penrose-tile              {:doc "▶ L-system Penrose tiling drawn by turtle" :task (exit-with (run-demo "penrose-tile"))}
+  picking-3d                {:doc "▶ Ray casting" :task (exit-with (run-demo "picking-3d"))}
+  point-cloud               {:doc "▶ Spherical points" :task (exit-with (run-demo "point-cloud"))}
+  pong                      {:doc "▶ Two-player paddle game" :task (exit-with (run-demo "pong"))}
+  random-values             {:doc "▶ Random numbers" :task (exit-with (run-demo "random-values"))}
+  ray-picking               {:doc "▶ Click to select cubes" :task (exit-with (run-demo "ray-picking"))}
+  rectangle-scaling         {:doc "▶ Drag to resize rectangle" :task (exit-with (run-demo "rectangle-scaling"))}
+  recursive-tree            {:doc "▶ Binary tree grown by splitting each branch in two" :task (exit-with (run-demo "recursive-tree"))}
+  render-texture            {:doc "▶ Bouncing ball drawn into an offscreen target" :task (exit-with (run-demo "render-texture"))}
+  retro-maze-3d             {:doc "▶ GameBoy-style maze escape" :task (exit-with (run-demo "retro-maze-3d"))}
+  ring-drawing              {:doc "▶ Ring inner/outer radius, angles and segments on raygui sliders" :task (exit-with (run-demo "ring-drawing"))}
+  rotating-cube             {:doc "▶ 3D rotation" :task (exit-with (run-demo "rotating-cube"))}
+  rounded-rectangle-drawing {:doc "▶ Corner roundness, size, thickness and segments on raygui sliders" :task (exit-with (run-demo "rounded-rectangle-drawing"))}
+  scissor-test              {:doc "▶ Scissor clipping" :task (exit-with (run-demo "scissor-test"))}
+  screen-manager            {:doc "▶ State machine" :task (exit-with (run-demo "screen-manager"))}
+  simple-particles          {:doc "▶ Water/smoke/fire effects" :task (exit-with (run-demo "simple-particles"))}
+  smooth-pixelperfect       {:doc "▶ Pixel-aligned world, sub-pixel smooth camera" :task (exit-with (run-demo "smooth-pixelperfect"))}
+  snake                     {:doc "▶ Classic snake game" :task (exit-with (run-demo "snake"))}
+  solar-system              {:doc "▶ Orbiting planets" :task (exit-with (run-demo "solar-system"))}
+  sound-loading             {:doc "▶ WAV/OGG playback" :task (exit-with (run-demo "sound-loading"))}
+  sound-multi               {:doc "▶ Multiple sounds" :task (exit-with (run-demo "sound-multi"))}
+  spinning-cubes            {:doc "▶ Color-cycling cubes" :task (exit-with (run-demo "spinning-cubes"))}
+  split-screen-3d           {:doc "▶ Two-player 3D" :task (exit-with (run-demo "split-screen-3d"))}
+  sprite-animation          {:doc "▶ Spritesheet" :task (exit-with (run-demo "sprite-animation"))}
+  srcrec-dstrec             {:doc "▶ Source/destination rects with rotation" :task (exit-with (run-demo "srcrec-dstrec"))}
+  starfield-effect          {:doc "▶ 3D starfield simulation" :task (exit-with (run-demo "starfield-effect"))}
+  storage-values            {:doc "▶ Save and load scores to a file" :task (exit-with (run-demo "storage-values"))}
+  terrain-generation        {:doc "▶ Procedural terrain" :task (exit-with (run-demo "terrain-generation"))}
+  tesseract-view            {:doc "▶ 4D hypercube" :task (exit-with (run-demo "tesseract-view"))}
+  tetris                    {:doc "▶ Block-stacking puzzle" :task (exit-with (run-demo "tetris"))}
+  tiled-drawing             {:doc "▶ Tile a texture patch with selectable pattern, tint, scale and rotation" :task (exit-with (run-demo "tiled-drawing"))}
+  undo-redo                 {:doc "▶ Ring-buffer undo history on a grid" :task (exit-with (run-demo "undo-redo"))}
+  vampire-survivors         {:doc "▶ Survival action" :task (exit-with (run-demo "vampire-survivors"))}
+  viewport-scaling          {:doc "▶ Six ways to fit a fixed-resolution game onto a resizable window" :task (exit-with (run-demo "viewport-scaling"))}
+  waving-cubes              {:doc "▶ Animated cube wave" :task (exit-with (run-demo "waving-cubes"))}
+  window-letterbox          {:doc "▶ Resolution-independent rendering" :task (exit-with (run-demo "window-letterbox"))}
+  window-should-close       {:doc "▶ Custom close confirmation" :task (exit-with (run-demo "window-should-close"))}
+  wireframe-shapes          {:doc "▶ Custom wireframes" :task (exit-with (run-demo "wireframe-shapes"))}
+  world-screen              {:doc "▶ 3D to 2D coords" :task (exit-with (run-demo "world-screen"))}
+  writing-anim              {:doc "▶ Typewriter text effect" :task (exit-with (run-demo "writing-anim"))}
+  yaw-pitch-roll            {:doc "▶ 3D rotation demo" :task (exit-with (run-demo "yaw-pitch-roll"))}
+  ;; END per-demo tasks
+  }}

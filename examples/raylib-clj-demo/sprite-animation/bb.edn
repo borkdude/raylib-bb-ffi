@@ -1,0 +1,7 @@
+;; Run this demo from here with `bb run`. From the repo root it's `bb sprite-animation`.
+;; GUI apps need `clojure`, not `clj` (rlwrap breaks them).
+{:tasks
+ {run {:doc "\u25b6 Spritesheet"
+       :override-builtin true
+       :task (let [{:keys [exit]} (shell {:continue true} "clojure" "-M:run")]
+               (when-not (zero? exit) (System/exit exit)))}}}

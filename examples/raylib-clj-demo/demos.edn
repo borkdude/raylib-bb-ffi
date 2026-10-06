@@ -1,0 +1,116 @@
+;; Every demo: its directory name (also its root alias and bb task), category,
+;; title, a one-line description, its controls, and the raylib C example it
+;; ports (nil for originals). Edited by hand; after a change run `bb gen`.
+[{:name "ascii-rendering", :category "shaders", :title "Ascii Rendering", :desc "Post-process the scene into ASCII glyphs via a render texture", :controls "LEFT/RIGHT to change the glyph cell size", :ported "examples/shaders/shaders_ascii_rendering.c"}
+ {:name "asteroids", :category "games", :title "Asteroids", :desc "Shoot asteroids", :controls "Arrows, Space", :ported nil}
+ {:name "asteroids2", :category "games", :title "Asteroids 2", :desc "Alternate version", :controls "Arrows, Space", :ported nil}
+ {:name "audio-module", :category "audio", :title "Audio Module", :desc "Music visualization", :controls "SPACE, P, Arrows", :ported "examples/audio/audio_module_playing.c"}
+ {:name "background-scrolling", :category "textures", :title "Background Scrolling", :desc "Parallax demo", :controls "Watch", :ported "examples/textures/textures_background_scrolling.c"}
+ {:name "ball-physics", :category "shapes", :title "Ball Physics", :desc "Grab and throw balls", :controls "Click, Right-click, Wheel, Middle", :ported "examples/shapes/shapes_ball_physics.c"}
+ {:name "basic-lighting", :category "shaders", :title "Basic Lighting", :desc "Dynamic lighting", :controls "Mouse, Y/R/G/B", :ported "examples/shaders/shaders_basic_lighting.c"}
+ {:name "basic-shapes", :category "shapes", :title "Basic Shapes", :desc "Circles, rectangles, triangles, polygons", :controls "ESC to exit", :ported "examples/shapes/shapes_basic_shapes.c"}
+ {:name "basic-voxel", :category "models", :title "Basic Voxel", :desc "First-person 8x8x8 voxel world, left-click to remove a cube", :controls "WASD to move, mouse to look, left-click to remove", :ported "examples/models/models_basic_voxel.c"}
+ {:name "billboard-rendering", :category "models", :title "Billboard Rendering", :desc "Camera-facing sprites drawn far-to-near so alpha blends correctly", :controls "Orbits on its own, no input", :ported "examples/models/models_billboard_rendering.c"}
+ {:name "bouncing-ball", :category "core", :title "Bouncing Ball", :desc "Physics demo", :controls "SPACE, G", :ported "examples/shapes/shapes_bouncing_ball.c"}
+ {:name "bouncing-spheres", :category "models", :title "Bouncing Spheres", :desc "Physics in 3D box", :controls "SPACE, R, G, Q", :ported nil}
+ {:name "box-collisions", :category "models", :title "Box Collisions", :desc "3D collision detection", :controls "Arrow keys, Q", :ported "examples/models/models_box_collisions.c"}
+ {:name "bullet-hell", :category "shapes", :title "Bullet Hell", :desc "Throughput test firing rows of bullets from a rotating circle", :controls "RIGHT/LEFT rows, UP/DOWN speed, Z/X cooldown, SPACE angle, ENTER draw method, C clear", :ported "examples/shapes/shapes_bullet_hell.c"}
+ {:name "camera-2d", :category "core", :title "Camera 2D", :desc "2D camera", :controls "Arrows, A/S, Wheel", :ported "examples/core/core_2d_camera.c"}
+ {:name "camera-2d-platformer", :category "core", :title "Camera 2D Platformer", :desc "5 camera follow modes", :controls "Arrows, SPACE, C, R, Wheel", :ported "examples/core/core_2d_camera_platformer.c"}
+ {:name "camera-2d-split-screen", :category "core", :title "Camera 2D Split Screen", :desc "Two players, two cameras, one grid", :controls "P1 W/S/A/D, P2 arrows, Q to exit", :ported "examples/core/core_2d_camera_split_screen.c"}
+ {:name "camera-3d-free", :category "core", :title "Camera 3D Free", :desc "Free 3D camera", :controls "Mouse, Wheel", :ported "examples/core/core_3d_camera_free.c"}
+ {:name "camera-3d-mode", :category "core", :title "Camera 3D Mode", :desc "Minimal 3D scene - cube on a grid", :controls "Q to exit", :ported "examples/core/core_3d_camera_mode.c"}
+ {:name "camera-fps", :category "core", :title "Camera FPS", :desc "FPS with physics", :controls "WASD, Space, Ctrl", :ported "examples/core/core_3d_camera_fps.c"}
+ {:name "camera-modes", :category "models", :title "Camera Modes", :desc "Free/Orbital/FPS cameras", :controls "1/2/3, WASD, Q", :ported nil}
+ {:name "circle-sector-drawing", :category "shapes", :title "Circle Sector Drawing", :desc "Circle sector angles, radius and segments on raygui sliders", :controls "Drag the four sliders on the right", :ported "examples/shapes/shapes_circle_sector_drawing.c"}
+ {:name "clipboard-text", :category "core", :title "Clipboard Text", :desc "Cut, copy and paste against the system clipboard", :controls "Buttons or CTRL+X / CTRL+C / CTRL+V, click the box to edit", :ported "examples/core/core_clipboard_text.c"}
+ {:name "clock-of-clocks", :category "shapes", :title "Clock Of Clocks", :desc "Digits drawn from a grid of analogue clocks", :controls "Space to toggle 12/24h, Q to exit", :ported "examples/shapes/shapes_clock_of_clocks.c"}
+ {:name "collision-area", :category "core", :title "Collision Area", :desc "Collision detection", :controls "Mouse, SPACE", :ported "examples/shapes/shapes_collision_area.c"}
+ {:name "colors-palette", :category "core", :title "Colors Palette", :desc "Color showcase", :controls "Hover, SPACE", :ported "examples/shapes/shapes_colors_palette.c"}
+ {:name "cubicmap-rendering", :category "models", :title "Cubicmap Rendering", :desc "A 3D maze mesh generated from a 32x16 PNG, one cube per lit pixel", :controls "P to pause the orbit", :ported "examples/models/models_cubicmap_rendering.c"}
+ {:name "dashed-line", :category "shapes", :title "Dashed Line", :desc "Interactive dashed line", :controls "Arrows, C", :ported "examples/shapes/shapes_dashed_line.c"}
+ {:name "delta-time", :category "core", :title "Delta Time", :desc "Frame-rate independent vs fixed-step motion", :controls "Wheel to change FPS, R to reset, Q to exit", :ported "examples/core/core_delta_time.c"}
+ {:name "dna-helix", :category "models", :title "DNA Helix", :desc "Double helix", :controls "Arrows, SPACE, R, Q", :ported nil}
+ {:name "double-pendulum", :category "shapes", :title "Double Pendulum", :desc "Chaotic pendulum simulation", :controls "ESC to exit", :ported "examples/shapes/shapes_double_pendulum.c"}
+ {:name "easings-ball", :category "shapes", :title "Easings Ball", :desc "Easing function animation", :controls "ENTER to replay", :ported "examples/shapes/shapes_easings_ball.c"}
+ {:name "easings-box", :category "shapes", :title "Easings Box", :desc "Box animation with easing functions", :controls "SPACE to reset", :ported "examples/shapes/shapes_easings_box.c"}
+ {:name "easings-rectangles", :category "shapes", :title "Easings Rectangles", :desc "Grid animation with easing functions", :controls "SPACE to replay", :ported "examples/shapes/shapes_easings_rectangles.c"}
+ {:name "easings-testbed", :category "shapes", :title "Easings Testbed", :desc "All 28 easing curves, one per axis", :controls "LEFT/RIGHT x-curve, UP/DOWN y-curve, ENTER play, SPACE restart, Q/W/A/S duration, T bound", :ported "examples/shapes/shapes_easings_testbed.c"}
+ {:name "ellipse-collision", :category "shapes", :title "Ellipse Collision", :desc "Steer one ellipse into another", :controls "A/B to switch control, Mouse to move, Q to exit", :ported "examples/shapes/shapes_ellipse_collision.c"}
+ {:name "first-person-3d", :category "core", :title "First Person 3D", :desc "FPS camera", :controls "WASD, Mouse, 1-4", :ported "examples/core/core_3d_camera_first_person.c"}
+ {:name "first-person-maze", :category "models", :title "First Person Maze", :desc "Navigate 3D maze", :controls "WASD, Mouse, R, M, Q", :ported "examples/models/models_first_person_maze.c"}
+ {:name "floppy", :category "games", :title "Floppy", :desc "Flappy bird clone", :controls "SPACE, P, ENTER, Q", :ported "raysan5/raylib-games: floppy.c"}
+ {:name "following-eyes", :category "core", :title "Following Eyes", :desc "Mouse tracking", :controls "Move mouse", :ported "examples/shapes/shapes_following_eyes.c"}
+ {:name "format-text", :category "text", :title "Format Text", :desc "Formatted score/timer display", :controls "ESC to exit", :ported "examples/text/text_format_text.c"}
+ {:name "geometric-shapes", :category "models", :title "Geometric Shapes", :desc "3D primitives", :controls "Q to exit", :ported "examples/models/models_geometric_shapes.c"}
+ {:name "gestures-testbed", :category "core", :title "Gestures Testbed", :desc "Touch gestures", :controls "Touch/click", :ported "examples/core/core_input_gestures_testbed.c"}
+ {:name "heightmap-rendering", :category "models", :title "Heightmap Rendering", :desc "Terrain mesh generated from a greyscale PNG, brightness as elevation", :controls "Orbits on its own, no input", :ported "examples/models/models_heightmap_rendering.c"}
+ {:name "hello-world", :category "games", :title "Hello World", :desc "Basic window test", :controls "Q to exit, F1 for debug stats", :ported "examples/core/core_basic_window.c"}
+ {:name "hilbert-curve", :category "shapes", :title "Hilbert Curve", :desc "Space-filling curve drawn stroke by stroke with hue along its length", :controls "Spinner sets order, sliders set thickness and size", :ported "examples/shapes/shapes_hilbert_curve.c"}
+ {:name "input-actions", :category "core", :title "Input Actions", :desc "Remappable action layer over keys and gamepad buttons", :controls "WASD or arrows to move, SPACE to recentre, TAB swaps keyset", :ported "examples/core/core_input_actions.c"}
+ {:name "input-box", :category "text", :title "Input Box", :desc "Text input field", :controls "Click, type, Backspace", :ported "examples/text/text_input_box.c"}
+ {:name "input-gamepad", :category "core", :title "Input Gamepad", :desc "Gamepad demo", :controls "Connect gamepad", :ported "examples/core/core_input_gamepad.c"}
+ {:name "input-gestures", :category "core", :title "Input Gestures", :desc "Log of detected touch gestures", :controls "Click/drag/flick in the test area, Q to exit", :ported "examples/core/core_input_gestures.c"}
+ {:name "input-keys", :category "core", :title "Input Keys", :desc "Keyboard input", :controls "Arrow keys", :ported "examples/core/core_input_keys.c"}
+ {:name "input-mouse", :category "core", :title "Input Mouse", :desc "Mouse input", :controls "Click, move", :ported "examples/core/core_input_mouse.c"}
+ {:name "input-multitouch", :category "core", :title "Input Multitouch", :desc "Numbered circle per touch point", :controls "Touch/click, Q to exit", :ported "examples/core/core_input_multitouch.c"}
+ {:name "input-virtual-controls", :category "core", :title "Input Virtual Controls", :desc "On-screen D-pad", :controls "Click/touch the D-pad, Q to exit", :ported "examples/core/core_input_virtual_controls.c"}
+ {:name "kaleidoscope", :category "shapes", :title "Kaleidoscope", :desc "Mouse strokes repeated around six-fold symmetry and mirrored", :controls "Drag to draw, < > to step through lines, Reset to clear", :ported "examples/shapes/shapes_kaleidoscope.c"}
+ {:name "keyboard-testbed", :category "core", :title "Keyboard Testbed", :desc "On-screen ENG-US keyboard showing what raylib reports per key", :controls "Press any key to light it up, hover to highlight, close via title bar", :ported "examples/core/core_keyboard_testbed.c"}
+ {:name "lines-bezier", :category "shapes", :title "Lines Bezier", :desc "Interactive bezier curve", :controls "Drag endpoints", :ported "examples/shapes/shapes_lines_bezier.c"}
+ {:name "lines-drawing", :category "shapes", :title "Lines Drawing", :desc "Draw rainbow lines on canvas", :controls "Click, Right-click, Wheel, Middle", :ported "examples/shapes/shapes_lines_drawing.c"}
+ {:name "lissajous-3d", :category "models", :title "Lissajous 3D", :desc "Parametric curves", :controls "1-5, Arrows, W/S, SPACE, Q", :ported nil}
+ {:name "logo-anim", :category "core", :title "Logo Animation", :desc "Logo animation", :controls "R to replay", :ported "examples/shapes/shapes_logo_raylib_anim.c"}
+ {:name "logo-raylib", :category "shapes", :title "Logo Raylib", :desc "Raylib logo drawn with shapes", :controls "ESC to exit", :ported "examples/shapes/shapes_logo_raylib.c"}
+ {:name "logo-raylib-anim", :category "shapes", :title "Logo Raylib Anim", :desc "Animated logo construction", :controls "R to replay", :ported "examples/shapes/shapes_logo_raylib_anim.c"}
+ {:name "lorenz-attractor", :category "models", :title "Lorenz Attractor", :desc "Chaos theory", :controls "1-3, Arrows, SPACE, R, Q", :ported nil}
+ {:name "math-angle-rotation", :category "shapes", :title "Math Angle Rotation", :desc "Fixed and sweeping angle lines", :controls "Q to exit", :ported "examples/shapes/shapes_math_angle_rotation.c"}
+ {:name "math-sine-cosine", :category "shapes", :title "Math Sine Cosine", :desc "Unit circle with sine, cosine, tangent and related angles drawn live", :controls "Angle slider, Pause toggle", :ported "examples/shapes/shapes_math_sine_cosine.c"}
+ {:name "mesh-generation", :category "models", :title "Mesh Generation", :desc "Procedural 3D shapes", :controls "Left/Right, Click, SPACE, R, Q", :ported "examples/models/models_mesh_generation.c"}
+ {:name "mouse-trail", :category "shapes", :title "Mouse Trail", :desc "Circles following mouse cursor", :controls "Move mouse", :ported "examples/shapes/shapes_mouse_trail.c"}
+ {:name "mouse-wheel", :category "core", :title "Mouse Wheel", :desc "Scroll input", :controls "Mouse wheel", :ported "examples/core/core_input_mouse_wheel.c"}
+ {:name "music-stream", :category "audio", :title "Music Stream", :desc "MP3 streaming", :controls "SPACE, P, Arrows", :ported "examples/audio/audio_music_stream.c"}
+ {:name "orthographic-projection", :category "models", :title "Orthographic Projection", :desc "Perspective vs orthographic", :controls "SPACE, Q", :ported "examples/models/models_orthographic_projection.c"}
+ {:name "palette-switch", :category "shaders", :title "Palette Switch", :desc "Fragment shader remaps index-encoded bands through a palette", :controls "LEFT/RIGHT to switch palette", :ported "examples/shaders/shaders_palette_switch.c"}
+ {:name "particle-system", :category "models", :title "Particle System", :desc "3D particles", :controls "SPACE, G, W, R, Q", :ported nil}
+ {:name "penrose-tile", :category "shapes", :title "Penrose Tile", :desc "L-system Penrose tiling drawn by turtle", :controls "UP/DOWN change generations, Q to exit", :ported "examples/shapes/shapes_penrose_tile.c"}
+ {:name "picking-3d", :category "core", :title "Picking 3D", :desc "Ray casting", :controls "Click", :ported "examples/core/core_3d_picking.c"}
+ {:name "point-cloud", :category "models", :title "Point Cloud", :desc "Spherical points", :controls "UP/DOWN, Q", :ported "examples/models/models_point_rendering.c"}
+ {:name "pong", :category "games", :title "Pong", :desc "Two-player paddle game", :controls "W/S, K/J, Enter", :ported nil}
+ {:name "random-values", :category "core", :title "Random Values", :desc "Random numbers", :controls "Watch", :ported "examples/core/core_random_values.c"}
+ {:name "ray-picking", :category "models", :title "Ray Picking", :desc "Click to select cubes", :controls "Click, Right-click, Q", :ported "examples/core/core_3d_picking.c"}
+ {:name "rectangle-scaling", :category "shapes", :title "Rectangle Scaling", :desc "Drag to resize rectangle", :controls "Drag bottom-right corner", :ported "examples/shapes/shapes_rectangle_scaling.c"}
+ {:name "recursive-tree", :category "shapes", :title "Recursive Tree", :desc "Binary tree grown by splitting each branch in two", :controls "Drag Angle/Length/Decay/Depth/Thick, toggle Bezier", :ported "examples/shapes/shapes_recursive_tree.c"}
+ {:name "render-texture", :category "core", :title "Render Texture", :desc "Bouncing ball drawn into an offscreen target", :controls "Q to exit", :ported "examples/core/core_render_texture.c"}
+ {:name "retro-maze-3d", :category "games", :title "Retro Maze 3D", :desc "GameBoy-style maze escape", :controls "WASD, Mouse, SPACE, M, ENTER, Q", :ported "raysan5/raylib-games: retro_maze_3d.c"}
+ {:name "ring-drawing", :category "shapes", :title "Ring Drawing", :desc "Ring inner/outer radius, angles and segments on raygui sliders", :controls "Drag the sliders, toggle the three draw modes", :ported "examples/shapes/shapes_ring_drawing.c"}
+ {:name "rotating-cube", :category "models", :title "Rotating Cube", :desc "3D rotation", :controls "Arrows, +/-, R, Q", :ported "examples/models/models_rotating_cube.c"}
+ {:name "rounded-rectangle-drawing", :category "shapes", :title "Rounded Rectangle Drawing", :desc "Corner roundness, size, thickness and segments on raygui sliders", :controls "Drag the sliders, toggle the three draw modes", :ported "examples/shapes/shapes_rounded_rectangle_drawing.c"}
+ {:name "scissor-test", :category "core", :title "Scissor Test", :desc "Scissor clipping", :controls "S, Mouse", :ported "examples/core/core_scissor_test.c"}
+ {:name "screen-manager", :category "core", :title "Screen Manager", :desc "State machine", :controls "ENTER", :ported "examples/core/core_basic_screen_manager.c"}
+ {:name "simple-particles", :category "shapes", :title "Simple Particles", :desc "Water/smoke/fire effects", :controls "Arrows, Click", :ported "examples/shapes/shapes_simple_particles.c"}
+ {:name "smooth-pixelperfect", :category "core", :title "Smooth Pixelperfect", :desc "Pixel-aligned world, sub-pixel smooth camera", :controls "Q to exit", :ported "examples/core/core_smooth_pixelperfect.c"}
+ {:name "snake", :category "games", :title "Snake", :desc "Classic snake game", :controls "Arrows, P, ENTER, Q", :ported "raysan5/raylib-games: snake.c"}
+ {:name "solar-system", :category "models", :title "Solar System", :desc "Orbiting planets", :controls "Q to exit", :ported "examples/models/models_rlgl_solar_system.c"}
+ {:name "sound-loading", :category "audio", :title "Sound Loading", :desc "WAV/OGG playback", :controls "SPACE, ENTER", :ported "examples/audio/audio_sound_loading.c"}
+ {:name "sound-multi", :category "audio", :title "Sound Multi", :desc "Multiple sounds", :controls "SPACE", :ported "examples/audio/audio_sound_multi.c"}
+ {:name "spinning-cubes", :category "models", :title "Spinning Cubes", :desc "Color-cycling cubes", :controls "Q to exit", :ported nil}
+ {:name "split-screen-3d", :category "core", :title "Split Screen 3D", :desc "Two-player 3D", :controls "W/S, UP/DOWN", :ported "examples/core/core_3d_camera_split_screen.c"}
+ {:name "sprite-animation", :category "textures", :title "Sprite Animation", :desc "Spritesheet", :controls "LEFT/RIGHT", :ported "examples/textures/textures_sprite_animation.c"}
+ {:name "srcrec-dstrec", :category "textures", :title "Srcrec Dstrec", :desc "Source/destination rects with rotation", :controls "Q to exit", :ported "examples/textures/textures_srcrec_dstrec.c"}
+ {:name "starfield-effect", :category "shapes", :title "Starfield Effect", :desc "3D starfield simulation", :controls "SPACE, Wheel", :ported "examples/shapes/shapes_starfield_effect.c"}
+ {:name "storage-values", :category "core", :title "Storage Values", :desc "Save and load scores to a file", :controls "R random, ENTER save, SPACE load, Q to exit", :ported "examples/core/core_storage_values.c"}
+ {:name "terrain-generation", :category "models", :title "Terrain Generation", :desc "Procedural terrain", :controls "1-3, Arrows, G, W, SPACE, Q", :ported nil}
+ {:name "tesseract-view", :category "models", :title "Tesseract View", :desc "4D hypercube", :controls "Q to exit", :ported "examples/models/models_tesseract_view.c"}
+ {:name "tetris", :category "games", :title "Tetris", :desc "Block-stacking puzzle", :controls "Arrows, Space", :ported nil}
+ {:name "tiled-drawing", :category "textures", :title "Tiled Drawing", :desc "Tile a texture patch with selectable pattern, tint, scale and rotation", :controls "Click a pattern or colour, UP/DOWN scale, LEFT/RIGHT rotate, SPACE reset", :ported "examples/textures/textures_tiled_drawing.c"}
+ {:name "undo-redo", :category "core", :title "Undo Redo", :desc "Ring-buffer undo history on a grid", :controls "Arrows move, SPACE colour, CTRL+Z undo, CTRL+Y redo, Q exit", :ported "examples/core/core_undo_redo.c"}
+ {:name "vampire-survivors", :category "games", :title "Vampire Survivors", :desc "Survival action", :controls "WASD", :ported nil}
+ {:name "viewport-scaling", :category "core", :title "Viewport Scaling", :desc "Six ways to fit a fixed-resolution game onto a resizable window", :controls "Click < > to change resolution and viewport type, resize the window", :ported "examples/core/core_viewport_scaling.c"}
+ {:name "waving-cubes", :category "models", :title "Waving Cubes", :desc "Animated cube wave", :controls "Q to exit", :ported "examples/models/models_waving_cubes.c"}
+ {:name "window-letterbox", :category "core", :title "Window Letterbox", :desc "Resolution-independent rendering", :controls "SPACE, Resize window", :ported "examples/core/core_window_letterbox.c"}
+ {:name "window-should-close", :category "core", :title "Window Should Close", :desc "Custom close confirmation", :controls "Y/N to confirm/cancel", :ported "examples/core/core_window_should_close.c"}
+ {:name "wireframe-shapes", :category "models", :title "Wireframe Shapes", :desc "Custom wireframes", :controls "SPACE, Q", :ported nil}
+ {:name "world-screen", :category "core", :title "World Screen", :desc "3D to 2D coords", :controls "Mouse, Wheel", :ported "examples/core/core_world_screen.c"}
+ {:name "writing-anim", :category "text", :title "Writing Animation", :desc "Typewriter text effect", :controls "SPACE speed up, ENTER restart", :ported "examples/text/text_writing_anim.c"}
+ {:name "yaw-pitch-roll", :category "models", :title "Yaw Pitch Roll", :desc "3D rotation demo", :controls "Arrows, SPACE, R, Q", :ported "examples/models/models_yaw_pitch_roll.c"}]
