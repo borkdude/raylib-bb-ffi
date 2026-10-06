@@ -1,0 +1,28 @@
+# bounce
+
+a ball bouncing around the window
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_bouncing_ball.c`.
+
+![bounce](../demos/bounce.gif)
+
+## Run it
+
+```sh
+cd bounce && bb run   # from this demo (or jolt run, jolt -M:run)
+bb bounce             # from the repo root (or jolt -M:bounce)
+```
+
+## About
+
+raylib [shapes] example - bouncing ball (`joltc -M:bounce`).
+
+Ported from examples/shapes/shapes_bouncing_ball.c: a ball bounces around the
+window; SPACE pauses. Position/velocity are plain doubles and the ball is drawn
+with the scalar DrawCircle (no by-value Vector2).
+
+## Background in the raylib-jlt guide
+
+- [REPL-driven development: why `(-main)` kills your editor connection](https://github.com/jlt-commons/raylib-jlt/blob/main/docs/guide/repl-driven-development.md)

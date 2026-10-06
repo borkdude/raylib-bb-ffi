@@ -1,0 +1,32 @@
+# window-should-close
+
+close is a question: ESC asks before it exits
+
+Category: core
+
+![window-should-close](../demos/window-should-close.gif)
+
+## Run it
+
+```sh
+cd window-should-close && bb run   # from this demo (or jolt run, jolt -M:run)
+bb window-should-close             # from the repo root (or jolt -M:window-should-close)
+```
+
+## About
+
+raylib [core] example - window should close (`jolt -M:window-should-close`).
+
+Port of raylib's examples/core/core_window_should_close.c. Press ESC, or click
+the window's close button, and instead of the window vanishing you get a
+confirmation panel: Y closes, N goes back.
+
+The mechanism is SetExitKey. By default raylib closes on ESC and
+WindowShouldClose reports it, so an example has no chance to intervene. Passing
+KEY-NULL takes that binding away, leaving the close request as something the
+loop can see and answer. Both are bound here for the first time; every other
+example takes the default.
+
+This one owns its exit condition rather than deferring to rl/keep-running?, so
+the auto-quit deadline is checked alongside its own flag. Without that the
+headless smoke would never terminate.

@@ -1,0 +1,34 @@
+# compute-hash
+
+CRC32/MD5/SHA1/SHA256 + Base64 of typed text
+
+Category: core
+
+![compute-hash](../demos/compute-hash.gif)
+
+## Run it
+
+```sh
+cd compute-hash && bb run   # from this demo (or jolt run, jolt -M:run)
+bb compute-hash             # from the repo root (or jolt -M:compute-hash)
+```
+
+## About
+
+raylib [core] example - compute hash.
+
+Type into the input box (BACKSPACE deletes) and press ENTER to compute
+the CRC32 / MD5 / SHA1 / SHA256 hashes of the text, plus its Base64
+encoding.
+
+New FFI, all scalar or raw-pointer, no structs: rl/compute-crc32 is a
+plain uint return; rl/compute-md5/sha1/sha256 read N consecutive u32
+words out of raylib's own static result buffer (ffi/read, the same
+primitive local-time already uses for struct tm); rl/base64-encode
+passes a scratch int* out-param it never reads back. Verified against
+the canonical CRC32/SHA1/SHA256 test vectors for this exact input
+string -- MD5 does NOT match the usual byte order, which is raylib's
+own documented behavior (its %08X-per-word display is the native
+little-endian word order, not the byte-swapped form most MD5 tools
+print).
+Ported from raylib's examples/core/core_compute_hash.c.

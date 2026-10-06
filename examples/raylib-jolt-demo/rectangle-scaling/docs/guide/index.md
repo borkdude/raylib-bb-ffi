@@ -1,0 +1,22 @@
+# rectangle-scaling
+
+drag the corner handle to resize a rect
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_rectangle_scaling.c`.
+
+![rectangle-scaling](../demos/rectangle-scaling.gif)
+
+## Run it
+
+```sh
+cd rectangle-scaling && bb run   # from this demo (or jolt run, jolt -M:run)
+bb rectangle-scaling             # from the repo root (or jolt -M:rectangle-scaling)
+```
+
+## About
+
+raylib [shapes] example - rectangle scaling. Drag the bottom-right corner handle to
+resize a rectangle (clamped to a minimum). The live W x H is shown. Port of
+shapes_rectangle_scaling (mouse-driven; headless it shows the initial size).

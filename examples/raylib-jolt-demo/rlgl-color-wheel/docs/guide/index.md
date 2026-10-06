@@ -1,0 +1,35 @@
+# rlgl-color-wheel
+
+a hue wheel as a triangle fan, per-vertex colour
+
+Category: shapes
+
+![rlgl-color-wheel](../demos/rlgl-color-wheel.gif)
+
+## Run it
+
+```sh
+cd rlgl-color-wheel && bb run   # from this demo (or jolt run, jolt -M:run)
+bb rlgl-color-wheel             # from the repo root (or jolt -M:rlgl-color-wheel)
+```
+
+## About
+
+raylib [shapes] example - rlgl color wheel (`jolt -M:rlgl-color-wheel`).
+
+Port of raylib's examples/shapes/shapes_rlgl_color_wheel.c. A hue wheel built
+as a triangle fan through rlgl. The wheel is a ring of triangles sharing the
+centre, each rim vertex carrying its own hue, so the GPU interpolates every
+shade between them and a few dozen triangles cover the whole spectrum.
+
+The mouse wheel changes how many triangles there are, which is the point: at
+eight the interpolation is visible as flat wedges, and by sixty-four the wheel
+looks continuous. UP and DOWN resize it, SPACE switches between the filled fan
+and its wireframe, and the centre brightness follows the arrow keys.
+
+ColorFromHSV is not bound, so hue-to-RGB is done here. It is the standard
+piecewise conversion, and at full saturation and value it reduces to walking
+the six edges of the RGB cube.
+
+See color-wheel for the same subject drawn with filled sectors instead, and
+rlgl-triangle for per-vertex colour on a single triangle.

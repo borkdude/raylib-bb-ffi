@@ -1,0 +1,22 @@
+# logo
+
+the raylib logo from rectangles + text
+
+Category: shapes
+
+![logo](../demos/logo.gif)
+
+## Run it
+
+```sh
+cd logo && bb run   # from this demo (or jolt run, jolt -M:run)
+bb logo             # from the repo root (or jolt -M:logo)
+```
+
+## About
+
+raylib logo (`joltc -M:logo`).
+
+A static render of raylib's signature logo, a thick black square border with
+'raylib' tucked into the bottom-right corner, built from two rectangles and a
+text label positioned with MeasureText.

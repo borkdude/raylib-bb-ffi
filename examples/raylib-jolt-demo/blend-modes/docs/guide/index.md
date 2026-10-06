@@ -1,0 +1,35 @@
+# blend-modes
+
+four 2D blend modes over a night skyline
+
+Category: textures
+
+![blend-modes](../demos/blend-modes.gif)
+
+## Run it
+
+```sh
+cd blend-modes && bb run   # from this demo (or jolt run, jolt -M:run)
+bb blend-modes             # from the repo root (or jolt -M:blend-modes)
+```
+
+## About
+
+raylib [textures] example - blend modes.
+
+A glowing cluster of colored blobs drawn over a night skyline through
+the four 2D blend modes (ALPHA / ADDITIVE / MULTIPLIED / ADD_COLORS).
+SPACE cycles the mode.
+
+No new FFI: rl/begin-blend-mode, rl/end-blend-mode and the BLEND-*
+constants already exist (see particles-blending.clj); this is the
+second example to use them, and the first to show all four side by
+side. The skyline and the glow blobs are both procedurally generated
+with rl/texture-from-fn rather than the C example's
+cyberpunk_street_{background,foreground}.png, matching this suite's
+no-external-assets convention. The glow blobs sit on fully transparent
+black (alpha 0, rgb 0), which is why MULTIPLIED looks so different
+from the other three here: it ignores alpha and multiplies by that
+black everywhere the blobs don't reach, the real (if sometimes
+surprising) behavior of that mode.
+Loosely based on raylib/examples/textures/textures_blend_modes.c.

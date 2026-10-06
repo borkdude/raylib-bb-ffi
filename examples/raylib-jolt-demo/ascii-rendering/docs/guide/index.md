@@ -1,0 +1,31 @@
+# ascii-rendering
+
+ascii art from a post-process shader
+
+Category: shaders
+
+![ascii-rendering](../demos/ascii-rendering.gif)
+
+## Run it
+
+```sh
+cd ascii-rendering && bb run   # from this demo (or jolt run, jolt -M:run)
+bb ascii-rendering             # from the repo root (or jolt -M:ascii-rendering)
+```
+
+## About
+
+raylib [shaders] example - ASCII rendering.
+
+A post-process fragment shader re-renders the scene as ASCII glyphs: each
+cell samples one texel, turns it into a greyscale value, and picks one of
+eight 5x5 bitmap characters by brightness (the character's dots are just
+bits of an int, unpacked per-pixel in the shader). Two shapes are drawn
+into a render texture (one bouncing), then the whole texture is drawn back
+through the ascii shader. LEFT/RIGHT change the glyph cell size (9..15).
+
+Same postprocess-over-RenderTexture pipeline as `custom-uniform`: draw the
+2D scene into a render texture, then draw its texture back once through
+`with-shader`, y-flipped (`:v0 1.0 :v1 0.0`) for the FBO's bottom-up
+convention. Zero new FFI.
+Based on raylib/examples/shaders/shaders_ascii_rendering.c.

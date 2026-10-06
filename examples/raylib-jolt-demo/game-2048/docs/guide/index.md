@@ -1,0 +1,20 @@
+# game-2048
+
+2048: 4x4 tile-merge puzzle (arrow keys)
+
+Category: games
+
+![game-2048](../demos/game-2048.gif)
+
+## Run it
+
+```sh
+cd game-2048 && bb run   # from this demo (or jolt run, jolt -M:run)
+bb game-2048             # from the repo root (or jolt -M:game-2048)
+```
+
+## About
+
+raylib [games] example - 2048. Arrow keys slide + merge tiles on a 4x4 board;
+reach 2048. Slide/merge is one pure function reused for all four directions via
+row reversal / transpose. (Handle is game-2048; bb can't name a task '2048'.)

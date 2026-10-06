@@ -1,0 +1,24 @@
+# eyes
+
+two eyes track the mouse
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_following_eyes.c`.
+
+![eyes](../demos/eyes.gif)
+
+## Run it
+
+```sh
+cd eyes && bb run   # from this demo (or jolt run, jolt -M:run)
+bb eyes             # from the repo root (or jolt -M:eyes)
+```
+
+## About
+
+raylib [shapes] example - following eyes (`joltc -M:eyes`).
+
+Ported from examples/shapes/shapes_following_eyes.c: two eyes whose pupils track
+the mouse cursor, each pupil clamped to stay inside its eye. Uses scalar
+GetMouseX / GetMouseY + DrawCircle and a little trig for the pupil offset.

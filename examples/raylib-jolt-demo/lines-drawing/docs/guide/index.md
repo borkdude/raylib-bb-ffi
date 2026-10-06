@@ -1,0 +1,22 @@
+# lines-drawing
+
+a rotating fan of thick lines (line-ex!)
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_lines_drawing.c`.
+
+![lines-drawing](../demos/lines-drawing.gif)
+
+## Run it
+
+```sh
+cd lines-drawing && bb run   # from this demo (or jolt run, jolt -M:run)
+bb lines-drawing             # from the repo root (or jolt -M:lines-drawing)
+```
+
+## About
+
+raylib [shapes] example - lines drawing. A rotating fan of thick lines (rl/line-ex!),
+each a different width and color with round end caps, plus a thickness-scale row.
+Port of shapes_lines_drawing (minus the texture cursor).

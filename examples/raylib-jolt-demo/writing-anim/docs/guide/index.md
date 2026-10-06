@@ -1,0 +1,23 @@
+# writing-anim
+
+a message types itself out
+
+Category: text
+
+Ported from raylib's `examples/text/text_writing_anim.c`.
+
+![writing-anim](../demos/writing-anim.gif)
+
+## Run it
+
+```sh
+cd writing-anim && bb run   # from this demo (or jolt run, jolt -M:run)
+bb writing-anim             # from the repo root (or jolt -M:writing-anim)
+```
+
+## About
+
+raylib [text] example - writing animation (`joltc -M:writing-anim`).
+
+A message types itself out one character at a time, pauses at the end, then
+restarts. A growing substring of the full text driven by the frame counter.

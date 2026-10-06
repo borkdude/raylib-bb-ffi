@@ -1,0 +1,24 @@
+# penrose-tiling
+
+a P3 Penrose rhombus tiling (deflation)
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_penrose_tile.c`.
+
+![penrose-tiling](../demos/penrose-tiling.gif)
+
+## Run it
+
+```sh
+cd penrose-tiling && bb run   # from this demo (or jolt run, jolt -M:run)
+bb penrose-tiling             # from the repo root (or jolt -M:penrose-tiling)
+```
+
+## About
+
+raylib [shapes] example - Penrose (P3 rhombus) tiling by deflation of Robinson
+triangles. A 10-triangle 'sun' seed is subdivided N times using golden-ratio lerps
+(Preshing's rules); triangles are filled (two colors by kind) as an rlgl batch and
+their edges stroked. Each fill triangle is winding-normalized to the front face so
+none are backface-culled. In the spirit of shapes_penrose_tile.

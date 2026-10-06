@@ -1,0 +1,22 @@
+# kaleidoscope
+
+strokes mirrored with 6-fold symmetry
+
+Category: shapes
+
+![kaleidoscope](../demos/kaleidoscope.gif)
+
+## Run it
+
+```sh
+cd kaleidoscope && bb run   # from this demo (or jolt run, jolt -M:run)
+bb kaleidoscope             # from the repo root (or jolt -M:kaleidoscope)
+```
+
+## About
+
+A kaleidoscope (`joltc -M:kaleidoscope`).
+
+A moving stroke replicated with 6-fold rotational symmetry (plus a mirror) around
+the centre. A bounded trail of stroke points is redrawn each frame so the pattern
+reads as a symmetric whole without needing a render texture.

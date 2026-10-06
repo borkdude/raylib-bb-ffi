@@ -1,0 +1,21 @@
+# point-cloud
+
+~1500 points as tiny rlgl cubes, rotating
+
+Category: 3d
+
+![point-cloud](../demos/point-cloud.gif)
+
+## Run it
+
+```sh
+cd point-cloud && bb run   # from this demo (or jolt run, jolt -M:run)
+bb point-cloud             # from the repo root (or jolt -M:point-cloud)
+```
+
+## About
+
+raylib [models] example - a cloud of ~1500 points, each a tiny rlgl cube,
+colored by position and slowly rotating via the matrix stack. (rlgl has no
+RL_POINTS mode, so points are drawn as small cubes.) See
+docs/guide/rlgl-immediate-mode.md.

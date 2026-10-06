@@ -1,0 +1,42 @@
+# magnifying-glass
+
+a round lens that reveals hidden markers
+
+Category: textures
+
+![magnifying-glass](../demos/magnifying-glass.gif)
+
+## Run it
+
+```sh
+cd magnifying-glass && bb run   # from this demo (or jolt run, jolt -M:run)
+bb magnifying-glass             # from the repo root (or jolt -M:magnifying-glass)
+```
+
+## About
+
+raylib [textures] example - magnifying glass (`jolt -M:magnifying-glass`).
+
+Port of raylib's examples/textures/textures_magnifying_glass.c. Move the
+pointer and a round lens follows it, showing the scene at 3x. Some markers
+are drawn only into the lens, so the scene has things in it that cannot be
+found without moving the glass over them.
+
+Two departures from the C, both forced by what this suite binds.
+
+The C cuts the lens out of a square render target with
+BLEND_CUSTOM_SEPARATE and rlSetBlendFactorsSeparate, multiplying a circular
+mask into the target's alpha. rlSetBlendFactorsSeparate is not bound here,
+and a six-argument blend-factor call is a lot of surface to add for one
+example. The lens is drawn as a textured triangle fan instead: the disc is
+built out of the target's own texels, so there is no mask and no square to
+hide. rl/texture! cannot do this, because it emits exactly one quad.
+
+The C also uses a Camera2D for the zoom, which goes by pointer here and is
+wrong on x86-64 anyway. The magnified pass just takes an offset and a scale
+instead, chosen so the point under the pointer lands in the middle of the
+target: ox = size/2 - mouse-x * zoom.
+
+A framebuffer texture is stored bottom-up, so the fan's v coordinates are
+flipped, the same wrinkle net.b12n.raylib-jlt.render-texture documents for
+the axis-aligned case.

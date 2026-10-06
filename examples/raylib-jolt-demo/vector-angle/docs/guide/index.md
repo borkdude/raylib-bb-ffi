@@ -1,0 +1,23 @@
+# vector-angle
+
+the angle between two vectors (arc + readout)
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_vector_angle.c`.
+
+![vector-angle](../demos/vector-angle.gif)
+
+## Run it
+
+```sh
+cd vector-angle && bb run   # from this demo (or jolt run, jolt -M:run)
+bb vector-angle             # from the repo root (or jolt -M:vector-angle)
+```
+
+## About
+
+raylib [shapes] example - vector angle. Two vectors share an origin; vector A is
+fixed, vector B rotates. The signed angle between them is filled as an arc via
+rl/sector! and read out in degrees. Port of shapes_vector_angle (B is time-driven
+rather than mouse-driven). Screen-space clockwise-from-up angle uses atan2(vx,-vy).

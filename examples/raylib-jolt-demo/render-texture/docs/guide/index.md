@@ -1,0 +1,28 @@
+# render-texture
+
+a scene drawn off-screen, then reused
+
+Category: textures
+
+![render-texture](../demos/render-texture.gif)
+
+## Run it
+
+```sh
+cd render-texture && bb run   # from this demo (or jolt run, jolt -M:run)
+bb render-texture             # from the repo root (or jolt -M:render-texture)
+```
+
+## About
+
+raylib [textures] example - render texture (`jolt -M:render-texture`).
+
+A bouncing-ball scene is drawn once into an off-screen framebuffer, then that
+framebuffer's texture is drawn back to the window four times at different
+scales, tints and rotogravure-ish offsets. Drawing the scene is paid for once no
+matter how many copies appear.
+
+raylib spells this BeginTextureMode / EndTextureMode over a RenderTexture2D
+struct; rl/with-render-texture is the same thing in scalar rlgl calls (see
+net.b12n.raylib.textures). One wrinkle carries over from OpenGL: a framebuffer texture is
+stored bottom-up, so it is drawn back with :v0 1.0 :v1 0.0 to flip it.

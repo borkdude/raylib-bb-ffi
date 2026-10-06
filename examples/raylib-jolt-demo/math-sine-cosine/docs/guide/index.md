@@ -1,0 +1,24 @@
+# math-sine-cosine
+
+a live unit-circle trig visualization
+
+Category: shapes
+
+Ported from raylib's `examples/shapes/shapes_math_sine_cosine.c`.
+
+![math-sine-cosine](../demos/math-sine-cosine.gif)
+
+## Run it
+
+```sh
+cd math-sine-cosine && bb run   # from this demo (or jolt run, jolt -M:run)
+bb math-sine-cosine             # from the repo root (or jolt -M:math-sine-cosine)
+```
+
+## About
+
+raylib [shapes] example - sine & cosine (`joltc -M:math-sine-cosine`).
+
+A live unit-circle visualization: a radius rotates around a circle, and its
+vertical (sine, blue) and horizontal (cosine, green) projections are drawn as it
+sweeps.
