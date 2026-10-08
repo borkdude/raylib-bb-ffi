@@ -28,7 +28,7 @@
    [raylib-clj.colors :as colors]
    [raylib-clj.enums :as enums]
    [raylib-clj.nrepl :as nrepl]
-   [coffi.mem :as mem]
+   [babashka.ffi :as ffi]
    [raylib-clj.debug-stats :as debug-stats]))
 
 ;; Constants
@@ -77,50 +77,32 @@
 
 (def game-atom (atom (initial-state)))
 
-;; Camera memory helpers
+(def ^:private up-place (ffi/place rc3d/camera3d :up))
+(def ^:private fovy-place (ffi/place rc3d/camera3d :fovy))
+(def ^:private projection-place (ffi/place rc3d/camera3d :projection))
+
 (defn camera->native!
-  "Write camera map to native memory pointer"
+  "Writes the camera map to the Camera3D at ptr."
   [ptr camera]
-  (let [pos (:position camera)
-        tgt (:target camera)
-        up (:up camera)]
-    ;; Camera3D layout: position(3f), target(3f), up(3f), fovy(f), projection(i)
-    ;; = 3*4 + 3*4 + 3*4 + 4 + 4 = 44 bytes
-    (mem/write-float (mem/slice ptr 0 4) (:x pos))
-    (mem/write-float (mem/slice ptr 4 4) (:y pos))
-    (mem/write-float (mem/slice ptr 8 4) (:z pos))
-    (mem/write-float (mem/slice ptr 12 4) (:x tgt))
-    (mem/write-float (mem/slice ptr 16 4) (:y tgt))
-    (mem/write-float (mem/slice ptr 20 4) (:z tgt))
-    (mem/write-float (mem/slice ptr 24 4) (:x up))
-    (mem/write-float (mem/slice ptr 28 4) (:y up))
-    (mem/write-float (mem/slice ptr 32 4) (:z up))
-    (mem/write-float (mem/slice ptr 36 4) (:fovy camera))
-    (mem/write-int (mem/slice ptr 40 4) (:projection camera))))
+  (ffi/write ptr rc3d/camera3d camera))
 
 (defn native->camera
-  "Read camera map from native memory pointer"
+  "Returns the camera map of the Camera3D at ptr."
   [ptr]
-  {:position {:x (mem/read-float (mem/slice ptr 0 4))
-              :y (mem/read-float (mem/slice ptr 4 4))
-              :z (mem/read-float (mem/slice ptr 8 4))}
-   :target {:x (mem/read-float (mem/slice ptr 12 4))
-            :y (mem/read-float (mem/slice ptr 16 4))
-            :z (mem/read-float (mem/slice ptr 20 4))}
-   :up {:x (mem/read-float (mem/slice ptr 24 4))
-        :y (mem/read-float (mem/slice ptr 28 4))
-        :z (mem/read-float (mem/slice ptr 32 4))}
-   :fovy (mem/read-float (mem/slice ptr 36 4))
-   :projection (mem/read-int (mem/slice ptr 40 4))})
+  (ffi/read ptr rc3d/camera3d))
+
+(defn- reset-up!
+  "Points the up vector of the Camera3D at ptr along +y."
+  [ptr]
+  (ffi/write ptr up-place {:x 0.0 :y 1.0 :z 0.0}))
 
 (defn init []
   (rcw/init-window! WIDTH HEIGHT "raylib [core] example - 3D camera first person")
   (rct/set-target-fps! 60)
   (debug-stats/enable!)
-  ;; Allocate native memory for camera (44 bytes for Camera3D struct)
-  (let [camera-ptr (mem/alloc 44)]
+  ;; UpdateCamera takes a Camera3D pointer.
+  (let [camera-ptr (ffi/alloc (ffi/auto-arena) rc3d/camera3d)]
     (swap! game-atom assoc :camera-ptr camera-ptr)
-    ;; Initialize native camera memory
     (camera->native! camera-ptr (:camera @game-atom)))
   ;; Disable cursor for FPS-style mouse look
   (rcur/disable-cursor!))
@@ -146,30 +128,22 @@
     (rck/is-key-pressed? (:one enums/keyboard-key))
     (do
       ;; Reset up vector when switching modes
-      (mem/write-float (mem/slice camera-ptr 24 4) 0.0)
-      (mem/write-float (mem/slice camera-ptr 28 4) 1.0)
-      (mem/write-float (mem/slice camera-ptr 32 4) 0.0)
+      (reset-up! camera-ptr)
       (assoc game :camera-mode rc3d/CAMERA_FREE))
 
     (rck/is-key-pressed? (:two enums/keyboard-key))
     (do
-      (mem/write-float (mem/slice camera-ptr 24 4) 0.0)
-      (mem/write-float (mem/slice camera-ptr 28 4) 1.0)
-      (mem/write-float (mem/slice camera-ptr 32 4) 0.0)
+      (reset-up! camera-ptr)
       (assoc game :camera-mode rc3d/CAMERA_FIRST_PERSON))
 
     (rck/is-key-pressed? (:three enums/keyboard-key))
     (do
-      (mem/write-float (mem/slice camera-ptr 24 4) 0.0)
-      (mem/write-float (mem/slice camera-ptr 28 4) 1.0)
-      (mem/write-float (mem/slice camera-ptr 32 4) 0.0)
+      (reset-up! camera-ptr)
       (assoc game :camera-mode rc3d/CAMERA_THIRD_PERSON))
 
     (rck/is-key-pressed? (:four enums/keyboard-key))
     (do
-      (mem/write-float (mem/slice camera-ptr 24 4) 0.0)
-      (mem/write-float (mem/slice camera-ptr 28 4) 1.0)
-      (mem/write-float (mem/slice camera-ptr 32 4) 0.0)
+      (reset-up! camera-ptr)
       (assoc game :camera-mode rc3d/CAMERA_ORBITAL))
 
     :else game))
@@ -177,17 +151,17 @@
 (defn handle-projection-toggle [{:keys [camera-ptr]
                                  :as game}]
   (if (rck/is-key-pressed? (:p enums/keyboard-key))
-    (let [current-proj (mem/read-int (mem/slice camera-ptr 40 4))]
+    (let [current-proj (ffi/read camera-ptr projection-place)]
       (if (= current-proj rc3d/CAMERA_PERSPECTIVE)
         ;; Switch to orthographic
         (do
-          (mem/write-int (mem/slice camera-ptr 40 4) rc3d/CAMERA_ORTHOGRAPHIC)
-          (mem/write-float (mem/slice camera-ptr 36 4) 20.0) ; fovy = near plane width
+          (ffi/write camera-ptr projection-place rc3d/CAMERA_ORTHOGRAPHIC)
+          (ffi/write camera-ptr fovy-place 20.0) ; fovy = near plane width
           (assoc game :camera-mode rc3d/CAMERA_THIRD_PERSON))
         ;; Switch to perspective
         (do
-          (mem/write-int (mem/slice camera-ptr 40 4) rc3d/CAMERA_PERSPECTIVE)
-          (mem/write-float (mem/slice camera-ptr 36 4) 60.0)
+          (ffi/write camera-ptr projection-place rc3d/CAMERA_PERSPECTIVE)
+          (ffi/write camera-ptr fovy-place 60.0)
           game)))
     game))
 

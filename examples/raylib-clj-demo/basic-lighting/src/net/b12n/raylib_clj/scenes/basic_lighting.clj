@@ -27,7 +27,7 @@
    [raylib-clj.enums :as enums]
    [raylib-clj.nrepl :as nrepl]
    [raylib-clj.utils :as ru]
-   [coffi.mem :as mem]
+   [babashka.ffi :as ffi]
    [raylib-clj.debug-stats :as debug-stats]))
 
 ;; Constants
@@ -35,43 +35,15 @@
 (def HEIGHT 450)
 (def GLSL_VERSION 330)
 
-;; Camera struct size: 3*Vector3 (36 bytes) + float (4) + int (4) = 44 bytes
-(def CAMERA_SIZE 44)
-
 (defn camera->native!
-  "Write camera map to native memory"
-  [cam-ptr {:keys [position target up fovy projection]}]
-  ;; Position (0-11)
-  (mem/write-float cam-ptr 0 (float (:x position)))
-  (mem/write-float (mem/slice cam-ptr 4) 0 (float (:y position)))
-  (mem/write-float (mem/slice cam-ptr 8) 0 (float (:z position)))
-  ;; Target (12-23)
-  (mem/write-float (mem/slice cam-ptr 12) 0 (float (:x target)))
-  (mem/write-float (mem/slice cam-ptr 16) 0 (float (:y target)))
-  (mem/write-float (mem/slice cam-ptr 20) 0 (float (:z target)))
-  ;; Up (24-35)
-  (mem/write-float (mem/slice cam-ptr 24) 0 (float (:x up)))
-  (mem/write-float (mem/slice cam-ptr 28) 0 (float (:y up)))
-  (mem/write-float (mem/slice cam-ptr 32) 0 (float (:z up)))
-  ;; fovy (36-39)
-  (mem/write-float (mem/slice cam-ptr 36) 0 (float fovy))
-  ;; projection (40-43)
-  (mem/write-int (mem/slice cam-ptr 40) 0 projection))
+  "Writes the camera map to the Camera3D at cam-ptr."
+  [cam-ptr camera]
+  (ffi/write cam-ptr rc3/camera3d camera))
 
 (defn native->camera
-  "Read camera map from native memory"
+  "Returns the camera map of the Camera3D at cam-ptr."
   [cam-ptr]
-  {:position {:x (mem/read-float cam-ptr 0)
-              :y (mem/read-float (mem/slice cam-ptr 4) 0)
-              :z (mem/read-float (mem/slice cam-ptr 8) 0)}
-   :target {:x (mem/read-float (mem/slice cam-ptr 12) 0)
-            :y (mem/read-float (mem/slice cam-ptr 16) 0)
-            :z (mem/read-float (mem/slice cam-ptr 20) 0)}
-   :up {:x (mem/read-float (mem/slice cam-ptr 24) 0)
-        :y (mem/read-float (mem/slice cam-ptr 28) 0)
-        :z (mem/read-float (mem/slice cam-ptr 32) 0)}
-   :fovy (mem/read-float (mem/slice cam-ptr 36) 0)
-   :projection (mem/read-int (mem/slice cam-ptr 40) 0)})
+  (ffi/read cam-ptr rc3/camera3d))
 
 ;; Initial state
 (defn initial-state []
@@ -102,8 +74,8 @@
   ;; Reset lights counter
   (lights/reset-lights!)
 
-  ;; Allocate native memory for camera
-  (let [camera-ptr (mem/alloc CAMERA_SIZE)]
+  ;; UpdateCamera takes a Camera3D pointer.
+  (let [camera-ptr (ffi/alloc (ffi/auto-arena) rc3/camera3d)]
     (camera->native! camera-ptr (:camera @game-atom))
     (swap! game-atom assoc :camera-ptr camera-ptr))
 

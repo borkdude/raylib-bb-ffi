@@ -21,7 +21,7 @@
    [raylib-clj.text.drawing :as rtd]
    [raylib-clj.colors :as colors]
    [raylib-clj.nrepl :as nrepl]
-   [coffi.mem :as mem]
+   [babashka.ffi :as ffi]
    [raylib-clj.debug-stats :as debug-stats]))
 
 ;; Constants
@@ -49,49 +49,23 @@
 
 (def game-atom (atom (initial-state)))
 
-;; Native memory helpers for Camera3D (44 bytes total)
 (defn camera->native!
-  "Write camera map to native memory pointer"
+  "Writes the camera map to the Camera3D at ptr."
   [camera ptr]
-  (let [pos (:position camera)
-        tgt (:target camera)
-        up (:up camera)]
-    ;; Camera3D layout: position(3f), target(3f), up(3f), fovy(f), projection(i)
-    ;; = 3*4 + 3*4 + 3*4 + 4 + 4 = 44 bytes
-    (mem/write-float (mem/slice ptr 0 4) (:x pos))
-    (mem/write-float (mem/slice ptr 4 4) (:y pos))
-    (mem/write-float (mem/slice ptr 8 4) (:z pos))
-    (mem/write-float (mem/slice ptr 12 4) (:x tgt))
-    (mem/write-float (mem/slice ptr 16 4) (:y tgt))
-    (mem/write-float (mem/slice ptr 20 4) (:z tgt))
-    (mem/write-float (mem/slice ptr 24 4) (:x up))
-    (mem/write-float (mem/slice ptr 28 4) (:y up))
-    (mem/write-float (mem/slice ptr 32 4) (:z up))
-    (mem/write-float (mem/slice ptr 36 4) (:fovy camera))
-    (mem/write-int (mem/slice ptr 40 4) (:projection camera))))
+  (ffi/write ptr rc3/camera3d camera))
 
 (defn native->camera
-  "Read camera map from native memory pointer"
+  "Returns the camera map of the Camera3D at ptr."
   [ptr]
-  {:position {:x (mem/read-float (mem/slice ptr 0 4))
-              :y (mem/read-float (mem/slice ptr 4 4))
-              :z (mem/read-float (mem/slice ptr 8 4))}
-   :target {:x (mem/read-float (mem/slice ptr 12 4))
-            :y (mem/read-float (mem/slice ptr 16 4))
-            :z (mem/read-float (mem/slice ptr 20 4))}
-   :up {:x (mem/read-float (mem/slice ptr 24 4))
-        :y (mem/read-float (mem/slice ptr 28 4))
-        :z (mem/read-float (mem/slice ptr 32 4))}
-   :fovy (mem/read-float (mem/slice ptr 36 4))
-   :projection (mem/read-int (mem/slice ptr 40 4))})
+  (ffi/read ptr rc3/camera3d))
 
 (defn init []
   (rcw/init-window! WIDTH HEIGHT "raylib [core] example - world screen")
   (rct/set-target-fps! 60)
   (debug-stats/enable!)
 
-  ;; Allocate native memory for camera (needed for UpdateCamera)
-  (let [camera-ptr (mem/alloc 44)]
+  ;; UpdateCamera takes a Camera3D pointer.
+  (let [camera-ptr (ffi/alloc (ffi/auto-arena) rc3/camera3d)]
     (camera->native! (:camera @game-atom) camera-ptr)
     (swap! game-atom assoc :camera-ptr camera-ptr)
     ;; Disable cursor for camera control
