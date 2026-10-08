@@ -63,22 +63,12 @@ On the JVM, use `clojure -M:repl:mac`.
 
 ## Examples
 
-`examples/raylib-jolt-demo` holds 187 demos written against `raylib.*`, and
-`examples/raylib-clj-demo` holds 113 demos written against `raylib-clj.*`.
-Each demo is a project that depends on this library through `:local/root`.
-
-Run one demo:
+[examples/](examples) holds 300 example programs, each a port of a raylib
+example or an original. Run one from that directory:
 
 ```sh
-cd examples/raylib-jolt-demo
-bb asteroids
-```
-
-List the demos, or run each one for 2 seconds:
-
-```sh
-bb list
-bb run-all 2
+cd examples
+bb run asteroids
 ```
 
 ## Development
@@ -111,7 +101,8 @@ This library is a port of two libraries by
 
 The bindings, module layout and drawing APIs are their work. The examples
 come from [raylib-jolt-demo](https://github.com/jlt-commons/raylib-jolt-demo)
-and [raylib-clj-demo](https://github.com/b12n-oss/raylib-clj-demo). See
+and [raylib-clj-demo](https://github.com/b12n-oss/raylib-clj-demo), also by
+Burin Choomnuan. See
 [NOTICE](NOTICE) for details.
 
 ## License

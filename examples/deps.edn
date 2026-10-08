@@ -1,0 +1,4 @@
+{:paths ["src"]
+ :deps {io.github.borkdude/raylib-bb-ffi {:local/root ".."}}
+ :aliases {:jvm {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]}
+           :mac {:jvm-opts ["-XstartOnFirstThread"]}}}

@@ -46,8 +46,8 @@ raylib-clojure-playground (the origin of raylib-clj)
 
   raylib-clj began as this project. Its binding layer is his design, and
   several files of src/raylib_clj/ derive from his originals. Six of the
-  examples in examples/raylib-clj-demo started as his work: asteroids,
-  asteroids2, hello-world, pong, tetris and vampire-survivors.
+  examples started as his work: asteroids-clj, asteroids2, hello-world,
+  pong-clj, tetris-clj and vampire-survivors-clj.
 
 
 raylib-jolt-demo and raylib-clj-demo
@@ -57,10 +57,26 @@ raylib-jolt-demo and raylib-clj-demo
   https://github.com/b12n-oss/raylib-clj-demo
   Licensed under the Eclipse Public License 2.0.
 
-  examples/raylib-jolt-demo and examples/raylib-clj-demo are ports of these
-  repositories, from commits 6898421 and 803a474. The demos run with
-  babashka against this library instead of jolt and coffi. Each directory
-  keeps its own NOTICE with the third-party notices of its demos and media.
+  The examples under examples/ are ports of these repositories, from
+  commits 6898421 and 803a474. The examples run with babashka against this
+  library instead of jolt and coffi. A raylib-clj-demo example whose name
+  was taken by a raylib-jolt-demo example carries a -clj suffix.
+
+
+janetroids
+----------
+  https://github.com/tantona/janetroids by @cellularmitosis
+
+  The collision and wrapping math of the asteroids-clj example derives from
+  janetroids.
+
+
+Media assets under examples/resources/
+--------------------------------------
+  These assets are not covered by this project's license. They are raylib's
+  own example assets and carry their own terms, including two assets under a
+  non-commercial license: scarfy.png (CC-BY-NC) and fudesumi.png (CC-BY-NC).
+  examples/resources/LICENSE.md lists the author and terms of each file.
 
 
 raylib
@@ -71,6 +87,11 @@ raylib
 
   This project does not redistribute raylib. It loads the system-installed
   libraylib shared library at runtime over its C ABI.
+
+  Many examples under examples/ are ports of raylib's own example programs.
+  The :ported key of examples/demos.edn names the upstream source of each,
+  and so does the list in examples/README.md. Those originals are zlib/libpng
+  licensed, and the ports are altered versions of them.
 
   raylib's licence notice, as shipped in its LICENSE file:
 

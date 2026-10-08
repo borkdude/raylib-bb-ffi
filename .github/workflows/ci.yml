@@ -60,7 +60,7 @@ jobs:
           xvfb-run -a bb smoke
           xvfb-run -a bb smoke:jvm
 
-  jolt-demos:
+  examples:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -83,6 +83,10 @@ jobs:
           sudo ldconfig
           echo "RAYLIB_LIBRARY=/usr/local/lib/libraylib.so" >> "$GITHUB_ENV"
 
-      - name: Run every jolt demo for 2 seconds
-        working-directory: examples/raylib-jolt-demo
-        run: xvfb-run -a bb run-all 2
+      - name: Load every example
+        working-directory: examples
+        run: bb check
+
+      - name: Run 10 random examples
+        working-directory: examples
+        run: xvfb-run -a bb run-all 2 --random 10

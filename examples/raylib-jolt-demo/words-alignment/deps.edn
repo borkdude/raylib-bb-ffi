@@ -1,5 +1,0 @@
-{:paths ["src"]
- :deps {net.b12n/raylib-jolt-demo-common {:local/root "../common"}}
- :aliases {:run {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
-                 :main-opts ["-m" "net.b12n.raylib-jlt.words-alignment"]}
-           :mac {:jvm-opts ["-XstartOnFirstThread"]}}}

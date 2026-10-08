@@ -1,5 +1,0 @@
-;; The one place the bindings are named. Every demo depends on common/, so they
-;; all get raylib-clj.* (the bindings, plus the debug-stats overlay) through
-;; here, from the root of this repository.
-{:paths []
- :deps {io.github.borkdude/raylib-bb-ffi {:local/root "../../.."}}}

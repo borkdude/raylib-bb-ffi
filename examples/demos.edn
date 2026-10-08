@@ -1,0 +1,302 @@
+;; Every example: its name, the API it uses, a category, a description and the
+;; program it ports. Edited by hand.
+[{:name "amp-envelope", :api "raylib", :category "audio", :desc "ADSR amplitude envelope on a 440Hz tone", :ported "examples/audio/audio_amp_envelope.c"}
+ {:name "analog-clock", :api "raylib", :category "shapes", :desc "a live analog clock (libc local time)", :ported "examples/shapes/shapes_clock_of_clocks.c"}
+ {:name "ascii-rendering", :api "raylib", :category "shaders", :desc "ascii art from a post-process shader", :ported "examples/shaders/shaders_ascii_rendering.c"}
+ {:name "ascii-rendering-clj", :api "raylib-clj", :category "shaders", :desc "Post-process the scene into ASCII glyphs via a render texture", :ported "examples/shaders/shaders_ascii_rendering.c", :controls "LEFT/RIGHT to change the glyph cell size"}
+ {:name "asteroids", :api "raylib", :category "games", :desc "the classic vector shooter (rotate/thrust/fire)"}
+ {:name "asteroids-clj", :api "raylib-clj", :category "games", :desc "Shoot asteroids", :controls "Arrows, Space"}
+ {:name "asteroids2", :api "raylib-clj", :category "games", :desc "Alternate version", :controls "Arrows, Space"}
+ {:name "audio-module", :api "raylib-clj", :category "audio", :desc "Music visualization", :ported "examples/audio/audio_module_playing.c", :controls "SPACE, P, Arrows"}
+ {:name "audio-raw-stream", :api "raylib", :category "audio", :desc "arrow keys steer a live sine tone's pitch/pan", :ported "examples/audio/audio_raw_stream.c"}
+ {:name "audio-stream-callback", :api "raylib", :category "audio", :desc "raudio pulls samples from its own thread", :ported "examples/audio/audio_stream_callback.c"}
+ {:name "background-scrolling", :api "raylib", :category "textures", :desc "three parallax skyline layers, each scrolling", :ported "examples/textures/textures_background_scrolling.c"}
+ {:name "background-scrolling-clj", :api "raylib-clj", :category "textures", :desc "Parallax demo", :ported "examples/textures/textures_background_scrolling.c", :controls "Watch"}
+ {:name "ball-physics", :api "raylib", :category "shapes", :desc "2D balls under gravity, SPACE respawns"}
+ {:name "ball-physics-clj", :api "raylib-clj", :category "shapes", :desc "Grab and throw balls", :ported "examples/shapes/shapes_ball_physics.c", :controls "Click, Right-click, Wheel, Middle"}
+ {:name "basic-lighting", :api "raylib", :category "shaders", :desc "four point lights, custom vertex shader", :ported "examples/shaders/shaders_basic_lighting.c"}
+ {:name "basic-lighting-clj", :api "raylib-clj", :category "shaders", :desc "Dynamic lighting", :ported "examples/shaders/shaders_basic_lighting.c", :controls "Mouse, Y/R/G/B"}
+ {:name "basic-screen-manager", :api "raylib", :category "core", :desc "a LOGO/TITLE/GAMEPLAY/ENDING flow", :ported "examples/core/core_basic_screen_manager.c"}
+ {:name "basic-shapes", :api "raylib-clj", :category "shapes", :desc "Circles, rectangles, triangles, polygons", :ported "examples/shapes/shapes_basic_shapes.c", :controls "ESC to exit"}
+ {:name "basic-voxel", :api "raylib", :category "3d", :desc "an 8x8x8 voxel block, click one out", :ported "examples/models/models_basic_voxel.c"}
+ {:name "basic-voxel-clj", :api "raylib-clj", :category "models", :desc "First-person 8x8x8 voxel world, left-click to remove a cube", :ported "examples/models/models_basic_voxel.c", :controls "WASD to move, mouse to look, left-click to remove"}
+ {:name "billboard-rendering", :api "raylib", :category "3d", :desc "camera-facing quads, one spins"}
+ {:name "billboard-rendering-clj", :api "raylib-clj", :category "models", :desc "Camera-facing sprites drawn far-to-near so alpha blends correctly", :ported "examples/models/models_billboard_rendering.c", :controls "Orbits on its own, no input"}
+ {:name "blend-modes", :api "raylib", :category "textures", :desc "four 2D blend modes over a night skyline", :ported "examples/textures/textures_blend_modes.c"}
+ {:name "boids", :api "raylib", :category "generative", :desc "flocking birds (separation/alignment/cohesion)"}
+ {:name "bounce", :api "raylib", :category "shapes", :desc "a ball bouncing around the window", :ported "examples/shapes/shapes_bouncing_ball.c"}
+ {:name "bouncing-ball", :api "raylib-clj", :category "core", :desc "Physics demo", :ported "examples/shapes/shapes_bouncing_ball.c", :controls "SPACE, G"}
+ {:name "bouncing-spheres", :api "raylib", :category "3d", :desc "spheres bouncing in a 3D box (rl/sphere!)"}
+ {:name "bouncing-spheres-clj", :api "raylib-clj", :category "models", :desc "Physics in 3D box", :controls "SPACE, R, G, Q"}
+ {:name "box-collisions", :api "raylib", :category "3d", :desc "a player cube colliding with 3D boxes", :ported "examples/models/models_box_collisions.c"}
+ {:name "box-collisions-clj", :api "raylib-clj", :category "models", :desc "3D collision detection", :ported "examples/models/models_box_collisions.c", :controls "Arrow keys, Q"}
+ {:name "breakout", :api "raylib", :category "games", :desc "paddle + ball + brick grid (mouse paddle)"}
+ {:name "bullet-hell", :api "raylib", :category "shapes", :desc "a rotating bullet spiral", :ported "examples/shapes/shapes_bullet_hell.c"}
+ {:name "bullet-hell-clj", :api "raylib-clj", :category "shapes", :desc "Throughput test firing rows of bullets from a rotating circle", :ported "examples/shapes/shapes_bullet_hell.c", :controls "RIGHT/LEFT rows, UP/DOWN speed, Z/X cooldown, SPACE angle, ENTER draw method, C clear"}
+ {:name "bunnymark", :api "raylib", :category "textures", :desc "the sprite-count benchmark (click to add)"}
+ {:name "camera-2d", :api "raylib-clj", :category "core", :desc "2D camera", :ported "examples/core/core_2d_camera.c", :controls "Arrows, A/S, Wheel"}
+ {:name "camera-2d-mouse-zoom", :api "raylib", :category "core", :desc "zoom toward the cursor, pinning the point under it", :ported "examples/core/core_2d_camera_mouse_zoom.c"}
+ {:name "camera-2d-platformer", :api "raylib", :category "core", :desc "five ways a camera can follow a jumping player", :ported "examples/core/core_2d_camera_platformer.c"}
+ {:name "camera-2d-platformer-clj", :api "raylib-clj", :category "core", :desc "5 camera follow modes", :ported "examples/core/core_2d_camera_platformer.c", :controls "Arrows, SPACE, C, R, Wheel"}
+ {:name "camera-2d-split-screen", :api "raylib", :category "core", :desc "two players, two cameras, two render textures", :ported "examples/core/core_2d_camera_split_screen.c"}
+ {:name "camera-2d-split-screen-clj", :api "raylib-clj", :category "core", :desc "Two players, two cameras, one grid", :ported "examples/core/core_2d_camera_split_screen.c", :controls "P1 W/S/A/D, P2 arrows, Q to exit"}
+ {:name "camera-3d", :api "raylib", :category "3d", :desc "an orbiting 3D camera (Camera3D by value)", :ported "examples/core/core_3d_camera_mode.c"}
+ {:name "camera-3d-first-person", :api "raylib", :category "3d", :desc "walk a yard of columns in first person", :ported "examples/core/core_3d_camera_first_person.c"}
+ {:name "camera-3d-free", :api "raylib", :category "3d", :desc "a free-look camera around a cube, UpdateCamera", :ported "examples/core/core_3d_camera_free.c"}
+ {:name "camera-3d-free-clj", :api "raylib-clj", :category "core", :desc "Free 3D camera", :ported "examples/core/core_3d_camera_free.c", :controls "Mouse, Wheel"}
+ {:name "camera-3d-mode", :api "raylib-clj", :category "core", :desc "Minimal 3D scene - cube on a grid", :ported "examples/core/core_3d_camera_mode.c", :controls "Q to exit"}
+ {:name "camera-3d-split-screen", :api "raylib", :category "3d", :desc "two players, two render-texture halves", :ported "examples/core/core_3d_camera_split_screen.c"}
+ {:name "camera-fps", :api "raylib-clj", :category "core", :desc "FPS with physics", :ported "examples/core/core_3d_camera_fps.c", :controls "WASD, Space, Ctrl"}
+ {:name "camera-modes", :api "raylib-clj", :category "models", :desc "Free/Orbital/FPS cameras", :controls "1/2/3, WASD, Q"}
+ {:name "camera2d", :api "raylib", :category "core", :desc "a 2D camera over a skyline (struct-by-value)", :ported "examples/core/core_2d_camera.c"}
+ {:name "cellular-automata", :api "raylib", :category "generative", :desc "Wolfram's elementary automata"}
+ {:name "circle-sector-drawing", :api "raylib", :category "shapes", :desc "a sector whose segment count you can starve", :ported "examples/shapes/shapes_circle_sector_drawing.c"}
+ {:name "circle-sector-drawing-clj", :api "raylib-clj", :category "shapes", :desc "Circle sector angles, radius and segments on raygui sliders", :ported "examples/shapes/shapes_circle_sector_drawing.c", :controls "Drag the four sliders on the right"}
+ {:name "clipboard-text", :api "raylib", :category "core", :desc "type, C copies, V pastes"}
+ {:name "clipboard-text-clj", :api "raylib-clj", :category "core", :desc "Cut, copy and paste against the system clipboard", :ported "examples/core/core_clipboard_text.c", :controls "Buttons or CTRL+X / CTRL+C / CTRL+V, click the box to edit"}
+ {:name "clock-of-clocks", :api "raylib", :category "generative", :desc "six digits spelled by a grid of clock hands", :ported "examples/shapes/shapes_clock_of_clocks.c"}
+ {:name "clock-of-clocks-clj", :api "raylib-clj", :category "shapes", :desc "Digits drawn from a grid of analogue clocks", :ported "examples/shapes/shapes_clock_of_clocks.c", :controls "Space to toggle 12/24h, Q to exit"}
+ {:name "collision-area", :api "raylib", :category "shapes", :desc "AABB collision between two boxes", :ported "examples/shapes/shapes_collision_area.c"}
+ {:name "collision-area-clj", :api "raylib-clj", :category "core", :desc "Collision detection", :ported "examples/shapes/shapes_collision_area.c", :controls "Mouse, SPACE"}
+ {:name "color-correction", :api "raylib", :category "shaders", :desc "contrast/saturation/brightness shader", :ported "examples/shaders/shaders_color_correction.c"}
+ {:name "color-wheel", :api "raylib", :category "shapes", :desc "an HSV color wheel (rlgl triangle fan)", :ported "examples/shapes/shapes_rlgl_color_wheel.c"}
+ {:name "colors", :api "raylib", :category "shapes", :desc "every named raylib color in a grid"}
+ {:name "colors-palette", :api "raylib-clj", :category "core", :desc "Color showcase", :ported "examples/shapes/shapes_colors_palette.c", :controls "Hover, SPACE"}
+ {:name "compute-hash", :api "raylib", :category "core", :desc "CRC32/MD5/SHA1/SHA256 + Base64 of typed text", :ported "examples/core/core_compute_hash.c"}
+ {:name "core", :api "raylib", :category "core", :desc "the minimal raylib window + text", :ported "examples/core/core_basic_window.c"}
+ {:name "cubicmap-rendering", :api "raylib-clj", :category "models", :desc "A 3D maze mesh generated from a 32x16 PNG, one cube per lit pixel", :ported "examples/models/models_cubicmap_rendering.c", :controls "P to pause the orbit"}
+ {:name "custom-logging", :api "raylib", :category "core", :desc "raylib's log captured by a jolt callback", :ported "examples/core/core_custom_logging.c"}
+ {:name "custom-uniform", :api "raylib", :category "shaders", :desc "a mouse-steered swirl over a scene"}
+ {:name "dashed-line", :api "raylib", :category "shapes", :desc "a dashed line follows the mouse", :ported "examples/shapes/shapes_dashed_line.c"}
+ {:name "dashed-line-clj", :api "raylib-clj", :category "shapes", :desc "Interactive dashed line", :ported "examples/shapes/shapes_dashed_line.c", :controls "Arrows, C"}
+ {:name "delta-time", :api "raylib", :category "core", :desc "per-frame vs delta-time movement", :ported "examples/core/core_delta_time.c"}
+ {:name "delta-time-clj", :api "raylib-clj", :category "core", :desc "Frame-rate independent vs fixed-step motion", :ported "examples/core/core_delta_time.c", :controls "Wheel to change FPS, R to reset, Q to exit"}
+ {:name "digital-clock", :api "raylib", :category "shapes", :desc "a seven-segment HH:MM:SS clock (libc time)", :ported "examples/shapes/shapes_digital_clock.c"}
+ {:name "directional-billboard", :api "raylib", :category "3d", :desc "a billboard whose facing row turns with the camera", :ported "examples/models/models_directional_billboard.c"}
+ {:name "directory-files", :api "raylib", :category "core", :desc "a file browser over LoadDirectoryFilesEx", :ported "examples/core/core_directory_files.c"}
+ {:name "dna-helix", :api "raylib", :category "3d", :desc "a turning double helix, coloured bases"}
+ {:name "dna-helix-clj", :api "raylib-clj", :category "models", :desc "Double helix", :controls "Arrows, SPACE, R, Q"}
+ {:name "doom", :api "raylib", :category "3d", :desc "a textured raycaster: one ray per screen column", :ported "babashka/ffi examples/doom.clj"}
+ {:name "double-pendulum", :api "raylib", :category "shapes", :desc "chaotic double-pendulum motion + trail"}
+ {:name "double-pendulum-clj", :api "raylib-clj", :category "shapes", :desc "Chaotic pendulum simulation", :ported "examples/shapes/shapes_double_pendulum.c", :controls "ESC to exit"}
+ {:name "drop-files", :api "raylib", :category "core", :desc "drag files in: FilePathList by value", :ported "examples/core/core_drop_files.c"}
+ {:name "easings", :api "raylib", :category "shapes", :desc "a grid of balls, each on a different easing curve"}
+ {:name "easings-ball", :api "raylib", :category "shapes", :desc "slide, swell and fade, one curve each", :ported "examples/shapes/shapes_easings_ball.c"}
+ {:name "easings-ball-clj", :api "raylib-clj", :category "shapes", :desc "Easing function animation", :ported "examples/shapes/shapes_easings_ball.c", :controls "ENTER to replay"}
+ {:name "easings-box", :api "raylib", :category "shapes", :desc "drop, flatten, spin, grow, fade: five curves", :ported "examples/shapes/shapes_easings_box.c"}
+ {:name "easings-box-clj", :api "raylib-clj", :category "shapes", :desc "Box animation with easing functions", :ported "examples/shapes/shapes_easings_box.c", :controls "SPACE to reset"}
+ {:name "easings-rectangles", :api "raylib", :category "shapes", :desc "a grid easing out in size and rotation at once", :ported "examples/shapes/shapes_easings_rectangles.c"}
+ {:name "easings-rectangles-clj", :api "raylib-clj", :category "shapes", :desc "Grid animation with easing functions", :ported "examples/shapes/shapes_easings_rectangles.c", :controls "SPACE to replay"}
+ {:name "easings-testbed", :api "raylib", :category "shapes", :desc "one curve at a time, plotted and run", :ported "examples/shapes/shapes_easings_testbed.c"}
+ {:name "easings-testbed-clj", :api "raylib-clj", :category "shapes", :desc "All 28 easing curves, one per axis", :ported "examples/shapes/shapes_easings_testbed.c", :controls "LEFT/RIGHT x-curve, UP/DOWN y-curve, ENTER play, SPACE restart, Q/W/A/S duration, T bound"}
+ {:name "ellipse-collision", :api "raylib", :category "shapes", :desc "two ellipses that redden when they overlap", :ported "examples/shapes/shapes_ellipse_collision.c"}
+ {:name "ellipse-collision-clj", :api "raylib-clj", :category "shapes", :desc "Steer one ellipse into another", :ported "examples/shapes/shapes_ellipse_collision.c", :controls "A/B to switch control, Mouse to move, Q to exit"}
+ {:name "eratosthenes-sieve", :api "raylib", :category "shaders", :desc "the Sieve of Eratosthenes, one test per pixel"}
+ {:name "eyes", :api "raylib", :category "shapes", :desc "two eyes track the mouse", :ported "examples/shapes/shapes_following_eyes.c"}
+ {:name "fireworks", :api "raylib", :category "generative", :desc "rockets + fading particle bursts"}
+ {:name "first-person-3d", :api "raylib-clj", :category "core", :desc "FPS camera", :ported "examples/core/core_3d_camera_first_person.c", :controls "WASD, Mouse, 1-4"}
+ {:name "first-person-maze", :api "raylib", :category "3d", :desc "walk a grid maze, with a minimap"}
+ {:name "first-person-maze-clj", :api "raylib-clj", :category "models", :desc "Navigate 3D maze", :ported "examples/models/models_first_person_maze.c", :controls "WASD, Mouse, R, M, Q"}
+ {:name "flappy-bird", :api "raylib", :category "games", :desc "flap through the pipe gaps (SPACE)"}
+ {:name "floppy", :api "raylib-clj", :category "games", :desc "Flappy bird clone", :ported "raysan5/raylib-games: floppy.c", :controls "SPACE, P, ENTER, Q"}
+ {:name "flow-field", :api "raylib", :category "generative", :desc "particles steered by a flow field (trails)"}
+ {:name "fog-of-war", :api "raylib", :category "textures", :desc "fog lifted by a 25x15 render texture", :ported "examples/textures/textures_fog_of_war.c"}
+ {:name "fog-rendering", :api "raylib", :category "shaders", :desc "exponential distance fog in the light shader", :ported "examples/shaders/shaders_fog_rendering.c"}
+ {:name "following-eyes", :api "raylib-clj", :category "core", :desc "Mouse tracking", :ported "examples/shapes/shapes_following_eyes.c", :controls "Move mouse"}
+ {:name "format-text", :api "raylib", :category "text", :desc "padded score + MM:SS timer readouts", :ported "examples/text/text_format_text.c"}
+ {:name "format-text-clj", :api "raylib-clj", :category "text", :desc "Formatted score/timer display", :ported "examples/text/text_format_text.c", :controls "ESC to exit"}
+ {:name "fourier-epicycles", :api "raylib", :category "generative", :desc "rotating circles trace a square wave"}
+ {:name "framebuffer-rendering", :api "raylib", :category "textures", :desc "two cameras, two framebuffers, one scene", :ported "examples/textures/textures_framebuffer_rendering.c"}
+ {:name "game-2048", :api "raylib", :category "games", :desc "2048: 4x4 tile-merge puzzle (arrow keys)"}
+ {:name "game-of-life", :api "raylib", :category "generative", :desc "Conway's Game of Life (SPACE reseeds)"}
+ {:name "geometric-shapes", :api "raylib", :category "3d", :desc "cubes, spheres, cylinders, cones, capsules", :ported "examples/models/models_geometric_shapes.c"}
+ {:name "geometric-shapes-clj", :api "raylib-clj", :category "models", :desc "3D primitives", :ported "examples/models/models_geometric_shapes.c", :controls "Q to exit"}
+ {:name "gestures-testbed", :api "raylib-clj", :category "core", :desc "Touch gestures", :ported "examples/core/core_input_gestures_testbed.c", :controls "Touch/click"}
+ {:name "gradient", :api "raylib", :category "shapes", :desc "a vertical two-color gradient"}
+ {:name "heightmap-rendering", :api "raylib-clj", :category "models", :desc "Terrain mesh generated from a greyscale PNG, brightness as elevation", :ported "examples/models/models_heightmap_rendering.c", :controls "Orbits on its own, no input"}
+ {:name "helitorus", :api "raylib", :category "3d", :desc "a helix wound around a torus, swept into a tube", :ported "babashka/ffi examples/helitorus.clj"}
+ {:name "hello-world", :api "raylib-clj", :category "games", :desc "Basic window test", :ported "examples/core/core_basic_window.c", :controls "Q to exit, F1 for debug stats"}
+ {:name "highdpi-demo", :api "raylib", :category "core", :desc "logical points vs physical pixels, two rulers", :ported "examples/core/core_highdpi_demo.c"}
+ {:name "highdpi-testbed", :api "raylib", :category "core", :desc "diagnostic overlay: monitors, DPI, crosshair", :ported "examples/core/core_highdpi_testbed.c"}
+ {:name "hilbert-curve", :api "raylib", :category "shapes", :desc "a rainbow Hilbert space-filling curve"}
+ {:name "hilbert-curve-clj", :api "raylib-clj", :category "shapes", :desc "Space-filling curve drawn stroke by stroke with hue along its length", :ported "examples/shapes/shapes_hilbert_curve.c", :controls "Spinner sets order, sliders set thickness and size"}
+ {:name "image-channel", :api "raylib", :category "textures", :desc "R/G/B/A split; alpha masked to show structure", :ported "examples/textures/textures_image_channel.c"}
+ {:name "image-drawing", :api "raylib", :category "textures", :desc "shapes baked once, then drawn live each frame", :ported "examples/textures/textures_image_drawing.c"}
+ {:name "image-generation", :api "raylib", :category "textures", :desc "nine procedural textures, none of them loaded", :ported "examples/textures/textures_image_generation.c"}
+ {:name "image-kernel", :api "raylib", :category "textures", :desc "sharpen, sobel and gaussian, one call each", :ported "examples/textures/textures_image_kernel.c"}
+ {:name "image-processing", :api "raylib", :category "textures", :desc "nine CPU-side image operations, picked live", :ported "examples/textures/textures_image_processing.c"}
+ {:name "image-rotate", :api "raylib", :category "textures", :desc "0/90/180/270 exact, one angle grows the buffer", :ported "examples/textures/textures_image_rotate.c"}
+ {:name "image-text", :api "raylib", :category "textures", :desc "text baked into the image, pixelates at 4x", :ported "examples/textures/textures_image_text.c"}
+ {:name "inline-styling", :api "raylib", :category "text", :desc "colour markup inside the string itself", :ported "examples/text/text_inline_styling.c"}
+ {:name "input", :api "raylib", :category "core", :desc "steer a ball with the arrow keys", :ported "examples/core/core_input_keys.c"}
+ {:name "input-actions", :api "raylib", :category "core", :desc "abstract input actions: keyboard + gamepad", :ported "examples/core/core_input_actions.c"}
+ {:name "input-actions-clj", :api "raylib-clj", :category "core", :desc "Remappable action layer over keys and gamepad buttons", :ported "examples/core/core_input_actions.c", :controls "WASD or arrows to move, SPACE to recentre, TAB swaps keyset"}
+ {:name "input-box", :api "raylib", :category "text", :desc "type into a text box (GetCharPressed)", :ported "examples/text/text_input_box.c"}
+ {:name "input-box-clj", :api "raylib-clj", :category "text", :desc "Text input field", :ported "examples/text/text_input_box.c", :controls "Click, type, Backspace"}
+ {:name "input-gamepad", :api "raylib", :category "core", :desc "sticks, triggers and buttons for pad 0"}
+ {:name "input-gamepad-clj", :api "raylib-clj", :category "core", :desc "Gamepad demo", :ported "examples/core/core_input_gamepad.c", :controls "Connect gamepad"}
+ {:name "input-gestures", :api "raylib", :category "core", :desc "tap, hold, drag and swipe, named as they happen", :ported "examples/core/core_input_gestures.c"}
+ {:name "input-gestures-clj", :api "raylib-clj", :category "core", :desc "Log of detected touch gestures", :ported "examples/core/core_input_gestures.c", :controls "Click/drag/flick in the test area, Q to exit"}
+ {:name "input-keys", :api "raylib-clj", :category "core", :desc "Keyboard input", :ported "examples/core/core_input_keys.c", :controls "Arrow keys"}
+ {:name "input-mouse", :api "raylib-clj", :category "core", :desc "Mouse input", :ported "examples/core/core_input_mouse.c", :controls "Click, move"}
+ {:name "input-multitouch", :api "raylib", :category "core", :desc "touch points (the mouse is point 0)"}
+ {:name "input-multitouch-clj", :api "raylib-clj", :category "core", :desc "Numbered circle per touch point", :ported "examples/core/core_input_multitouch.c", :controls "Touch/click, Q to exit"}
+ {:name "input-virtual-controls", :api "raylib", :category "core", :desc "an on-screen D-pad and action button"}
+ {:name "input-virtual-controls-clj", :api "raylib-clj", :category "core", :desc "On-screen D-pad", :ported "examples/core/core_input_virtual_controls.c", :controls "Click/touch the D-pad, Q to exit"}
+ {:name "julia-set", :api "raylib", :category "shaders", :desc "the Julia set, mouse-steered, in a shader"}
+ {:name "kaleidoscope", :api "raylib", :category "shapes", :desc "strokes mirrored with 6-fold symmetry"}
+ {:name "kaleidoscope-clj", :api "raylib-clj", :category "shapes", :desc "Mouse strokes repeated around six-fold symmetry and mirrored", :ported "examples/shapes/shapes_kaleidoscope.c", :controls "Drag to draw, < > to step through lines, Reset to clear"}
+ {:name "keyboard-testbed", :api "raylib", :category "core", :desc "an on-screen ENG-US keyboard, every key lit", :ported "examples/core/core_keyboard_testbed.c"}
+ {:name "keyboard-testbed-clj", :api "raylib-clj", :category "core", :desc "On-screen ENG-US keyboard showing what raylib reports per key", :ported "examples/core/core_keyboard_testbed.c", :controls "Press any key to light it up, hover to highlight, close via title bar"}
+ {:name "l-system", :api "raylib", :category "generative", :desc "an L-system fractal plant (grows + regrows)"}
+ {:name "lines-bezier", :api "raylib", :category "shapes", :desc "a cubic Bézier that follows the mouse", :ported "examples/shapes/shapes_lines_bezier.c"}
+ {:name "lines-bezier-clj", :api "raylib-clj", :category "shapes", :desc "Interactive bezier curve", :ported "examples/shapes/shapes_lines_bezier.c", :controls "Drag endpoints"}
+ {:name "lines-drawing", :api "raylib", :category "shapes", :desc "a rotating fan of thick lines (line-ex!)", :ported "examples/shapes/shapes_lines_drawing.c"}
+ {:name "lines-drawing-clj", :api "raylib-clj", :category "shapes", :desc "Draw rainbow lines on canvas", :ported "examples/shapes/shapes_lines_drawing.c", :controls "Click, Right-click, Wheel, Middle"}
+ {:name "lissajous-3d", :api "raylib-clj", :category "models", :desc "Parametric curves", :controls "1-5, Arrows, W/S, SPACE, Q"}
+ {:name "logo", :api "raylib", :category "shapes", :desc "the raylib logo from rectangles + text"}
+ {:name "logo-anim", :api "raylib", :category "shapes", :desc "the raylib logo assembling itself, unsmoothed", :ported "examples/shapes/shapes_logo_raylib_anim.c"}
+ {:name "logo-anim-clj", :api "raylib-clj", :category "core", :desc "Logo animation", :ported "examples/shapes/shapes_logo_raylib_anim.c", :controls "R to replay"}
+ {:name "logo-raylib", :api "raylib-clj", :category "shapes", :desc "Raylib logo drawn with shapes", :ported "examples/shapes/shapes_logo_raylib.c", :controls "ESC to exit"}
+ {:name "logo-raylib-anim", :api "raylib-clj", :category "shapes", :desc "Animated logo construction", :ported "examples/shapes/shapes_logo_raylib_anim.c", :controls "R to replay"}
+ {:name "lorenz-attractor", :api "raylib", :category "3d", :desc "the Lorenz attractor traced in 3D"}
+ {:name "lorenz-attractor-clj", :api "raylib-clj", :category "models", :desc "Chaos theory", :controls "1-3, Arrows, SPACE, R, Q"}
+ {:name "magnifying-glass", :api "raylib", :category "textures", :desc "a round lens that reveals hidden markers", :ported "examples/textures/textures_magnifying_glass.c"}
+ {:name "mandelbrot-set", :api "raylib", :category "shaders", :desc "the Mandelbrot set, zoomable, in a shader"}
+ {:name "math-angle-rotation", :api "raylib", :category "shapes", :desc "fixed spokes + a spinning line", :ported "examples/shapes/shapes_math_angle_rotation.c"}
+ {:name "math-angle-rotation-clj", :api "raylib-clj", :category "shapes", :desc "Fixed and sweeping angle lines", :ported "examples/shapes/shapes_math_angle_rotation.c", :controls "Q to exit"}
+ {:name "math-sine-cosine", :api "raylib", :category "shapes", :desc "a live unit-circle trig visualization", :ported "examples/shapes/shapes_math_sine_cosine.c"}
+ {:name "math-sine-cosine-clj", :api "raylib-clj", :category "shapes", :desc "Unit circle with sine, cosine, tangent and related angles drawn live", :ported "examples/shapes/shapes_math_sine_cosine.c", :controls "Angle slider, Pause toggle"}
+ {:name "mesh-generation", :api "raylib", :category "3d", :desc "eight GenMesh shapes, drawn with DrawMesh", :ported "examples/models/models_mesh_generation.c"}
+ {:name "mesh-generation-clj", :api "raylib-clj", :category "models", :desc "Procedural 3D shapes", :ported "examples/models/models_mesh_generation.c", :controls "Left/Right, Click, SPACE, R, Q"}
+ {:name "mesh-instancing", :api "raylib", :category "shaders", :desc "10000 lit cubes in one draw call", :ported "examples/shaders/shaders_mesh_instancing.c"}
+ {:name "minesweeper", :api "raylib", :category "games", :desc "reveal/flag grid (mouse L reveal, R flag)"}
+ {:name "monitor-detector", :api "raylib", :category "core", :desc "every attached display, current one lit"}
+ {:name "mouse", :api "raylib", :category "core", :desc "a ball follows the mouse; click to recolor", :ported "examples/core/core_input_mouse.c"}
+ {:name "mouse-painting", :api "raylib", :category "textures", :desc "a paint program on a render-texture canvas", :ported "examples/textures/textures_mouse_painting.c"}
+ {:name "mouse-trail", :api "raylib", :category "shapes", :desc "a fading trail follows the cursor", :ported "examples/shapes/shapes_mouse_trail.c"}
+ {:name "mouse-trail-clj", :api "raylib-clj", :category "shapes", :desc "Circles following mouse cursor", :ported "examples/shapes/shapes_mouse_trail.c", :controls "Move mouse"}
+ {:name "mouse-wheel", :api "raylib-clj", :category "core", :desc "Scroll input", :ported "examples/core/core_input_mouse_wheel.c", :controls "Mouse wheel"}
+ {:name "multi-sampler", :api "raylib", :category "shaders", :desc "two textures blended by a second sampler"}
+ {:name "music-stream", :api "raylib-clj", :category "audio", :desc "MP3 streaming", :ported "examples/audio/audio_music_stream.c", :controls "SPACE, P, Arrows"}
+ {:name "npatch-drawing", :api "raylib", :category "textures", :desc "nine-patch stretching, corners held fixed", :ported "examples/textures/textures_npatch_drawing.c"}
+ {:name "orthographic-projection", :api "raylib", :category "3d", :desc "perspective vs orthographic (SPACE toggles)", :ported "examples/models/models_orthographic_projection.c"}
+ {:name "orthographic-projection-clj", :api "raylib-clj", :category "models", :desc "Perspective vs orthographic", :ported "examples/models/models_orthographic_projection.c", :controls "SPACE, Q"}
+ {:name "outlines-thickness", :api "raylib", :category "shapes", :desc "thick outlines, and what a negative one does", :ported "examples/shapes/shapes_outlines_thickness.c"}
+ {:name "pacman", :api "raylib", :category "games", :desc "pac-man, with the classic ghost personalities", :ported "babashka/ffi examples/pacman.clj"}
+ {:name "palette-switch", :api "raylib", :category "shaders", :desc "bands recolored by an ivec3 palette"}
+ {:name "palette-switch-clj", :api "raylib-clj", :category "shaders", :desc "Fragment shader remaps index-encoded bands through a palette", :ported "examples/shaders/shaders_palette_switch.c", :controls "LEFT/RIGHT to switch palette"}
+ {:name "particle-system", :api "raylib-clj", :category "models", :desc "3D particles", :controls "SPACE, G, W, R, Q"}
+ {:name "particles", :api "raylib", :category "generative", :desc "water/smoke/fire particles follow the mouse", :ported "examples/shapes/shapes_simple_particles.c"}
+ {:name "particles-blending", :api "raylib", :category "textures", :desc "200 sparks trail the mouse, alpha vs additive", :ported "examples/textures/textures_particles_blending.c"}
+ {:name "penrose-tile", :api "raylib-clj", :category "shapes", :desc "L-system Penrose tiling drawn by turtle", :ported "examples/shapes/shapes_penrose_tile.c", :controls "UP/DOWN change generations, Q to exit"}
+ {:name "penrose-tiling", :api "raylib", :category "shapes", :desc "a P3 Penrose rhombus tiling (deflation)", :ported "examples/shapes/shapes_penrose_tile.c"}
+ {:name "picking-3d", :api "raylib", :category "3d", :desc "click a box: a real GetScreenToWorldRay pick", :ported "examples/core/core_3d_picking.c"}
+ {:name "picking-3d-clj", :api "raylib-clj", :category "core", :desc "Ray casting", :ported "examples/core/core_3d_picking.c", :controls "Click"}
+ {:name "pie-chart", :api "raylib", :category "shapes", :desc "labelled pie slices via rl/sector!", :ported "examples/shapes/shapes_pie_chart.c"}
+ {:name "point-cloud", :api "raylib", :category "3d", :desc "~1500 points as tiny rlgl cubes, rotating"}
+ {:name "point-cloud-clj", :api "raylib-clj", :category "models", :desc "Spherical points", :ported "examples/models/models_point_rendering.c", :controls "UP/DOWN, Q"}
+ {:name "polygon-drawing", :api "raylib", :category "textures", :desc "hue-wheel texture on a spinning polygon", :ported "examples/textures/textures_polygon_drawing.c"}
+ {:name "pong", :api "raylib", :category "games", :desc "two-paddle classic, you (W/S) vs a CPU"}
+ {:name "pong-clj", :api "raylib-clj", :category "games", :desc "Two-player paddle game", :controls "W/S, K/J, Enter"}
+ {:name "postprocessing", :api "raylib", :category "shaders", :desc "post-process shaders cycled over a scene"}
+ {:name "random-sequence", :api "raylib", :category "core", :desc "bars in a shuffled order, each height used once", :ported "examples/core/core_random_sequence.c"}
+ {:name "random-values", :api "raylib", :category "core", :desc "a new random value every two seconds", :ported "examples/core/core_random_values.c"}
+ {:name "random-values-clj", :api "raylib-clj", :category "core", :desc "Random numbers", :ported "examples/core/core_random_values.c", :controls "Watch"}
+ {:name "raw-data", :api "raylib", :category "textures", :desc "textures built from a hand-filled byte buffer", :ported "examples/textures/textures_raw_data.c"}
+ {:name "ray-picking", :api "raylib-clj", :category "models", :desc "Click to select cubes", :ported "examples/core/core_3d_picking.c", :controls "Click, Right-click, Q"}
+ {:name "raymarching", :api "raylib", :category "shaders", :desc "a raymarched SDF scene in a shader"}
+ {:name "rectangle-advanced", :api "raylib", :category "shapes", :desc "per-side roundness with a horizontal gradient", :ported "examples/shapes/shapes_rectangle_advanced.c"}
+ {:name "rectangle-bounds", :api "raylib", :category "text", :desc "draggable word-wrap text container", :ported "examples/text/text_rectangle_bounds.c"}
+ {:name "rectangle-scaling", :api "raylib", :category "shapes", :desc "drag the corner handle to resize a rect", :ported "examples/shapes/shapes_rectangle_scaling.c"}
+ {:name "rectangle-scaling-clj", :api "raylib-clj", :category "shapes", :desc "Drag to resize rectangle", :ported "examples/shapes/shapes_rectangle_scaling.c", :controls "Drag bottom-right corner"}
+ {:name "recursive-tree", :api "raylib", :category "shapes", :desc "a binary fractal tree"}
+ {:name "recursive-tree-clj", :api "raylib-clj", :category "shapes", :desc "Binary tree grown by splitting each branch in two", :ported "examples/shapes/shapes_recursive_tree.c", :controls "Drag Angle/Length/Decay/Depth/Thick, toggle Bezier"}
+ {:name "render-texture", :api "raylib", :category "textures", :desc "a scene drawn off-screen, then reused"}
+ {:name "render-texture-clj", :api "raylib-clj", :category "core", :desc "Bouncing ball drawn into an offscreen target", :ported "examples/core/core_render_texture.c", :controls "Q to exit"}
+ {:name "retro-maze-3d", :api "raylib-clj", :category "games", :desc "GameBoy-style maze escape", :ported "raysan5/raylib-games: retro_maze_3d.c", :controls "WASD, Mouse, SPACE, M, ENTER, Q"}
+ {:name "ring-drawing", :api "raylib", :category "shapes", :desc "an animated annulus via rl/ring!", :ported "examples/shapes/shapes_ring_drawing.c"}
+ {:name "ring-drawing-clj", :api "raylib-clj", :category "shapes", :desc "Ring inner/outer radius, angles and segments on raygui sliders", :ported "examples/shapes/shapes_ring_drawing.c", :controls "Drag the sliders, toggle the three draw modes"}
+ {:name "rlgl-color-wheel", :api "raylib", :category "shapes", :desc "a hue wheel as a triangle fan, per-vertex colour", :ported "examples/shapes/shapes_rlgl_color_wheel.c"}
+ {:name "rlgl-solar-system", :api "raylib", :category "3d", :desc "Sun/Earth/Moon via the rlgl matrix stack", :ported "examples/models/models_rlgl_solar_system.c"}
+ {:name "rlgl-triangle", :api "raylib", :category "shapes", :desc "a Gouraud triangle with draggable corners", :ported "examples/shapes/shapes_rlgl_triangle.c"}
+ {:name "rotating-cube", :api "raylib", :category "3d", :desc "a single cube spinning via the rlgl matrix stack"}
+ {:name "rotating-cube-clj", :api "raylib-clj", :category "models", :desc "3D rotation", :ported "examples/models/models_rotating_cube.c", :controls "Arrows, +/-, R, Q"}
+ {:name "rounded-rect-shader", :api "raylib", :category "shaders", :desc "SDF rounded rects: fill, border, shadow"}
+ {:name "rounded-rectangle", :api "raylib", :category "shapes", :desc "rounded rects via sector! corners", :ported "examples/shapes/shapes_rounded_rectangle_drawing.c"}
+ {:name "rounded-rectangle-drawing", :api "raylib-clj", :category "shapes", :desc "Corner roundness, size, thickness and segments on raygui sliders", :ported "examples/shapes/shapes_rounded_rectangle_drawing.c", :controls "Drag the sliders, toggle the three draw modes"}
+ {:name "scissor-test", :api "raylib", :category "core", :desc "a scissor rectangle clips a grid", :ported "examples/core/core_scissor_test.c"}
+ {:name "scissor-test-clj", :api "raylib-clj", :category "core", :desc "Scissor clipping", :ported "examples/core/core_scissor_test.c", :controls "S, Mouse"}
+ {:name "screen-buffer", :api "raylib", :category "textures", :desc "the classic DOS fire effect", :ported "examples/textures/textures_screen_buffer.c"}
+ {:name "screen-manager", :api "raylib-clj", :category "core", :desc "State machine", :ported "examples/core/core_basic_screen_manager.c", :controls "ENTER"}
+ {:name "shader-hot-reload", :api "raylib", :category "shaders", :desc "swap and recompile the GLSL at runtime"}
+ {:name "shapes", :api "raylib", :category "shapes", :desc "shape primitives + an rlgl triangle", :ported "examples/shapes/shapes_basic_shapes.c"}
+ {:name "simple-particles", :api "raylib-clj", :category "shapes", :desc "Water/smoke/fire effects", :ported "examples/shapes/shapes_simple_particles.c", :controls "Arrows, Click"}
+ {:name "smooth-pixelperfect", :api "raylib", :category "core", :desc "sub-pixel camera smoothing at 5x upscale", :ported "examples/core/core_smooth_pixelperfect.c"}
+ {:name "smooth-pixelperfect-clj", :api "raylib-clj", :category "core", :desc "Pixel-aligned world, sub-pixel smooth camera", :ported "examples/core/core_smooth_pixelperfect.c", :controls "Q to exit"}
+ {:name "snake", :api "raylib", :category "games", :desc "the classic snake (arrow keys, grow, don't crash)"}
+ {:name "snake-clj", :api "raylib-clj", :category "games", :desc "Classic snake game", :ported "raysan5/raylib-games: snake.c", :controls "Arrows, P, ENTER, Q"}
+ {:name "solar-system", :api "raylib-clj", :category "models", :desc "Orbiting planets", :ported "examples/models/models_rlgl_solar_system.c", :controls "Q to exit"}
+ {:name "sound-loading", :api "raylib-clj", :category "audio", :desc "WAV/OGG playback", :ported "examples/audio/audio_sound_loading.c", :controls "SPACE, ENTER"}
+ {:name "sound-multi", :api "raylib-clj", :category "audio", :desc "Multiple sounds", :ported "examples/audio/audio_sound_multi.c", :controls "SPACE"}
+ {:name "space-invaders", :api "raylib", :category "games", :desc "marching aliens (arrows + SPACE to shoot)"}
+ {:name "spinning-cubes", :api "raylib", :category "3d", :desc "a row of cubes each spinning with a phase offset"}
+ {:name "spinning-cubes-clj", :api "raylib-clj", :category "models", :desc "Color-cycling cubes", :controls "Q to exit"}
+ {:name "spirograph", :api "raylib", :category "generative", :desc "animated hypotrochoid roulette curves"}
+ {:name "splines", :api "raylib", :category "shapes", :desc "Catmull-Rom / Bezier / B-spline (SPACE cycles)", :ported "examples/shapes/shapes_splines_drawing.c"}
+ {:name "split-screen-3d", :api "raylib-clj", :category "core", :desc "Two-player 3D", :ported "examples/core/core_3d_camera_split_screen.c", :controls "W/S, UP/DOWN"}
+ {:name "sprite-animation", :api "raylib", :category "textures", :desc "six generated poses, one source rectangle", :ported "examples/textures/textures_sprite_animation.c"}
+ {:name "sprite-animation-clj", :api "raylib-clj", :category "textures", :desc "Spritesheet", :ported "examples/textures/textures_sprite_animation.c", :controls "LEFT/RIGHT"}
+ {:name "sprite-button", :api "raylib", :category "textures", :desc "one sheet, three states, sliced by v", :ported "examples/textures/textures_sprite_button.c"}
+ {:name "sprite-stacking", :api "raylib", :category "textures", :desc "40 generated slices faking a 3D car", :ported "examples/textures/textures_sprite_stacking.c"}
+ {:name "srcrec-dstrec", :api "raylib", :category "textures", :desc "srcrec picks the frame, dstrec scales+spins it", :ported "examples/textures/textures_srcrec_dstrec.c"}
+ {:name "srcrec-dstrec-clj", :api "raylib-clj", :category "textures", :desc "Source/destination rects with rotation", :ported "examples/textures/textures_srcrec_dstrec.c", :controls "Q to exit"}
+ {:name "starfield-effect", :api "raylib", :category "shapes", :desc "flying starfield (wheel=speed, SPACE=mode)", :ported "examples/shapes/shapes_starfield_effect.c"}
+ {:name "starfield-effect-clj", :api "raylib-clj", :category "shapes", :desc "3D starfield simulation", :ported "examples/shapes/shapes_starfield_effect.c", :controls "SPACE, Wheel"}
+ {:name "stars", :api "raylib", :category "shapes", :desc "a twinkling starfield"}
+ {:name "storage-values", :api "raylib", :category "core", :desc "values that survive a restart, via a file", :ported "examples/core/core_storage_values.c"}
+ {:name "storage-values-clj", :api "raylib-clj", :category "core", :desc "Save and load scores to a file", :ported "examples/core/core_storage_values.c", :controls "R random, ENTER save, SPACE load, Q to exit"}
+ {:name "strings-management", :api "raylib", :category "text", :desc "bouncing text you slice, shatter and glue", :ported "examples/text/text_strings_management.c"}
+ {:name "terrain-generation", :api "raylib-clj", :category "models", :desc "Procedural terrain", :controls "1-3, Arrows, G, W, SPACE, Q"}
+ {:name "tesseract-view", :api "raylib", :category "3d", :desc "a rotating 4D hypercube projected to 2D"}
+ {:name "tesseract-view-clj", :api "raylib-clj", :category "models", :desc "4D hypercube", :ported "examples/models/models_tesseract_view.c", :controls "Q to exit"}
+ {:name "tetris", :api "raylib", :category "games", :desc "the block-stacking puzzle (move/rotate/drop)"}
+ {:name "tetris-clj", :api "raylib-clj", :category "games", :desc "Block-stacking puzzle", :controls "Arrows, Space"}
+ {:name "text", :api "raylib", :category "text", :desc "font sizes + MeasureText centering"}
+ {:name "texture-outline", :api "raylib", :category "shaders", :desc "a shader outline around a sprite's alpha edge", :ported "examples/shaders/shaders_texture_outline.c"}
+ {:name "texture-painting", :api "raylib", :category "shaders", :desc "a blank texture painted by a shader"}
+ {:name "texture-procedural", :api "raylib", :category "textures", :desc "four textures built pixel by pixel"}
+ {:name "texture-rendering", :api "raylib", :category "shaders", :desc "a grid of squares painted entirely by a shader", :ported "examples/shaders/shaders_texture_rendering.c"}
+ {:name "texture-tiling", :api "raylib", :category "textures", :desc "one tile repeated across the window"}
+ {:name "texture-waves", :api "raylib", :category "shaders", :desc "a starfield rippled by a UV-displacement shader", :ported "examples/shaders/shaders_texture_waves.c"}
+ {:name "textured-cube", :api "raylib", :category "3d", :desc "two cubes, one textured atlas, one sub-rect"}
+ {:name "textured-curve", :api "raylib", :category "textures", :desc "a texture laid along a cubic Bezier", :ported "examples/textures/textures_textured_curve.c"}
+ {:name "tiled-drawing", :api "raylib-clj", :category "textures", :desc "Tile a texture patch with selectable pattern, tint, scale and rotation", :ported "examples/textures/textures_tiled_drawing.c", :controls "Click a pattern or colour, UP/DOWN scale, LEFT/RIGHT rotate, SPACE reset"}
+ {:name "to-image", :api "raylib", :category "textures", :desc "one image, VRAM to RAM to VRAM and back up", :ported "examples/textures/textures_to_image.c"}
+ {:name "top-down-lights", :api "raylib", :category "shapes", :desc "lights and shadow volumes in an alpha mask", :ported "examples/shapes/shapes_top_down_lights.c"}
+ {:name "triangle-strip", :api "raylib", :category "shapes", :desc "a rainbow strip via rlgl immediate mode", :ported "examples/shapes/shapes_triangle_strip.c"}
+ {:name "undo-redo", :api "raylib", :category "core", :desc "move a square, then step back through the history", :ported "examples/core/core_undo_redo.c"}
+ {:name "undo-redo-clj", :api "raylib-clj", :category "core", :desc "Ring-buffer undo history on a grid", :ported "examples/core/core_undo_redo.c", :controls "Arrows move, SPACE colour, CTRL+Z undo, CTRL+Y redo, Q exit"}
+ {:name "vampire-survivors", :api "raylib", :category "games", :desc "auto-fire survival: move, waves chase you"}
+ {:name "vampire-survivors-clj", :api "raylib-clj", :category "games", :desc "Survival action", :controls "WASD"}
+ {:name "vector-angle", :api "raylib", :category "shapes", :desc "the angle between two vectors (arc + readout)", :ported "examples/shapes/shapes_vector_angle.c"}
+ {:name "vertex-displacement", :api "raylib", :category "shaders", :desc "a flat plane made terrain in the vertex stage", :ported "examples/shaders/shaders_vertex_displacement.c"}
+ {:name "viewport-scaling", :api "raylib", :category "core", :desc "6 viewport-scaling policies, resize live", :ported "examples/core/core_viewport_scaling.c"}
+ {:name "viewport-scaling-clj", :api "raylib-clj", :category "core", :desc "Six ways to fit a fixed-resolution game onto a resizable window", :ported "examples/core/core_viewport_scaling.c", :controls "Click < > to change resolution and viewport type, resize the window"}
+ {:name "waving-cubes", :api "raylib", :category "3d", :desc "an NxN grid of cubes rippling in 3D", :ported "examples/models/models_waving_cubes.c"}
+ {:name "waving-cubes-clj", :api "raylib-clj", :category "models", :desc "Animated cube wave", :ported "examples/models/models_waving_cubes.c", :controls "Q to exit"}
+ {:name "wheel", :api "raylib", :category "core", :desc "scroll a box with the mouse wheel", :ported "examples/core/core_input_mouse_wheel.c"}
+ {:name "window-flags", :api "raylib", :category "core", :desc "toggle vsync/resizable/topmost live"}
+ {:name "window-letterbox", :api "raylib", :category "core", :desc "a fixed picture letterboxed into the window"}
+ {:name "window-letterbox-clj", :api "raylib-clj", :category "core", :desc "Resolution-independent rendering", :ported "examples/core/core_window_letterbox.c", :controls "SPACE, Resize window"}
+ {:name "window-should-close", :api "raylib", :category "core", :desc "close is a question: ESC asks before it exits", :ported "examples/core/core_window_should_close.c"}
+ {:name "window-should-close-clj", :api "raylib-clj", :category "core", :desc "Custom close confirmation", :ported "examples/core/core_window_should_close.c", :controls "Y/N to confirm/cancel"}
+ {:name "wireframe-shapes", :api "raylib", :category "3d", :desc "pyramid/octahedron/torus/helix in 3D lines"}
+ {:name "wireframe-shapes-clj", :api "raylib-clj", :category "models", :desc "Custom wireframes", :controls "SPACE, Q"}
+ {:name "words-alignment", :api "raylib", :category "text", :desc "align a word inside a box (MeasureText)", :ported "examples/text/text_words_alignment.c"}
+ {:name "world-screen", :api "raylib", :category "3d", :desc "a 2D label tracks a cube via GetWorldToScreen", :ported "examples/core/core_world_screen.c"}
+ {:name "world-screen-clj", :api "raylib-clj", :category "core", :desc "3D to 2D coords", :ported "examples/core/core_world_screen.c", :controls "Mouse, Wheel"}
+ {:name "writing-anim", :api "raylib", :category "text", :desc "a message types itself out", :ported "examples/text/text_writing_anim.c"}
+ {:name "writing-anim-clj", :api "raylib-clj", :category "text", :desc "Typewriter text effect", :ported "examples/text/text_writing_anim.c", :controls "SPACE speed up, ENTER restart"}
+ {:name "yaw-pitch-roll", :api "raylib", :category "3d", :desc "the three aircraft rotations in 3D"}
+ {:name "yaw-pitch-roll-clj", :api "raylib-clj", :category "models", :desc "3D rotation demo", :ported "examples/models/models_yaw_pitch_roll.c", :controls "Arrows, SPACE, R, Q"}]

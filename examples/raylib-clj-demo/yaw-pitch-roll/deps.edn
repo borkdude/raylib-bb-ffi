@@ -1,5 +1,0 @@
-{:paths ["src"]
- :deps {net.b12n/raylib-clj-demo-common {:local/root "../common"}}
- :aliases {:run {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
-                 :main-opts ["-m" "net.b12n.raylib-clj.scenes.yaw-pitch-roll"]}
-           :mac {:jvm-opts ["-XstartOnFirstThread"]}}}

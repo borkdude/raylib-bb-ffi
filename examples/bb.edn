@@ -1,0 +1,85 @@
+{:min-bb-version "1.13.225"
+ :paths ["src"]
+ :deps {io.github.borkdude/raylib-bb-ffi {:local/root ".."}}
+ :tasks
+ {:requires ([babashka.process :as p]
+             [clojure.edn :as edn]
+             [clojure.string :as str])
+
+  :init
+  (do
+    (def examples (edn/read-string (slurp "demos.edn")))
+
+    (defn example! [name]
+      (or (first (filter (fn [e] (= name (:name e))) examples))
+          (do (binding [*out* *err*]
+                (println (str "No example named " name ". `bb list` shows them all.")))
+              (System/exit 1))))
+
+    (defn run-for
+      "Runs example name for secs seconds after its window opens. Returns 0 if
+      it is still running then, or its exit code."
+      [name secs]
+      (let [proc (p/process {:err :out} "bb" "-m" (str "examples." name))
+            rdr (java.io.BufferedReader. (java.io.InputStreamReader. (:out proc)))
+            ready (promise)
+            _ (future
+                (try (loop []
+                       (when-let [l (.readLine rdr)]
+                         (when (str/includes? l "DISPLAY: Device initialized")
+                           (deliver ready true))
+                         (recur)))
+                     (catch Exception _ nil))
+                (deliver ready false))]
+        (if (deref ready 60000 false)
+          (do (Thread/sleep (* 1000 secs))
+              (if (p/alive? proc)
+                (do (p/destroy-tree proc) 0)
+                (:exit (deref proc))))
+          (do (p/destroy-tree proc)
+              (let [e (:exit (deref proc 5000 nil))]
+                (if (and e (not (zero? e))) e 99)))))))
+
+  run
+  {:doc "Run one example: bb run <name>"
+   :override-builtin true
+   :task (if-let [name (first *command-line-args*)]
+           (do (example! name)
+               (let [{:keys [exit]} (shell {:continue true} "bb" "-m" (str "examples." name))]
+                 (System/exit exit)))
+           (do (println "usage: bb run <name>   (bb list shows them)")
+               (System/exit 1)))}
+
+  list
+  {:doc "List the examples with their API and description"
+   :task (let [w (apply max (map (fn [e] (count (:name e))) examples))]
+           (doseq [e examples]
+             (println (format (str "%-" w "s  %-10s  %s") (:name e) (:api e) (:desc e)))))}
+
+  run-all
+  {:doc "Run each example for N seconds: bb run-all [secs] [--random n]"
+   :task (let [args *command-line-args*
+               secs (Long/parseLong (or (first (remove (fn [a] (str/starts-with? a "-")) (take 1 args))) "2"))
+               n (some-> (second (drop-while (fn [a] (not= "--random" a)) args)) Long/parseLong)
+               chosen (if n (take n (shuffle examples)) examples)
+               failed (vec (for [e chosen
+                                 :let [_ (println (str "> " (:name e)))
+                                       exit (run-for (:name e) secs)]
+                                 :when (not (zero? exit))]
+                             (str (:name e) " (exit " exit ")")))]
+           (println (str (- (count chosen) (count failed)) "/" (count chosen) " examples ran without failing"))
+           (when (seq failed)
+             (println (str "failed: " (str/join ", " failed)))
+             (System/exit 1)))}
+
+  check
+  {:doc "Load every example namespace without opening a window"
+   :task (let [failed (vec (for [e examples
+                                 :let [ns (symbol (str "examples." (:name e)))
+                                       err (try (require ns) nil
+                                                (catch Throwable t (ex-message t)))]
+                                 :when err]
+                             (str (:name e) ": " err)))]
+           (doseq [f failed] (println f))
+           (println (str (- (count examples) (count failed)) "/" (count examples) " examples loaded"))
+           (when (seq failed) (System/exit 1)))}}}
