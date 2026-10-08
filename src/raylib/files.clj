@@ -1,79 +1,54 @@
-(ns net.b12n.raylib.files
-  "File-system helpers: dropped-file and directory listings via raylib's
-  FilePathList, plus the working-directory and filename lookups."
+(ns raylib.files
+  "Dropped files, directory listings, and working-directory and file name
+  lookups."
   (:require
-   [jolt.ffi :as ffi]))
+   [babashka.ffi :as ffi]
+   [raylib.native]))
 
-;; --- files: FilePathList, another 16-byte struct returned by value -------
-;; FilePathList is {unsigned int count; char **paths;}, the same shape as Shader
-;; and so the same binding: 16 bytes, returned by value, handed straight back to
-;; its Unload by value. What is new is the char** on the other side of it. raylib
-;; owns that array and every string in it until the matching Unload runs, so the
-;; helpers below copy the strings out into a Clojure vector and unload inside the
-;; same call. Nothing a caller holds points into raylib's memory afterwards.
 (def ^:private file-path-list-layout
-  (ffi/layout [:struct [[:count :uint] [:paths :pointer]]]))
+  [:struct [[:count :uint] [:paths :pointer]]])
 
-(ffi/defcfn ^:private file-dropped-raw "IsFileDropped" [] :int)
-(ffi/defcfn ^:private load-dropped-files-raw "LoadDroppedFiles" []
-  [:by-value [:struct [[:count :uint] [:paths :pointer]]]])
+(ffi/defcfn file-dropped?
+  "Returns true if files were dropped on the window since the last check."
+  "IsFileDropped" [] :bool)
+(ffi/defcfn directory-exists?
+  "Returns true if path is an existing directory."
+  "DirectoryExists" [:string] :bool)
+(ffi/defcfn ^:private load-dropped-files-raw "LoadDroppedFiles"
+  [] file-path-list-layout)
 (ffi/defcfn ^:private unload-dropped-files-raw "UnloadDroppedFiles"
-  [[:by-value [:struct [[:count :uint] [:paths :pointer]]]]] :void)
+  [file-path-list-layout] :void)
 (ffi/defcfn ^:private load-directory-files-ex-raw "LoadDirectoryFilesEx"
-  [:string :string :bool]
-  [:by-value [:struct [[:count :uint] [:paths :pointer]]]])
+  [:string :string :bool] file-path-list-layout)
 (ffi/defcfn ^:private unload-directory-files-raw "UnloadDirectoryFiles"
-  [[:by-value [:struct [[:count :uint] [:paths :pointer]]]]] :void)
-(ffi/defcfn ^:private directory-exists-raw "DirectoryExists" [:string] :int)
-(ffi/defcfn get-working-directory  "GetWorkingDirectory"  [] :string)
+  [file-path-list-layout] :void)
+(ffi/defcfn get-working-directory   "GetWorkingDirectory"  [] :string)
 (ffi/defcfn get-prev-directory-path "GetPrevDirectoryPath" [:string] :string)
-(ffi/defcfn get-file-name          "GetFileName"          [:string] :string)
+(ffi/defcfn get-file-name           "GetFileName"          [:string] :string)
 
-(defn- file-path-list->vec
-  "Copy the char** behind a filled FilePathList buffer into a vector of strings."
-  [out]
-  (let [n (ffi/read-field out file-path-list-layout :count)
-        base (ffi/read-field out file-path-list-layout :paths)
-        step (ffi/sizeof :pointer)]
-    (mapv (fn [i] (ffi/ptr->string (ffi/read base :pointer (* i step))))
-          (range n))))
-
-(defn file-dropped?
-  "IsFileDropped: whether files were dropped on the window since the last check."
-  []
-  (not (zero? (bit-and (file-dropped-raw) 0xff))))
-
-(defn directory-exists?
-  [path]
-  (not (zero? (bit-and (directory-exists-raw path) 0xff))))
+(defn- file-path-list->vec [{:keys [count paths]}]
+  (if (zero? count)
+    []
+    (mapv ffi/ptr->string
+          (ffi/read (ffi/reinterpret paths (* count (ffi/sizeof :pointer)))
+                    [:array :pointer count]))))
 
 (defn dropped-files
-  "LoadDroppedFiles as a vector of path strings, unloaded before it returns.
-  Only meaningful right after file-dropped? answers true."
+  "Returns the paths of the files dropped on the window as a vector of strings.
+  Call after file-dropped? returns true."
   []
-  (let [out (ffi/alloc (ffi/layout-size file-path-list-layout))]
-    (try
-      (load-dropped-files-raw out)
-      (let [paths (file-path-list->vec out)]
-        (unload-dropped-files-raw out)
-        paths)
-      (finally (ffi/free out)))))
+  (let [fpl (load-dropped-files-raw)]
+    (try (file-path-list->vec fpl)
+         (finally (unload-dropped-files-raw fpl)))))
 
 (defn directory-files
-  "LoadDirectoryFilesEx as a vector of path strings, unloaded before it returns.
-  `scan-subdirs?` recurses.
-
-  `filter` is raylib's own filter string, and its behaviour is worth stating
-  because the header only hints at it. Measured against a directory holding 3
-  subdirectories and 2 files: \"*.*\" answers all 5, \"DIRS*\" the 3
-  directories, \"FILES*\" the 2 files, and an empty string or nil behaves as
-  \"FILES*\" rather than as everything. Extensions work too, \".png;.c\" for
-  those two, and they combine with the DIRS/FILES forms over a semicolon."
+  "Returns the paths in dir as a vector of strings.
+  filter is a raylib filter string. nil or \"\" selects files only.
+  \"*.*\" selects all entries, \"DIRS*\" directories and \"FILES*\" files.
+  Extensions such as \".png;.c\" select files by extension and combine with
+  DIRS* and FILES* over a semicolon.
+  scan-subdirs? recurses into subdirectories."
   [dir filter scan-subdirs?]
-  (let [out (ffi/alloc (ffi/layout-size file-path-list-layout))]
-    (try
-      (load-directory-files-ex-raw out dir (or filter "") (boolean scan-subdirs?))
-      (let [paths (file-path-list->vec out)]
-        (unload-directory-files-raw out)
-        paths)
-      (finally (ffi/free out)))))
+  (let [fpl (load-directory-files-ex-raw dir (or filter "") (boolean scan-subdirs?))]
+    (try (file-path-list->vec fpl)
+         (finally (unload-directory-files-raw fpl)))))

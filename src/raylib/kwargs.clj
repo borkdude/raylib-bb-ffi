@@ -1,32 +1,13 @@
-(ns net.b12n.raylib.kwargs
-  "The keyword-argument drawing API: raylib's C functions are positional,
-  so these wrappers take keyword arguments so example code reads
-  self-descriptively, e.g. (rl/text! \"hi\" :x 10 :y 20 :color rl/RED)
-  instead of (draw-text \"hi\" 10 20 20 rl/RED). This is the top of the
-  library's dependency graph and what almost every example actually
-  calls; it defines no FFI binding of its own, only names the arguments
-  of ones that live in color, core, rlgl, shapes and text.
-
-  The C functions behind the shape wrappers take their positions and
-  sizes as int. A double reaching one throws \"invalid foreign-procedure
-  argument 0.0\" on the first draw, which compiling, linting and
-  formatting all miss: it surfaces only when a frame actually renders.
-  Callers compute positions in floating point all the time (mouse
-  deltas, interpolation, trigonometry), so the coercion lives here
-  rather than at every call site."
+(ns raylib.kwargs
+  "Drawing functions with keyword arguments, for example
+  (text! \"hi\" :x 10 :y 20 :color RED) for DrawText.
+  Positions and sizes accept any number."
   (:require
-   [net.b12n.raylib.color :as color]
-   [net.b12n.raylib.core :as core]
-   [net.b12n.raylib.rlgl :as rlgl]
-   [net.b12n.raylib.shapes :as shapes]
-   [net.b12n.raylib.text :as text]))
-
-;; --- keyword-argument drawing API ---------------------------------------------
-;; raylib's C functions are positional; these wrappers take keyword arguments so
-;; example code reads self-descriptively, e.g. (rl/text! "hi" :x 10 :y 20
-;; :color rl/RED) instead of (draw-text "hi" 10 20 20 rl/RED). The raw bindings
-;; live in color, core, rlgl, shapes and text, required above; these just name
-;; their arguments.
+   [raylib.color :as color]
+   [raylib.core :as core]
+   [raylib.rlgl :as rlgl]
+   [raylib.shapes :as shapes]
+   [raylib.text :as text]))
 
 (defn window!
   "InitWindow with keyword args. :width :height :title."
@@ -58,12 +39,6 @@
            y 10}}]
   (text/draw-fps (int x) (int y)))
 
-;; The C functions behind these take their positions and sizes as int. A double
-;; reaching one throws "invalid foreign-procedure argument 0.0" on the first
-;; draw, which compiling, linting and formatting all miss: it surfaces only when
-;; a frame actually renders. Callers compute positions in floating point all the
-;; time (mouse deltas, interpolation, trigonometry), so the coercion lives here
-;; rather than at every call site.
 (defn rect!
   "DrawRectangle. :x :y :width :height :color."
   [& {:keys [x y width height color]
@@ -142,13 +117,10 @@
   (shapes/draw-pixel (int x) (int y) color))
 
 (defn sector!
-  "A filled circular sector (pie slice / arc) drawn as an rlgl triangle fan, the
-  immediate-mode stand-in for DrawCircleSector, whose Vector2 center is by-value and
-  so unbindable (see rlgl-immediate-mode.md). The fan runs from the center across
-  [start-deg, end-deg] in `segments` sub-triangles, a single packed `:color`.
-  0 deg points up and the angle increases clockwise (rim = (sin, -cos)); vertices are
-  emitted rim -> center -> rim so the fan carries raylib's front-facing winding and is
-  not backface-culled. Callers must pass start-deg < end-deg.
+  "Draws a filled circular sector as an rlgl triangle fan from the center
+  across start-deg to end-deg in segments triangles.
+  0 degrees points up and the angle increases clockwise.
+  start-deg must be less than end-deg.
     :cx :cy    center
     :radius    outer radius
     :start-deg :end-deg   sweep in degrees (0 = up, clockwise, increasing)
@@ -179,10 +151,9 @@
     (rlgl/rl-end)))
 
 (defn ring!
-  "A filled annulus (donut sector) as an rlgl quad strip between :inner and :outer
-  radius over [start-deg, end-deg], the immediate-mode stand-in for DrawRing (Vector2
-  center by value). Same angle convention as sector! (0 deg up, clockwise, increasing).
-  Each segment is two front-wound triangles.
+  "Draws a filled ring sector between the :inner and :outer radius from
+  start-deg to end-deg, as rlgl triangles.
+  Uses the angle convention of sector!.
     :cx :cy    center
     :inner :outer   radii
     :start-deg :end-deg   sweep in degrees (increasing)
@@ -218,9 +189,7 @@
     (rlgl/rl-end)))
 
 (defn line-ex!
-  "A thick line (rlgl quad) from (x1,y1) to (x2,y2), :thick pixels wide, the
-  immediate-mode stand-in for DrawLineEx (Vector2 endpoints by value). The quad is
-  front-wound at every line direction (perpendicular = (dy,-dx)/len).
+  "Draws a line from (x1,y1) to (x2,y2), :thick pixels wide, as an rlgl quad.
     :x1 :y1 :x2 :y2   endpoints
     :thick   width in px (default 2)
     :color   packed Color"
@@ -235,7 +204,7 @@
         len (Math/sqrt (+ (* dx dx) (* dy dy)))
         len (if (zero? len) 1.0 len)
         h  (/ thick 2.0)
-        px (* (/ dy len) h)        ; perpendicular (dy,-dx) * half-thick
+        px (* (/ dy len) h)
         py (* (/ (- dx) len) h)
         ax (+ x1 px) ay (+ y1 py)
         bx (- x1 px) by (- y1 py)
