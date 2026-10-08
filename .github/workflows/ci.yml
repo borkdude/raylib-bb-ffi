@@ -1,0 +1,61 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+
+      - uses: DeLaGuardo/setup-clojure@13.4
+        with:
+          cli: latest
+          bb: latest
+          clj-kondo: latest
+
+      - name: Install raylib (macOS)
+        if: runner.os == 'macOS'
+        run: brew install raylib
+
+      - name: Build raylib (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake xvfb libx11-dev libxrandr-dev libxinerama-dev \
+            libxcursor-dev libxi-dev libgl1-mesa-dev libasound2-dev
+          git clone --depth 1 --branch 6.0 https://github.com/raysan5/raylib.git /tmp/raylib
+          cmake -S /tmp/raylib -B /tmp/raylib/build -DBUILD_SHARED_LIBS=ON \
+            -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/raylib/build -j
+          sudo cmake --install /tmp/raylib/build
+          sudo ldconfig
+          echo "RAYLIB_LIBRARY=/usr/local/lib/libraylib.so" >> "$GITHUB_ENV"
+
+      - run: bb --version
+      - run: bb lint
+      - run: bb check
+      - run: bb test
+      - run: bb check:jvm
+      - run: bb test:jvm
+
+      - name: Smoke test (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          bb smoke
+          bb smoke:jvm
+
+      - name: Smoke test (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          xvfb-run -a bb smoke
+          xvfb-run -a bb smoke:jvm

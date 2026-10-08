@@ -8,7 +8,7 @@ The API is not stable and can change without notice.
 
 ## Requirements
 
-- babashka 1.13.221 or newer, or JDK 25 or newer on the JVM
+- babashka 1.13.225 or newer, or JDK 25 or newer on the JVM
 - raylib 6.0 as a shared library: `brew install raylib` on macOS, or the raylib
   package of your Linux distribution
 

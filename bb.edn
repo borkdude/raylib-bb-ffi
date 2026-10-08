@@ -1,4 +1,4 @@
-{:min-bb-version "1.13.221"
+{:min-bb-version "1.13.225"
  :paths ["src"]
  :tasks
  {test {:doc "Run the tests in babashka."
