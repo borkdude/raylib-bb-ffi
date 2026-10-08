@@ -25,6 +25,44 @@ raylib-jlt
   The raylib example programs ported by raylib-jlt live in
   https://github.com/jlt-commons/raylib-jolt-demo.
 
+raylib-clj
+----------
+  Copyright (c) 2026 Burin Choomnuan (@burinc)
+  https://github.com/b12n-oss/raylib-clj
+  Licensed under the Eclipse Public License 2.0.
+
+  src/raylib_clj/ is a port of raylib-clj, the raylib bindings for Clojure
+  on the JVM through coffi. The port started from raylib-clj commit
+  1b5f69b786c1a264430d01abd2cae564d91349bc (2026-10-05). It replaces coffi
+  with babashka.ffi and renames the namespaces from net.b12n.raylib-clj.* to
+  raylib-clj.*.
+
+
+raylib-clojure-playground (the origin of raylib-clj)
+----------------------------------------------------
+  Copyright (c) 2026 Ertuğrul Çetin
+  https://github.com/ertugrulcetin/raylib-clojure-playground
+  Licensed under the Eclipse Public License 2.0.
+
+  raylib-clj began as this project. Its binding layer is his design, and
+  several files of src/raylib_clj/ derive from his originals. Six of the
+  examples in examples/raylib-clj-demo started as his work: asteroids,
+  asteroids2, hello-world, pong, tetris and vampire-survivors.
+
+
+raylib-jolt-demo and raylib-clj-demo
+------------------------------------
+  Copyright (c) 2026 Burin Choomnuan (@burinc)
+  https://github.com/jlt-commons/raylib-jolt-demo
+  https://github.com/b12n-oss/raylib-clj-demo
+  Licensed under the Eclipse Public License 2.0.
+
+  examples/raylib-jolt-demo and examples/raylib-clj-demo are ports of these
+  repositories, from commits 6898421 and 803a474. The demos run with
+  babashka against this library instead of jolt and coffi. Each directory
+  keeps its own NOTICE with the third-party notices of its demos and media.
+
+
 raylib
 ------
   Copyright (c) 2013-2026 Ramon Santamaria (@raysan5)

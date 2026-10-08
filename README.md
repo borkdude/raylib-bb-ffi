@@ -26,7 +26,8 @@ Add the library to `bb.edn` or `deps.edn`:
 ```
 
 Require `raylib.all` for every function, or a single module such as
-`raylib.shapes`:
+`raylib.shapes`. The `raylib-clj.*` namespaces are a second API, ported from
+raylib-clj:
 
 ```clojure
 (require '[raylib.all :as rl])
@@ -60,6 +61,26 @@ Then run window code on the main thread from the editor:
 
 On the JVM, use `clojure -M:repl:mac`.
 
+## Examples
+
+`examples/raylib-jolt-demo` holds 187 demos written against `raylib.*`, and
+`examples/raylib-clj-demo` holds 113 demos written against `raylib-clj.*`.
+Each demo is a project that depends on this library through `:local/root`.
+
+Run one demo:
+
+```sh
+cd examples/raylib-jolt-demo
+bb asteroids
+```
+
+List the demos, or run each one for 2 seconds:
+
+```sh
+bb list
+bb run-all 2
+```
+
 ## Development
 
 ```sh
@@ -74,18 +95,25 @@ bb gen:all     # regenerate src/raylib/all.clj
 
 ## Credits
 
-This library is a port of [raylib-jlt](https://github.com/jlt-commons/raylib-jlt)
-by [Burin Choomnuan](https://github.com/burinc), the raylib bindings for
-[jolt](https://github.com/jolt-lang/jolt). The bindings, module layout and
-drawing API are his work.
-The port started from raylib-jlt commit
-[`ffd97a9`](https://github.com/jlt-commons/raylib-jlt/tree/ffd97a91727b02c8f2a5ee2c194bfb64d10c2d4a).
-See [NOTICE](NOTICE) for details.
+This library is a port of two libraries by
+[Burin Choomnuan](https://github.com/burinc):
 
-The example programs in
-[raylib-jolt-demo](https://github.com/jlt-commons/raylib-jolt-demo) use the
-raylib-jlt API.
+- [raylib-jlt](https://github.com/jlt-commons/raylib-jlt), the raylib
+  bindings for [jolt](https://github.com/jolt-lang/jolt), from commit
+  [`ffd97a9`](https://github.com/jlt-commons/raylib-jlt/tree/ffd97a91727b02c8f2a5ee2c194bfb64d10c2d4a).
+  It became `raylib.*`.
+- [raylib-clj](https://github.com/b12n-oss/raylib-clj), the raylib bindings
+  for Clojure through coffi, from commit
+  [`1b5f69b`](https://github.com/b12n-oss/raylib-clj/tree/1b5f69b786c1a264430d01abd2cae564d91349bc).
+  It became `raylib-clj.*`. raylib-clj began as
+  [raylib-clojure-playground](https://github.com/ertugrulcetin/raylib-clojure-playground)
+  by [Ertuğrul Çetin](https://github.com/ertugrulcetin).
+
+The bindings, module layout and drawing APIs are their work. The examples
+come from [raylib-jolt-demo](https://github.com/jlt-commons/raylib-jolt-demo)
+and [raylib-clj-demo](https://github.com/b12n-oss/raylib-clj-demo). See
+[NOTICE](NOTICE) for details.
 
 ## License
 
-Eclipse Public License 2.0, same as raylib-jlt. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
+Eclipse Public License 2.0, same as raylib-jlt and raylib-clj. See [LICENSE](LICENSE) and [NOTICE](NOTICE).
