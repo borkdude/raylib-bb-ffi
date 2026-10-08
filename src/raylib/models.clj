@@ -1,76 +1,22 @@
-(ns net.b12n.raylib.models
-  "3D geometry drawn inside a with-camera-3d block: rlgl immediate-mode
-  stand-ins (cube!, sphere!, draw-grid, the rlgl matrix stack), scalar calls
-  with no struct arguments, plus the real Draw{Cube,Sphere,Cylinder,Capsule}*
-  calls and DrawPlane, genuinely by value now that jolt's
-  [:by-value [:struct ...]] works.
-
-  None of this touches Camera3D itself -- with-camera-3d, camera3d-alloc and
-  the persistent-camera helpers live in net.b12n.raylib.camera, and every fn
-  here is called from inside a caller-supplied with-camera-3d block rather
-  than reading camera state of its own."
+(ns raylib.models
+  "3D geometry, drawn in 3D mode: rlgl immediate-mode shapes (cube!, sphere!,
+  draw-grid, the rlgl matrix stack), raylib's Draw* shape calls, generated
+  meshes, materials and instanced drawing.
+  Mesh, Material and Matrix values are maps."
   (:require
-   [jolt.ffi :as ffi]
-   [net.b12n.raylib.color :as color]
-   [net.b12n.raylib.native :as native]
-   [net.b12n.raylib.rlgl :as rlgl]
-   [net.b12n.raylib.shaders :as shaders]))
+   [babashka.ffi :as ffi]
+   [raylib.color :as color]
+   [raylib.native :as native]
+   [raylib.rlgl :as rlgl]
+   [raylib.shaders :as shaders]))
 
-;; --- Camera3D + 3D geometry --------------------------------------------------
-;; Camera3D is 44 bytes (three Vector3 + a float + an int), passed BY VALUE to
-;; BeginMode3D, the same >16-byte-struct-by-pointer approach as Camera2D. 3D
-;; shape helpers like DrawCube take a Vector3 BY VALUE (a 12-byte float struct
-;; passed in FP registers, which the pointer trick does NOT cover), so draw 3D
-;; geometry with rlgl immediate mode (rl-vertex-3f) instead. DrawGrid is scalar.
-(ffi/defcfn draw-grid    "DrawGrid"    [:int :float] :void)
-(ffi/defcfn ^:private rl-vertex-3f-raw "rlVertex3f"  [:float :float :float] :void)
-
-(defn rl-vertex-3f
-  "One vertex in 3D.
-
-  Coerces to double, because the C takes floats and an integer argument
-  aborts the process on the first draw. The mirror of the int coercion
-  the kwarg drawing API does."
-  [a0 a1 a2]
-  (rl-vertex-3f-raw (double a0) (double a1) (double a2)))
-
-;; rlgl matrix stack, nested transforms for immediate-mode geometry. rlgl applies
-;; the current transform to each rlVertex* at submit time, so push/rotate/translate
-;; around a cube! call moves it (used by rlgl-solar-system).
+(ffi/defcfn draw-grid      "DrawGrid"     [:int :float] :void)
+(ffi/defcfn rl-vertex-3f   "rlVertex3f"   [:float :float :float] :void)
 (ffi/defcfn rl-push-matrix "rlPushMatrix" [] :void)
 (ffi/defcfn rl-pop-matrix  "rlPopMatrix"  [] :void)
-(ffi/defcfn ^:private rl-translatef-raw  "rlTranslatef" [:float :float :float] :void)
-
-(defn rl-translatef
-  "Translate the current matrix.
-
-  Coerces to double, because the C takes floats and an integer argument
-  aborts the process on the first draw. The mirror of the int coercion
-  the kwarg drawing API does."
-  [a0 a1 a2]
-  (rl-translatef-raw (double a0) (double a1) (double a2)))
-
-(ffi/defcfn ^:private rl-rotatef-raw     "rlRotatef"    [:float :float :float :float] :void)
-
-(defn rl-rotatef
-  "Rotate the current matrix, angle first.
-
-  Coerces to double, because the C takes floats and an integer argument
-  aborts the process on the first draw. The mirror of the int coercion
-  the kwarg drawing API does."
-  [a0 a1 a2 a3]
-  (rl-rotatef-raw (double a0) (double a1) (double a2) (double a3)))
-
-(ffi/defcfn ^:private rl-scalef-raw      "rlScalef"     [:float :float :float] :void)
-
-(defn rl-scalef
-  "Scale the current matrix.
-
-  Coerces to double, because the C takes floats and an integer argument
-  aborts the process on the first draw. The mirror of the int coercion
-  the kwarg drawing API does."
-  [a0 a1 a2]
-  (rl-scalef-raw (double a0) (double a1) (double a2)))
+(ffi/defcfn rl-translatef  "rlTranslatef" [:float :float :float] :void)
+(ffi/defcfn rl-rotatef     "rlRotatef"    [:float :float :float :float] :void)
+(ffi/defcfn rl-scalef      "rlScalef"     [:float :float :float] :void)
 
 (defn- shade-color
   "Darken a packed Color by factor f (fakes lighting so cube faces read as 3D)."
@@ -82,7 +28,7 @@
 
 (defn- quad-3f
   "Two rlgl triangles for a quad, given a shaded color and a vector of its four
-  [x y z] corners in a→b→c→d winding order."
+  [x y z] corners in a, b, c, d winding order."
   [color [a b c d]]
   (rlgl/rl-color! color)
   (let [[ax ay az] a [bx by bz] b [cx cy cz] c [dx dy dz] d]
@@ -153,91 +99,58 @@
             (quad-3f shaded [p00 p10 p11 p01])))))
     (rlgl/rl-end)))
 
-;; --- geometric primitives, genuinely by value (geometric-shapes) --------
-;; raylib's real Draw{Cube,Sphere,Cylinder,Capsule}* calls, now that
-;; [:by-value [:struct ...]] works -- named draw-*! rather than reusing
-;; cube!/sphere! (the existing rlgl immediate-mode stand-ins), since these
-;; are a genuinely different code path, not a replacement for them.
-(defn- vec3->ptr!
-  "Allocate a vector3-layout buffer and write [x y z] into it. Caller frees."
-  [[x y z]]
-  (let [p (ffi/alloc (ffi/layout-size native/vector3-layout))]
-    (ffi/write-field p native/vector3-layout :x (double x))
-    (ffi/write-field p native/vector3-layout :y (double y))
-    (ffi/write-field p native/vector3-layout :z (double z))
-    p))
+(def ^:private v3 native/vector3-layout)
 
-(ffi/defcfn ^:private draw-cube-raw "DrawCube"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :float :float :uint]
-  :void)
-(ffi/defcfn ^:private draw-cube-wires-raw "DrawCubeWires"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :float :float :uint]
-  :void)
-(ffi/defcfn ^:private draw-sphere-raw "DrawSphere"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :uint]
-  :void)
-(ffi/defcfn ^:private draw-sphere-wires-raw "DrawSphereWires"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :int :int :uint]
-  :void)
-(ffi/defcfn ^:private draw-cylinder-raw "DrawCylinder"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :float :float :int :uint]
-  :void)
+(ffi/defcfn ^:private draw-cube-raw "DrawCube" [v3 :float :float :float :uint] :void)
+(ffi/defcfn ^:private draw-cube-wires-raw "DrawCubeWires" [v3 :float :float :float :uint] :void)
+(ffi/defcfn ^:private draw-sphere-raw "DrawSphere" [v3 :float :uint] :void)
+(ffi/defcfn ^:private draw-sphere-wires-raw "DrawSphereWires" [v3 :float :int :int :uint] :void)
+(ffi/defcfn ^:private draw-cylinder-raw "DrawCylinder" [v3 :float :float :float :int :uint] :void)
 (ffi/defcfn ^:private draw-cylinder-wires-raw "DrawCylinderWires"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :float :float :int :uint]
-  :void)
-(ffi/defcfn ^:private draw-capsule-raw "DrawCapsule"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]]
-   [:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :int :int :uint]
-  :void)
+  [v3 :float :float :float :int :uint] :void)
+(ffi/defcfn ^:private draw-capsule-raw "DrawCapsule" [v3 v3 :float :int :int :uint] :void)
 (ffi/defcfn ^:private draw-capsule-wires-raw "DrawCapsuleWires"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]]
-   [:by-value [:struct [[:x :float] [:y :float] [:z :float]]]] :float :int :int :uint]
-  :void)
+  [v3 v3 :float :int :int :uint] :void)
+(ffi/defcfn ^:private draw-plane-raw "DrawPlane" [v3 native/vector2-layout :uint] :void)
 
 (defn draw-cube!
-  "DrawCube. :pos :width :height :length :color."
+  "Draws a cube with DrawCube. :pos :width :height :length :color."
   [& {:keys [pos width height length color]
       :or {pos [0.0 0.0 0.0]
            width 1.0
            height 1.0
            length 1.0
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-cube-raw p (double width) (double height) (double length) color)
-         (finally (ffi/free p)))))
+  (draw-cube-raw (native/vector3 pos) width height length color))
 
 (defn draw-cube-wires!
-  "DrawCubeWires. :pos :width :height :length :color."
+  "Draws cube edges with DrawCubeWires. :pos :width :height :length :color."
   [& {:keys [pos width height length color]
       :or {pos [0.0 0.0 0.0]
            width 1.0
            height 1.0
            length 1.0
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-cube-wires-raw p (double width) (double height) (double length) color)
-         (finally (ffi/free p)))))
+  (draw-cube-wires-raw (native/vector3 pos) width height length color))
 
 (defn draw-sphere!
+  "Draws a sphere of radius at pos [x y z] with DrawSphere."
   [pos radius color]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-sphere-raw p (double radius) color)
-         (finally (ffi/free p)))))
+  (draw-sphere-raw (native/vector3 pos) radius color))
 
 (defn draw-sphere-wires!
-  "DrawSphereWires. :pos :radius :rings :slices :color."
+  "Draws sphere wires with DrawSphereWires. :pos :radius :rings :slices :color."
   [& {:keys [pos radius rings slices color]
       :or {pos [0.0 0.0 0.0]
            radius 0.5
            rings 16
            slices 16
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-sphere-wires-raw p (double radius) (int rings) (int slices) color)
-         (finally (ffi/free p)))))
+  (draw-sphere-wires-raw (native/vector3 pos) radius rings slices color))
 
 (defn draw-cylinder!
-  "DrawCylinder. :pos :radius-top :radius-bottom :height :slices :color."
+  "Draws a cylinder with DrawCylinder.
+  :pos :radius-top :radius-bottom :height :slices :color."
   [& {:keys [pos radius-top radius-bottom height slices color]
       :or {pos [0.0 0.0 0.0]
            radius-top 1.0
@@ -245,13 +158,11 @@
            height 1.0
            slices 16
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-cylinder-raw p (double radius-top) (double radius-bottom) (double height)
-                            (int slices) color)
-         (finally (ffi/free p)))))
+  (draw-cylinder-raw (native/vector3 pos) radius-top radius-bottom height slices color))
 
 (defn draw-cylinder-wires!
-  "DrawCylinderWires. :pos :radius-top :radius-bottom :height :slices :color."
+  "Draws cylinder wires with DrawCylinderWires.
+  :pos :radius-top :radius-bottom :height :slices :color."
   [& {:keys [pos radius-top radius-bottom height slices color]
       :or {pos [0.0 0.0 0.0]
            radius-top 1.0
@@ -259,13 +170,10 @@
            height 1.0
            slices 16
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)]
-    (try (draw-cylinder-wires-raw p (double radius-top) (double radius-bottom) (double height)
-                                  (int slices) color)
-         (finally (ffi/free p)))))
+  (draw-cylinder-wires-raw (native/vector3 pos) radius-top radius-bottom height slices color))
 
 (defn draw-capsule!
-  "DrawCapsule. :start-pos :end-pos :radius :slices :rings :color."
+  "Draws a capsule with DrawCapsule. :start-pos :end-pos :radius :slices :rings :color."
   [& {:keys [start-pos end-pos radius slices rings color]
       :or {start-pos [0.0 0.0 0.0]
            end-pos [0.0 1.0 0.0]
@@ -273,13 +181,12 @@
            slices 8
            rings 8
            color color/BLACK}}]
-  (let [p1 (vec3->ptr! start-pos)
-        p2 (vec3->ptr! end-pos)]
-    (try (draw-capsule-raw p1 p2 (double radius) (int slices) (int rings) color)
-         (finally (ffi/free p1) (ffi/free p2)))))
+  (draw-capsule-raw (native/vector3 start-pos) (native/vector3 end-pos)
+                    radius slices rings color))
 
 (defn draw-capsule-wires!
-  "DrawCapsuleWires. :start-pos :end-pos :radius :slices :rings :color."
+  "Draws capsule wires with DrawCapsuleWires.
+  :start-pos :end-pos :radius :slices :rings :color."
   [& {:keys [start-pos end-pos radius slices rings color]
       :or {start-pos [0.0 0.0 0.0]
            end-pos [0.0 1.0 0.0]
@@ -287,408 +194,145 @@
            slices 8
            rings 8
            color color/BLACK}}]
-  (let [p1 (vec3->ptr! start-pos)
-        p2 (vec3->ptr! end-pos)]
-    (try (draw-capsule-wires-raw p1 p2 (double radius) (int slices) (int rings) color)
-         (finally (ffi/free p1) (ffi/free p2)))))
-
-;; --- ground plane, genuinely by value (camera-3d-split-screen) ----------
-(ffi/defcfn ^:private draw-plane-raw "DrawPlane"
-  [[:by-value [:struct [[:x :float] [:y :float] [:z :float]]]]
-   [:by-value [:struct [[:x :float] [:y :float]]]]
-   :uint]
-  :void)
+  (draw-capsule-wires-raw (native/vector3 start-pos) (native/vector3 end-pos)
+                          radius slices rings color))
 
 (defn draw-plane!
-  "DrawPlane. :pos :size :color."
+  "Draws an XZ plane with DrawPlane. :pos :size :color."
   [& {:keys [pos size color]
       :or {pos [0.0 0.0 0.0]
            size [1.0 1.0]
            color color/BLACK}}]
-  (let [p (vec3->ptr! pos)
-        s (native/vec2->ptr! size)]
-    (try (draw-plane-raw p s color)
-         (finally (ffi/free p) (ffi/free s)))))
+  (draw-plane-raw (native/vector3 pos) (native/vector2 size) color))
 
-;; --- generated meshes --------------------------------------------------------
-;; raylib's GenMesh* family returns a Mesh by value, and DrawMesh takes a Mesh,
-;; a Material and a Matrix by value. jolt handles both directions, with two
-;; rules that are easy to get wrong:
-;;
-;;   * An aggregate-RETURNING call takes a caller-owned destination pointer as
-;;     its FIRST jolt argument, writes the C return there and answers it. So
-;;     (gen-mesh-cube-raw dest w h l) is four arguments, not three. The Image
-;;     generators in net.b12n.raylib.images have the same shape.
-;;   * An aggregate ARGUMENT is a pointer to the struct bytes, so draw-mesh-raw
-;;     takes three pointers even though the C signature is three values.
-;;
-;; The field order below is from /opt/homebrew/include/raylib.h, the header
-;; that matches the library this links. Read layouts from that header rather
-;; than from a nearby raylib source checkout, which may be any number of
-;; commits past the release. For Mesh specifically the two happen to agree
-;; today, and an earlier version of this comment wrongly claimed otherwise;
-;; the habit still matters, because the same checkout has three times now
-;; offered a FUNCTION the released library does not export, each of which
-;; compiled and then failed at run time.
 (def mesh-layout
-  "The `ffi/layout` value for raylib 6.0's Mesh, 120 bytes."
-  (ffi/layout [:struct [[:vertex-count :int] [:triangle-count :int]
-                        [:vertices :pointer] [:texcoords :pointer]
-                        [:texcoords2 :pointer] [:normals :pointer]
-                        [:tangents :pointer] [:colors :pointer]
-                        [:indices :pointer]
-                        [:bone-count :int]
-                        [:bone-indices :pointer] [:bone-weights :pointer]
-                        [:anim-vertices :pointer] [:anim-normals :pointer]
-                        [:vao-id :uint] [:vbo-id :pointer]]]))
+  "Layout of raylib 6.0's Mesh, 120 bytes."
+  [:struct [[:vertex-count :int] [:triangle-count :int]
+            [:vertices :pointer] [:texcoords :pointer]
+            [:texcoords2 :pointer] [:normals :pointer]
+            [:tangents :pointer] [:colors :pointer]
+            [:indices :pointer]
+            [:bone-count :int]
+            [:bone-indices :pointer] [:bone-weights :pointer]
+            [:anim-vertices :pointer] [:anim-normals :pointer]
+            [:vao-id :uint] [:vbo-id :pointer]]])
 
 (def material-layout
-  "The `ffi/layout` value for raylib's Material, 40 bytes: an inlined Shader
-  {uint id; int *locs;}, then a MaterialMap pointer, then four float params."
-  (ffi/layout [:struct [[:shader-id :uint] [:shader-locs :pointer]
-                        [:maps :pointer] [:params [:array :float 4]]]]))
+  "Layout of raylib's Material, 40 bytes: {Shader shader; MaterialMap *maps;
+  float params[4]}."
+  [:struct [[:shader shaders/shader-layout]
+            [:maps :pointer]
+            [:params [:array :float 4]]]])
+(def ^:private material-map-layout
+  [:struct [[:texture native/texture2d-layout]
+            [:color :uint]
+            [:value :float]]])
 
-(def matrix-layout
-  "The `ffi/layout` value for raylib's Matrix, 64 bytes. raylib declares it in
-  the order m0 m4 m8 m12, m1 m5 m9 m13, ... so that is the memory order, and the
-  identity diagonal is m0 m5 m10 m15."
-  (ffi/layout [:struct [[:m0 :float] [:m4 :float] [:m8 :float] [:m12 :float]
-                        [:m1 :float] [:m5 :float] [:m9 :float] [:m13 :float]
-                        [:m2 :float] [:m6 :float] [:m10 :float] [:m14 :float]
-                        [:m3 :float] [:m7 :float] [:m11 :float] [:m15 :float]]]))
+(ffi/defcfn mesh-cube
+  "Returns a cube Mesh, uploaded to the GPU."
+  "GenMeshCube" [:float :float :float] mesh-layout)
+(ffi/defcfn mesh-sphere
+  "Returns a UV sphere Mesh of radius with rings by slices."
+  "GenMeshSphere" [:float :int :int] mesh-layout)
+(ffi/defcfn mesh-hemisphere
+  "Returns a half sphere Mesh without a bottom cap."
+  "GenMeshHemiSphere" [:float :int :int] mesh-layout)
+(ffi/defcfn mesh-torus
+  "Returns a torus Mesh. radius is the tube and size the ring it sweeps."
+  "GenMeshTorus" [:float :float :int :int] mesh-layout)
+(ffi/defcfn mesh-knot
+  "Returns a trefoil knot Mesh, with the parameters of mesh-torus."
+  "GenMeshKnot" [:float :float :int :int] mesh-layout)
+(ffi/defcfn mesh-cylinder
+  "Returns a cylinder Mesh of radius, height and slices."
+  "GenMeshCylinder" [:float :float :int] mesh-layout)
+(ffi/defcfn mesh-cone
+  "Returns a cone Mesh of radius, height and slices."
+  "GenMeshCone" [:float :float :int] mesh-layout)
+(ffi/defcfn mesh-plane
+  "Returns a plane Mesh of width by length, subdivided res-x by res-z."
+  "GenMeshPlane" [:float :float :int :int] mesh-layout)
 
-(ffi/defcfn ^:private gen-mesh-cube-raw "GenMeshCube"
-  [:float :float :float]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
+(ffi/defcfn unload-mesh!
+  "Releases the GPU buffers and vertex data of mesh."
+  "UnloadMesh" [mesh-layout] :void)
 
-(ffi/defcfn ^:private gen-mesh-sphere-raw "GenMeshSphere"
-  [:float :int :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
+(ffi/defcfn material-default
+  "Returns raylib's default Material: the default shader and a white diffuse map.
+  Do not pass it to UnloadMaterial, which frees the shared default shader."
+  "LoadMaterialDefault" [] material-layout)
 
-(ffi/defcfn ^:private gen-mesh-torus-raw "GenMeshTorus"
-  [:float :float :int :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private gen-mesh-knot-raw "GenMeshKnot"
-  [:float :float :int :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private gen-mesh-cylinder-raw "GenMeshCylinder"
-  [:float :float :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private gen-mesh-cone-raw "GenMeshCone"
-  [:float :float :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private gen-mesh-plane-raw "GenMeshPlane"
-  [:float :float :int :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private gen-mesh-hemisphere-raw "GenMeshHemiSphere"
-  [:float :int :int]
-  [:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                       [:vertices :pointer] [:texcoords :pointer]
-                       [:texcoords2 :pointer] [:normals :pointer]
-                       [:tangents :pointer] [:colors :pointer]
-                       [:indices :pointer] [:bone-count :int]
-                       [:bone-indices :pointer] [:bone-weights :pointer]
-                       [:anim-vertices :pointer] [:anim-normals :pointer]
-                       [:vao-id :uint] [:vbo-id :pointer]]]])
-
-(ffi/defcfn ^:private load-material-default-raw "LoadMaterialDefault"
-  [] [:by-value [:struct [[:shader-id :uint] [:shader-locs :pointer]
-                          [:maps :pointer] [:params [:array :float 4]]]]])
-
-(ffi/defcfn ^:private draw-mesh-raw "DrawMesh"
-  [[:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                        [:vertices :pointer] [:texcoords :pointer]
-                        [:texcoords2 :pointer] [:normals :pointer]
-                        [:tangents :pointer] [:colors :pointer]
-                        [:indices :pointer] [:bone-count :int]
-                        [:bone-indices :pointer] [:bone-weights :pointer]
-                        [:anim-vertices :pointer] [:anim-normals :pointer]
-                        [:vao-id :uint] [:vbo-id :pointer]]]]
-   [:by-value [:struct [[:shader-id :uint] [:shader-locs :pointer]
-                        [:maps :pointer] [:params [:array :float 4]]]]]
-   [:by-value [:struct [[:m0 :float] [:m4 :float] [:m8 :float] [:m12 :float]
-                        [:m1 :float] [:m5 :float] [:m9 :float] [:m13 :float]
-                        [:m2 :float] [:m6 :float] [:m10 :float] [:m14 :float]
-                        [:m3 :float] [:m7 :float] [:m11 :float] [:m15 :float]]]]]
-  :void)
-
-(ffi/defcfn ^:private unload-mesh-raw "UnloadMesh"
-  [[:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                        [:vertices :pointer] [:texcoords :pointer]
-                        [:texcoords2 :pointer] [:normals :pointer]
-                        [:tangents :pointer] [:colors :pointer]
-                        [:indices :pointer] [:bone-count :int]
-                        [:bone-indices :pointer] [:bone-weights :pointer]
-                        [:anim-vertices :pointer] [:anim-normals :pointer]
-                        [:vao-id :uint] [:vbo-id :pointer]]]]]
-  :void)
-
-(defn mesh-alloc
-  "A zeroed 120-byte buffer the GenMesh* fns can write a Mesh into. Caller frees
-  with mesh-free! after unload-mesh!."
+(defn matrix-identity
+  "Returns the identity Matrix."
   []
-  (ffi/alloc (ffi/layout-size mesh-layout)))
+  (into {} (map (fn [[k _]] [k (if (#{:m0 :m5 :m10 :m15} k) 1.0 0.0)]))
+        (second native/matrix-layout)))
 
-(defn mesh-free!
-  "Free a buffer from mesh-alloc. Does NOT release the GPU-side vertex buffers;
-  unload-mesh! does that, and has to run first."
-  [m]
-  (ffi/free m))
+(defn matrix-translate
+  "Returns the Matrix of a translation by x, y and z."
+  [x y z]
+  (assoc (matrix-identity) :m12 x :m13 y :m14 z))
 
-(defn mesh-vertex-count [m] (ffi/read-field m mesh-layout :vertex-count))
-(defn mesh-triangle-count [m] (ffi/read-field m mesh-layout :triangle-count))
-(defn mesh-vao-id [m] (ffi/read-field m mesh-layout :vao-id))
+(ffi/defcfn draw-mesh!
+  "Draws mesh with material under the Matrix transform, in 3D mode."
+  "DrawMesh" [mesh-layout material-layout native/matrix-layout] :void)
 
-(defn mesh-cube!
-  "GenMeshCube into `m`. raylib uploads the vertex data to the GPU itself, so the
-  mesh has a live vao id as soon as this returns."
-  [m width height length]
-  (gen-mesh-cube-raw m (double width) (double height) (double length)))
+(defn- material-map0 [mat]
+  (ffi/reinterpret (:maps mat) (ffi/sizeof material-map-layout)))
 
-(defn mesh-sphere!
-  "GenMeshSphere into `m`: a UV sphere of `rings` by `slices`."
-  [m radius rings slices]
-  (gen-mesh-sphere-raw m (double radius) (int rings) (int slices)))
-
-(defn mesh-hemisphere!
-  "GenMeshHemiSphere into `m`: half a sphere, with no bottom cap."
-  [m radius rings slices]
-  (gen-mesh-hemisphere-raw m (double radius) (int rings) (int slices)))
-
-(defn mesh-torus!
-  "GenMeshTorus into `m`. `radius` is the tube, `size` the ring it sweeps."
-  [m radius size rad-seg sides]
-  (gen-mesh-torus-raw m (double radius) (double size) (int rad-seg) (int sides)))
-
-(defn mesh-knot!
-  "GenMeshKnot into `m`: a trefoil, same parameters as the torus."
-  [m radius size rad-seg sides]
-  (gen-mesh-knot-raw m (double radius) (double size) (int rad-seg) (int sides)))
-
-(defn mesh-cylinder!
-  "GenMeshCylinder into `m`."
-  [m radius height slices]
-  (gen-mesh-cylinder-raw m (double radius) (double height) (int slices)))
-
-(defn mesh-cone!
-  "GenMeshCone into `m`."
-  [m radius height slices]
-  (gen-mesh-cone-raw m (double radius) (double height) (int slices)))
-
-(defn mesh-plane!
-  "GenMeshPlane into `m`, subdivided `res-x` by `res-z`."
-  [m width length res-x res-z]
-  (gen-mesh-plane-raw m (double width) (double length) (int res-x) (int res-z)))
-
-(defn material-default
-  "LoadMaterialDefault into a fresh 40-byte buffer: raylib's default shader with
-  a white diffuse map. Caller frees with material-free!. Do NOT pass this to
-  UnloadMaterial, which would free the shared default shader out from under
-  every other user of it."
-  []
-  (let [p (ffi/alloc (ffi/layout-size material-layout))]
-    (load-material-default-raw p)
-    p))
-
-(defn material-free! [mat] (ffi/free mat))
-
-(defn matrix-alloc
-  "A 64-byte Matrix buffer set to the identity."
-  []
-  (let [p (ffi/alloc (ffi/layout-size matrix-layout))]
-    (doseq [k [:m0 :m5 :m10 :m15]]
-      (ffi/write-field p matrix-layout k 1.0))
-    p))
-
-(defn matrix-free! [mtx] (ffi/free mtx))
-
-(defn matrix-translate!
-  "Set `mtx` to a translation, leaving the rotation block as the identity.
-  raylib's translation components are m12 m13 m14, the fourth COLUMN, which sit
-  at the end of the first three declared rows rather than contiguously."
-  [mtx x y z]
-  (doseq [[k v] [[:m0 1.0] [:m5 1.0] [:m10 1.0] [:m15 1.0]
-                 [:m12 (double x)] [:m13 (double y)] [:m14 (double z)]]]
-    (ffi/write-field mtx matrix-layout k v))
-  mtx)
-
-(defn draw-mesh!
-  "DrawMesh: draw `m` with `material` under `transform`. All three cross by
-  value, which here means jolt is handed a pointer to each. Call inside a
-  with-camera-3d block."
-  [m material transform]
-  (draw-mesh-raw m material transform))
-
-(defn unload-mesh!
-  "UnloadMesh: release the GPU-side vertex buffers. The 120-byte host buffer is
-  separate and still needs mesh-free!."
-  [m]
-  (unload-mesh-raw m))
+(def ^:private map-color (ffi/place material-map-layout :color))
+(def ^:private map-texture (ffi/place material-map-layout :texture))
 
 (defn material-diffuse-color!
-  "Tint a material's diffuse map. raylib's default shader multiplies this into
-  whatever the map's texture carries, and the default map is a single white
-  texel, so on a default material this is simply the colour the mesh comes out.
-
-  MaterialMap is {Texture2D texture; Color color; float value;} and Texture2D is
-  five 4-byte fields, so the colour of map 0 sits 20 bytes into the maps array."
+  "Sets the color of the diffuse map of mat, in raylib's memory, and returns mat."
   [mat color]
-  (let [maps (ffi/read-field mat material-layout :maps)]
-    (ffi/write maps :uint color 20))
+  (ffi/write (material-map0 mat) map-color color)
   mat)
 
-(defn material-shader!
-  "Point a material at `sh`, the way C does with `model.materials[0].shader`.
-
-  This is not optional plumbing, and BeginShaderMode is not a substitute for
-  it. DrawMesh reads the shader out of the MATERIAL it is handed; the shader
-  mode rlgl tracks applies to the default batch, which is what the 2D calls and
-  the immediate-mode 3D helpers go through. Wrapping a DrawMesh in
-  with-shader therefore does nothing at all: the mesh still draws with whatever
-  shader its material carries, which for a default material is raylib's unlit
-  one, and the result is a flat silhouette that looks like the shader failed."
+(defn material-shader
+  "Returns mat with the shader sh.
+  DrawMesh draws with the shader of its material, not the one of with-shader."
   [mat sh]
-  (ffi/write-field mat material-layout :shader-id
-                   (ffi/read-field sh shaders/shader-layout :id))
-  (ffi/write-field mat material-layout :shader-locs
-                   (ffi/read-field sh shaders/shader-layout :locs))
-  mat)
+  (assoc mat :shader sh))
 
 (defn material-diffuse-texture!
-  "Put an rlgl texture id into a material's diffuse map, so meshes drawn with it
-  sample that texture instead of the single white texel LoadMaterialDefault
-  leaves there.
-
-  MaterialMap begins with a Texture2D, which is five 4-byte fields (id, width,
-  height, mipmaps, format) at offset 0 of the maps array. raylib reads all of
-  them, not just the id: the size and format decide how it binds and samples,
-  so a map carrying the right id and a zero size draws nothing."
+  "Sets the texture of the diffuse map of mat to the RGBA8 texture tex-id of
+  w by h, in raylib's memory, and returns mat."
   [mat tex-id w h]
-  (let [maps (ffi/read-field mat material-layout :maps)]
-    (ffi/write maps :uint tex-id 0)
-    (ffi/write maps :int (int w) 4)
-    (ffi/write maps :int (int h) 8)
-    (ffi/write maps :int 1 12)
-    (ffi/write maps :int native/PIXELFORMAT-R8G8B8A8 16))
+  (ffi/write (material-map0 mat) map-texture (native/texture2d tex-id w h))
   mat)
 
-;; --- instanced drawing -------------------------------------------------------
-;; DrawMeshInstanced takes the mesh and the material by value and the transforms
-;; as a plain array of Matrix, so the array is one buffer of instances*64 bytes
-;; that matrix-array-set! fills in place.
-;;
-;; No shader plumbing is needed for the instanceTransform attribute. raylib 6.0
-;; resolves it by name when the shader loads (rcore.c assigns
-;; SHADER_LOC_VERTEX_INSTANCETRANSFORM from rlGetLocationAttrib on the name
-;; "instanceTransform"), so a vertex shader that declares `in mat4
-;; instanceTransform` is wired up already. Worth stating because raylib's own
-;; example on master sets a locs slot by hand, and it sets a DIFFERENT one:
-;; that code is for a later version than the 6.0 this links.
 (ffi/defcfn ^:private draw-mesh-instanced-raw "DrawMeshInstanced"
-  [[:by-value [:struct [[:vertex-count :int] [:triangle-count :int]
-                        [:vertices :pointer] [:texcoords :pointer]
-                        [:texcoords2 :pointer] [:normals :pointer]
-                        [:tangents :pointer] [:colors :pointer]
-                        [:indices :pointer] [:bone-count :int]
-                        [:bone-indices :pointer] [:bone-weights :pointer]
-                        [:anim-vertices :pointer] [:anim-normals :pointer]
-                        [:vao-id :uint] [:vbo-id :pointer]]]]
-   [:by-value [:struct [[:shader-id :uint] [:shader-locs :pointer]
-                        [:maps :pointer] [:params [:array :float 4]]]]]
-   :pointer :int]
-  :void)
+  [mesh-layout material-layout :pointer :int] :void)
 
 (defn matrix-array-alloc
-  "A buffer of `n` contiguous Matrix values, 64 bytes each, for
-  draw-mesh-instanced!. Caller frees with matrix-free!."
+  "Returns native memory for n Matrix values, for draw-mesh-instanced!.
+  The garbage collector releases the memory."
   [n]
-  (ffi/alloc (* 64 n)))
+  (ffi/alloc (ffi/auto-arena) (* 64 n)))
 
 (defn matrix-array-set!
-  "Write the instance matrix at index `i`: a rotation of `angle` radians about
-  the unit axis (`ax`,`ay`,`az`), then a translation to (`x`,`y`,`z`).
-
-  Written field by field rather than through matrix-layout, because the layout
-  addresses one struct and this is an array of them. raylib stores a Matrix in
-  the order m0 m4 m8 m12, m1 m5 m9 m13, and so on, so the translation lands at
-  word offsets 3, 7 and 11 rather than at the end."
+  "Writes the Matrix at index i of buf: a rotation of angle radians about the
+  unit axis [ax ay az], then a translation to [x y z].
+  Returns buf."
   [buf i [ax ay az] angle [x y z]]
-  (let [base (* 64 i)
-        w (fn [slot v] (ffi/write buf :float (double v) (+ base (* 4 slot))))
-        c (Math/cos (double angle))
+  (let [c (Math/cos (double angle))
         s (Math/sin (double angle))
         t (- 1.0 c)
         ax (double ax) ay (double ay) az (double az)]
-    ;; row 0: m0 m4 m8 m12
-    (w 0 (+ (* t ax ax) c))       (w 1 (- (* t ax ay) (* s az)))
-    (w 2 (+ (* t ax az) (* s ay))) (w 3 x)
-    ;; row 1: m1 m5 m9 m13
-    (w 4 (+ (* t ax ay) (* s az))) (w 5 (+ (* t ay ay) c))
-    (w 6 (- (* t ay az) (* s ax))) (w 7 y)
-    ;; row 2: m2 m6 m10 m14
-    (w 8 (- (* t ax az) (* s ay))) (w 9 (+ (* t ay az) (* s ax)))
-    (w 10 (+ (* t az az) c))       (w 11 z)
-    ;; row 3: m3 m7 m11 m15
-    (w 12 0.0) (w 13 0.0) (w 14 0.0) (w 15 1.0))
+    (ffi/write buf native/matrix-layout
+               {:m0 (+ (* t ax ax) c) :m4 (- (* t ax ay) (* s az))
+                :m8 (+ (* t ax az) (* s ay)) :m12 x
+                :m1 (+ (* t ax ay) (* s az)) :m5 (+ (* t ay ay) c)
+                :m9 (- (* t ay az) (* s ax)) :m13 y
+                :m2 (- (* t ax az) (* s ay)) :m6 (+ (* t ay az) (* s ax))
+                :m10 (+ (* t az az) c) :m14 z
+                :m3 0.0 :m7 0.0 :m11 0.0 :m15 1.0}
+               (* 64 i)))
   buf)
 
 (defn draw-mesh-instanced!
-  "DrawMeshInstanced: one draw call for `instances` copies of `m`, each under
-  its own matrix in `transforms`. The material's shader must declare
-  `in mat4 instanceTransform` in its vertex stage."
-  [m material transforms instances]
-  (draw-mesh-instanced-raw m material transforms (int instances)))
+  "Draws instances copies of mesh, each under its Matrix in transforms.
+  The vertex shader of material must declare in mat4 instanceTransform."
+  [mesh material transforms instances]
+  (draw-mesh-instanced-raw mesh material transforms instances))

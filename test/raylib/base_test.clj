@@ -31,6 +31,13 @@
     (is (false? (check-collision-recs (native/rectangle [0 0 10 10])
                                       (native/rectangle [50 5 10 10]))))))
 
+(ffi/defcfn ^:private matrix-translate "MatrixTranslate"
+  [:float :float :float] native/matrix-layout)
+
+(deftest matrix-layout-follows-raylib-field-order
+  (testing "MatrixTranslate stores the translation in m12 m13 m14"
+    (is (= [1.0 2.0 3.0] ((juxt :m12 :m13 :m14) (matrix-translate 1 2 3))))))
+
 (deftest staged-writes-values-as-4-byte-elements
   (is (= [1.5 2.5] (native/staged :float [1.5 2.5] #(vec (ffi/read % [:array :float 2])))))
   (is (= [7 -8] (native/staged :int [7 -8] #(vec (ffi/read % [:array :int 2]))))))
