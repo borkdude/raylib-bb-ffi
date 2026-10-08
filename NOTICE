@@ -18,7 +18,9 @@ raylib-jlt
   The module layout, the bindings, the keyword-argument drawing API and the
   color palette come from raylib-jlt. The port replaces jolt.ffi calls with
   babashka.ffi calls and renames the namespaces from net.b12n.raylib.* to
-  raylib.*.
+  raylib.*. It also changes parts of the API: structs pass by value as maps,
+  meshes, materials, shaders and audio streams are maps instead of native
+  pointers, and run! moved to raylib.repl.
 
   The raylib example programs ported by raylib-jlt live in
   https://github.com/jlt-commons/raylib-jolt-demo.
