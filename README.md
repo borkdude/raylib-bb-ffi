@@ -6,6 +6,13 @@
 Status: experimental. This is an LLM-automated port. Use it at your own risk.
 The API is not stable and can change without notice.
 
+This repository is an experiment. It exists only to test whether the examples
+of [raylib-jlt](https://github.com/jlt-commons/raylib-jlt) and
+[raylib-clj](https://github.com/b12n-oss/raylib-clj) run in babashka and in
+Clojure on the JVM through babashka/ffi, each through its own API. That is why
+it ships both APIs: `raylib.*` from raylib-jlt and `raylib-clj.*` from
+raylib-clj.
+
 ## Requirements
 
 - babashka 1.13.225 or newer, or JDK 25 or newer on the JVM
