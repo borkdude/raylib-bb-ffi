@@ -114,7 +114,7 @@
 (ffi/defcfn ^:private image-color-invert-raw   "ImageColorInvert"     [:pointer] :void)
 (ffi/defcfn ^:private image-color-grayscale-raw "ImageColorGrayscale" [:pointer] :void)
 (ffi/defcfn ^:private image-color-tint-raw     "ImageColorTint"       [:pointer :uint] :void)
-(ffi/defcfn ^:private image-color-contrast-raw "ImageColorContrast"   [:pointer :int] :void)
+(ffi/defcfn ^:private image-color-contrast-raw "ImageColorContrast"   [:pointer :float] :void)
 (ffi/defcfn ^:private image-color-brightness-raw "ImageColorBrightness" [:pointer :int] :void)
 (ffi/defcfn ^:private image-flip-horizontal-raw "ImageFlipHorizontal" [:pointer] :void)
 (ffi/defcfn ^:private image-flip-vertical-raw  "ImageFlipVertical"    [:pointer] :void)
