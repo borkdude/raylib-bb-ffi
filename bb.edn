@@ -15,7 +15,7 @@
   check:jvm {:doc "Load every namespace on the JVM."
              :task (clojure "-M:check")}
   lint {:doc "Lint the sources and tests with clj-kondo."
-        :task (shell "clj-kondo --lint src test script")}
+        :task (shell "clj-kondo --lint src/raylib test script")}
   smoke {:doc "Open a window, draw with each drawing module and check the pixels."
          :extra-paths ["script"]
          :task (exec 'smoke/-main)}

@@ -59,3 +59,30 @@ jobs:
         run: |
           xvfb-run -a bb smoke
           xvfb-run -a bb smoke:jvm
+
+  jolt-demos:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install babashka
+        run: |
+          curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install
+          sudo bash install --dynamic
+
+      - name: Build raylib
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake xvfb libx11-dev libxrandr-dev libxinerama-dev \
+            libxcursor-dev libxi-dev libgl1-mesa-dev libasound2-dev
+          git clone --depth 1 --branch 6.0 https://github.com/raysan5/raylib.git /tmp/raylib
+          cmake -S /tmp/raylib -B /tmp/raylib/build -DBUILD_SHARED_LIBS=ON \
+            -DBUILD_EXAMPLES=OFF -DCMAKE_BUILD_TYPE=Release
+          cmake --build /tmp/raylib/build -j
+          sudo cmake --install /tmp/raylib/build
+          sudo ldconfig
+          echo "RAYLIB_LIBRARY=/usr/local/lib/libraylib.so" >> "$GITHUB_ENV"
+
+      - name: Run every jolt demo for 2 seconds
+        working-directory: examples/raylib-jolt-demo
+        run: xvfb-run -a bb run-all 2
