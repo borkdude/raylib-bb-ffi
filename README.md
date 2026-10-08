@@ -3,6 +3,9 @@
 [raylib](https://github.com/raysan5/raylib) bindings for
 [babashka](https://babashka.org) via [babashka/ffi](https://github.com/babashka/ffi).
 
+Status: experimental. This is an LLM-automated port. Use it at your own risk.
+The API is not stable and can change without notice.
+
 ## Credits
 
 This library is a port of [raylib-jlt](https://github.com/jlt-commons/raylib-jlt)
