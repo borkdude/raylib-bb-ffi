@@ -9,7 +9,7 @@
 ;;   bb run-all [secs]     every demo for N seconds each (default 2), unattended
 ;;   bb check              compile every demo, no window
 ;;   bb lint [--strict]    clj-kondo over every demo and common/ (lint:strict fails on findings)
-;;   bb doctor             is libraylib installed?
+;;   bb doctor             is java 25+ and libraylib installed?
 ;;   bb gen [--check]      rebuild deps.edn, check.clj, these tasks and the gallery
 ;;   bb record [opts]      record demo GIFs with screen-grab (maintainer-only), then sync
 ;;   bb sync-recordings    copy docs/demos/ recordings into each demo's own docs/demos/
@@ -77,7 +77,7 @@
      (row "list" "flat list of demos with descriptions")
      (row "run-all [secs]" "every demo for N seconds each (default 2), unattended")
      (hdr "Verify")
-     (row "doctor" "check libraylib")
+     (row "doctor" "check java 25+ and libraylib")
      (row "check" "compile every demo, no window")
      (row "lint" "clj-kondo over every demo (report only); lint:strict fails on findings")
      (hdr "Maintenance")
@@ -130,12 +130,18 @@
    :task (exit-with (kondo!))}
 
   doctor
-  {:doc "Check libraylib before anything else"
+  {:doc "Check java 25+ and libraylib before anything else"
    :task (let [lib-paths (if (str/includes? (str/lower-case (System/getProperty "os.name")) "mac")
                            ["/opt/homebrew/lib/libraylib.dylib" "/usr/local/lib/libraylib.dylib"]
                            ["/usr/lib/libraylib.so" "/usr/local/lib/libraylib.so"
                             "/usr/lib/x86_64-linux-gnu/libraylib.so" "/usr/lib/aarch64-linux-gnu/libraylib.so"])
-               checks [["libraylib" (or (System/getenv "RAYLIB_LIBRARY") (some fs/exists? lib-paths))
+               java-major (try (let [v (:err (shell {:err :string :continue true} "java" "-version"))
+                                     m (re-find (re-pattern "version \"(\\d+)") (or v ""))]
+                                 (some-> m second Long/parseLong))
+                               (catch Exception _ nil))
+               checks [["java 25+ (for JVM runs)" (and java-major (>= java-major 25))
+                        "install JDK 25 or newer"]
+                       ["libraylib" (or (System/getenv "RAYLIB_LIBRARY") (some fs/exists? lib-paths))
                         "brew install raylib, or your distro's raylib package (6.0+)"]
                        ["demos.edn" (fs/exists? "demos.edn") "restore it from git"]]]
            (doseq [[what ok fix] checks]

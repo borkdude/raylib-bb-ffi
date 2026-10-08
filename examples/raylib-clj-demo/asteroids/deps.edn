@@ -1,5 +1,5 @@
 {:paths ["src"]
  :deps {net.b12n/raylib-clj-demo-common {:local/root "../common"}}
- ;; Run from this directory: assets load from ./resources by relative path.
- :aliases {:run {:jvm-opts ["--enable-native-access=ALL-UNNAMED" "-XstartOnFirstThread" "-Djava.library.path=/opt/homebrew/opt/raylib/lib:/opt/homebrew/lib:/usr/local/lib:/usr/lib"]
-                 :main-opts ["-m" "net.b12n.raylib-clj.scenes.asteroids"]}}}
+ :aliases {:run {:jvm-opts ["--enable-native-access=ALL-UNNAMED"]
+                 :main-opts ["-m" "net.b12n.raylib-clj.scenes.asteroids"]}
+           :mac {:jvm-opts ["-XstartOnFirstThread"]}}}

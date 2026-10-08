@@ -14,17 +14,17 @@
    - ENTER: Select/Continue
    - Q: Exit"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.core.keyboard :as rck]
-   [net.b12n.raylib-clj.core.mouse :as rcmouse]
-   [net.b12n.raylib-clj.core.camera3d :as rc3d]
-   [net.b12n.raylib-clj.core.cursor :as rcur]
-   [net.b12n.raylib-clj.shapes.basic :as rsb]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.enums :as enums]
-   [net.b12n.raylib-clj.nrepl :as nrepl]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.core.keyboard :as rck]
+   [raylib-clj.core.mouse :as rcmouse]
+   [raylib-clj.core.camera3d :as rc3d]
+   [raylib-clj.core.cursor :as rcur]
+   [raylib-clj.shapes.basic :as rsb]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.enums :as enums]
+   [raylib-clj.nrepl :as nrepl]))
 
 ;; Screen dimensions (GameBoy-ish)
 (def WIDTH 320)

@@ -12,15 +12,15 @@
    - ENTER: Restart when game over
    - Q: Exit"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.core.keyboard :as rck]
-   [net.b12n.raylib-clj.shapes.basic :as rsb]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.colors :as colors]
-   [net.b12n.raylib-clj.enums :as enums]
-   [net.b12n.raylib-clj.nrepl :as nrepl]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.core.keyboard :as rck]
+   [raylib-clj.shapes.basic :as rsb]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.colors :as colors]
+   [raylib-clj.enums :as enums]
+   [raylib-clj.nrepl :as nrepl]))
 
 (def WIDTH 800)
 (def HEIGHT 450)

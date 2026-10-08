@@ -16,17 +16,17 @@
    Difficulty: 2/4
    Based on: models/models_billboard_rendering.c"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.core.camera3d :as rc3d]
-   [net.b12n.raylib-clj.models :as rm]
-   [net.b12n.raylib-clj.raymath :as rmath]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.textures.texture-loading :as rtl]
-   [net.b12n.raylib-clj.colors :as colors]
-   [net.b12n.raylib-clj.nrepl :as nrepl]
-   [net.b12n.raylib-clj.debug-stats :as debug-stats]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.core.camera3d :as rc3d]
+   [raylib-clj.models :as rm]
+   [raylib-clj.raymath :as rmath]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.textures.texture-loading :as rtl]
+   [raylib-clj.colors :as colors]
+   [raylib-clj.nrepl :as nrepl]
+   [raylib-clj.debug-stats :as debug-stats]))
 
 (def screen-width 800)
 (def screen-height 450)

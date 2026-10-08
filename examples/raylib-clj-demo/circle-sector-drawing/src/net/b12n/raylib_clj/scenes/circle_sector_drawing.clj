@@ -16,16 +16,16 @@
    Difficulty: 2/4
    Based on: shapes/shapes_circle_sector_drawing.c"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.shapes.basic :as rsb]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.raygui :as gui]
-   [net.b12n.raylib-clj.utils :as ru]
-   [net.b12n.raylib-clj.colors :as colors]
-   [net.b12n.raylib-clj.nrepl :as nrepl]
-   [net.b12n.raylib-clj.debug-stats :as debug-stats]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.shapes.basic :as rsb]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.raygui :as gui]
+   [raylib-clj.utils :as ru]
+   [raylib-clj.colors :as colors]
+   [raylib-clj.nrepl :as nrepl]
+   [raylib-clj.debug-stats :as debug-stats]))
 
 (def screen-width 800)
 (def screen-height 450)

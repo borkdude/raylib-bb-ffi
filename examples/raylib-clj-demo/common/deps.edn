@@ -1,7 +1,5 @@
-{;; The one place raylib-clj is pinned. Every demo depends on common/, so they
- ;; all get net.b12n.raylib-clj.* (the bindings, plus the debug-stats overlay)
- ;; through here. To move to a newer raylib-clj, change :git/sha to that
- ;; commit, then run `bb check`.
- :paths []
- :deps {net.b12n/raylib-clj {:git/url "https://github.com/b12n-oss/raylib-clj.git"
-                             :git/sha "1b5f69b786c1a264430d01abd2cae564d91349bc"}}}
+;; The one place the bindings are named. Every demo depends on common/, so they
+;; all get raylib-clj.* (the bindings, plus the debug-stats overlay) through
+;; here, from the root of this repository.
+{:paths []
+ :deps {io.github.borkdude/raylib-bb-ffi {:local/root "../../.."}}}

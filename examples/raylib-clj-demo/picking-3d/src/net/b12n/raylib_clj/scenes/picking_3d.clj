@@ -6,14 +6,14 @@
    Difficulty: ⭐⭐☆☆ (2/4)
    Based on: core/core_3d_picking.c"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.core.camera3d :as rcc]
-   [net.b12n.raylib-clj.core.cursor :as rcur]
-   [net.b12n.raylib-clj.core.collision :as rcol]
-   [net.b12n.raylib-clj.core.mouse :as rcm]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.core.camera3d :as rcc]
+   [raylib-clj.core.cursor :as rcur]
+   [raylib-clj.core.collision :as rcol]
+   [raylib-clj.core.mouse :as rcm]))
 
 (def screen-width 800)
 (def screen-height 450)

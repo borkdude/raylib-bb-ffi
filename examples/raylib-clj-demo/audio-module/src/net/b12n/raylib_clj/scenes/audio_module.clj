@@ -6,15 +6,15 @@
    Difficulty: ⭐☆☆☆ (1/4)
    Based on: audio/audio_module_playing.c"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.core.keyboard :as rck]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.shapes.basic :as rsb]
-   [net.b12n.raylib-clj.audio :as ra]
-   [net.b12n.raylib-clj.enums :as enums]
-   [net.b12n.raylib-clj.colors :as colors]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.core.keyboard :as rck]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.shapes.basic :as rsb]
+   [raylib-clj.audio :as ra]
+   [raylib-clj.enums :as enums]
+   [raylib-clj.colors :as colors]))
 
 (def screen-width 800)
 (def screen-height 450)

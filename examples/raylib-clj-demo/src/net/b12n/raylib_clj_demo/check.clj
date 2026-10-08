@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-clj-demo.check
-  "Headless compile-check (`clojure -M:check` from the repo root).
+  "Headless compile-check (`bb check` from the repo root).
 
   Requires every scene namespace, which compiles each one and links the
   library against libraylib, WITHOUT opening a window: no -main is called."

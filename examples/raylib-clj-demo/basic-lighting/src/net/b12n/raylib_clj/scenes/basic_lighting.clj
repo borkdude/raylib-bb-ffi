@@ -15,20 +15,20 @@
    - F1: Toggle debug stats
    - ESC: Exit"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.core.keyboard :as rck]
-   [net.b12n.raylib-clj.core.camera3d :as rc3]
-   [net.b12n.raylib-clj.core.shaders :as rcs]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.lights :as lights]
-   [net.b12n.raylib-clj.colors :as colors]
-   [net.b12n.raylib-clj.enums :as enums]
-   [net.b12n.raylib-clj.nrepl :as nrepl]
-   [net.b12n.raylib-clj.utils :as ru]
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.core.keyboard :as rck]
+   [raylib-clj.core.camera3d :as rc3]
+   [raylib-clj.core.shaders :as rcs]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.lights :as lights]
+   [raylib-clj.colors :as colors]
+   [raylib-clj.enums :as enums]
+   [raylib-clj.nrepl :as nrepl]
+   [raylib-clj.utils :as ru]
    [coffi.mem :as mem]
-   [net.b12n.raylib-clj.debug-stats :as debug-stats]))
+   [raylib-clj.debug-stats :as debug-stats]))
 
 ;; Constants
 (def WIDTH 800)

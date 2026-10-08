@@ -10,25 +10,21 @@ own sub-project, where its page has the full description and source.
 
 Music visualization. Controls: SPACE, P, Arrows. Run it with `bb audio-module`.
 
-![audio-module](../demos/audio-module.gif)
 
 ### [Music Stream](https://github.com/b12n-oss/raylib-clj-demo/tree/main/music-stream)
 
 MP3 streaming. Controls: SPACE, P, Arrows. Run it with `bb music-stream`.
 
-![music-stream](../demos/music-stream.gif)
 
 ### [Sound Loading](https://github.com/b12n-oss/raylib-clj-demo/tree/main/sound-loading)
 
 WAV/OGG playback. Controls: SPACE, ENTER. Run it with `bb sound-loading`.
 
-![sound-loading](../demos/sound-loading.gif)
 
 ### [Sound Multi](https://github.com/b12n-oss/raylib-clj-demo/tree/main/sound-multi)
 
 Multiple sounds. Controls: SPACE. Run it with `bb sound-multi`.
 
-![sound-multi](../demos/sound-multi.gif)
 
 ## core (37)
 
@@ -36,223 +32,186 @@ Multiple sounds. Controls: SPACE. Run it with `bb sound-multi`.
 
 Physics demo. Controls: SPACE, G. Run it with `bb bouncing-ball`.
 
-![bouncing-ball](../demos/bouncing-ball.gif)
 
 ### [Camera 2D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-2d)
 
 2D camera. Controls: Arrows, A/S, Wheel. Run it with `bb camera-2d`.
 
-![camera-2d](../demos/camera-2d.gif)
 
 ### [Camera 2D Platformer](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-2d-platformer)
 
 5 camera follow modes. Controls: Arrows, SPACE, C, R, Wheel. Run it with `bb camera-2d-platformer`.
 
-![camera-2d-platformer](../demos/camera-2d-platformer.gif)
 
 ### [Camera 2D Split Screen](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-2d-split-screen)
 
 Two players, two cameras, one grid. Controls: P1 W/S/A/D, P2 arrows, Q to exit. Run it with `bb camera-2d-split-screen`.
 
-![camera-2d-split-screen](../demos/camera-2d-split-screen.gif)
 
 ### [Camera 3D Free](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-3d-free)
 
 Free 3D camera. Controls: Mouse, Wheel. Run it with `bb camera-3d-free`.
 
-![camera-3d-free](../demos/camera-3d-free.gif)
 
 ### [Camera 3D Mode](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-3d-mode)
 
 Minimal 3D scene - cube on a grid. Controls: Q to exit. Run it with `bb camera-3d-mode`.
 
-![camera-3d-mode](../demos/camera-3d-mode.gif)
 
 ### [Camera FPS](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-fps)
 
 FPS with physics. Controls: WASD, Space, Ctrl. Run it with `bb camera-fps`.
 
-![camera-fps](../demos/camera-fps.gif)
 
 ### [Clipboard Text](https://github.com/b12n-oss/raylib-clj-demo/tree/main/clipboard-text)
 
 Cut, copy and paste against the system clipboard. Controls: Buttons or CTRL+X / CTRL+C / CTRL+V, click the box to edit. Run it with `bb clipboard-text`.
 
-![clipboard-text](../demos/clipboard-text.gif)
 
 ### [Collision Area](https://github.com/b12n-oss/raylib-clj-demo/tree/main/collision-area)
 
 Collision detection. Controls: Mouse, SPACE. Run it with `bb collision-area`.
 
-![collision-area](../demos/collision-area.gif)
 
 ### [Colors Palette](https://github.com/b12n-oss/raylib-clj-demo/tree/main/colors-palette)
 
 Color showcase. Controls: Hover, SPACE. Run it with `bb colors-palette`.
 
-![colors-palette](../demos/colors-palette.gif)
 
 ### [Delta Time](https://github.com/b12n-oss/raylib-clj-demo/tree/main/delta-time)
 
 Frame-rate independent vs fixed-step motion. Controls: Wheel to change FPS, R to reset, Q to exit. Run it with `bb delta-time`.
 
-![delta-time](../demos/delta-time.gif)
 
 ### [First Person 3D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/first-person-3d)
 
 FPS camera. Controls: WASD, Mouse, 1-4. Run it with `bb first-person-3d`.
 
-![first-person-3d](../demos/first-person-3d.gif)
 
 ### [Following Eyes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/following-eyes)
 
 Mouse tracking. Controls: Move mouse. Run it with `bb following-eyes`.
 
-![following-eyes](../demos/following-eyes.gif)
 
 ### [Gestures Testbed](https://github.com/b12n-oss/raylib-clj-demo/tree/main/gestures-testbed)
 
 Touch gestures. Controls: Touch/click. Run it with `bb gestures-testbed`.
 
-![gestures-testbed](../demos/gestures-testbed.gif)
 
 ### [Input Actions](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-actions)
 
 Remappable action layer over keys and gamepad buttons. Controls: WASD or arrows to move, SPACE to recentre, TAB swaps keyset. Run it with `bb input-actions`.
 
-![input-actions](../demos/input-actions.gif)
 
 ### [Input Gamepad](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-gamepad)
 
 Gamepad demo. Controls: Connect gamepad. Run it with `bb input-gamepad`.
 
-![input-gamepad](../demos/input-gamepad.gif)
 
 ### [Input Gestures](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-gestures)
 
 Log of detected touch gestures. Controls: Click/drag/flick in the test area, Q to exit. Run it with `bb input-gestures`.
 
-![input-gestures](../demos/input-gestures.gif)
 
 ### [Input Keys](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-keys)
 
 Keyboard input. Controls: Arrow keys. Run it with `bb input-keys`.
 
-![input-keys](../demos/input-keys.gif)
 
 ### [Input Mouse](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-mouse)
 
 Mouse input. Controls: Click, move. Run it with `bb input-mouse`.
 
-![input-mouse](../demos/input-mouse.gif)
 
 ### [Input Multitouch](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-multitouch)
 
 Numbered circle per touch point. Controls: Touch/click, Q to exit. Run it with `bb input-multitouch`.
 
-![input-multitouch](../demos/input-multitouch.gif)
 
 ### [Input Virtual Controls](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-virtual-controls)
 
 On-screen D-pad. Controls: Click/touch the D-pad, Q to exit. Run it with `bb input-virtual-controls`.
 
-![input-virtual-controls](../demos/input-virtual-controls.gif)
 
 ### [Keyboard Testbed](https://github.com/b12n-oss/raylib-clj-demo/tree/main/keyboard-testbed)
 
 On-screen ENG-US keyboard showing what raylib reports per key. Controls: Press any key to light it up, hover to highlight, close via title bar. Run it with `bb keyboard-testbed`.
 
-![keyboard-testbed](../demos/keyboard-testbed.gif)
 
 ### [Logo Animation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/logo-anim)
 
 Logo animation. Controls: R to replay. Run it with `bb logo-anim`.
 
-![logo-anim](../demos/logo-anim.gif)
 
 ### [Mouse Wheel](https://github.com/b12n-oss/raylib-clj-demo/tree/main/mouse-wheel)
 
 Scroll input. Controls: Mouse wheel. Run it with `bb mouse-wheel`.
 
-![mouse-wheel](../demos/mouse-wheel.gif)
 
 ### [Picking 3D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/picking-3d)
 
 Ray casting. Controls: Click. Run it with `bb picking-3d`.
 
-![picking-3d](../demos/picking-3d.gif)
 
 ### [Random Values](https://github.com/b12n-oss/raylib-clj-demo/tree/main/random-values)
 
 Random numbers. Controls: Watch. Run it with `bb random-values`.
 
-![random-values](../demos/random-values.gif)
 
 ### [Render Texture](https://github.com/b12n-oss/raylib-clj-demo/tree/main/render-texture)
 
 Bouncing ball drawn into an offscreen target. Controls: Q to exit. Run it with `bb render-texture`.
 
-![render-texture](../demos/render-texture.gif)
 
 ### [Scissor Test](https://github.com/b12n-oss/raylib-clj-demo/tree/main/scissor-test)
 
 Scissor clipping. Controls: S, Mouse. Run it with `bb scissor-test`.
 
-![scissor-test](../demos/scissor-test.gif)
 
 ### [Screen Manager](https://github.com/b12n-oss/raylib-clj-demo/tree/main/screen-manager)
 
 State machine. Controls: ENTER. Run it with `bb screen-manager`.
 
-![screen-manager](../demos/screen-manager.gif)
 
 ### [Smooth Pixelperfect](https://github.com/b12n-oss/raylib-clj-demo/tree/main/smooth-pixelperfect)
 
 Pixel-aligned world, sub-pixel smooth camera. Controls: Q to exit. Run it with `bb smooth-pixelperfect`.
 
-![smooth-pixelperfect](../demos/smooth-pixelperfect.gif)
 
 ### [Split Screen 3D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/split-screen-3d)
 
 Two-player 3D. Controls: W/S, UP/DOWN. Run it with `bb split-screen-3d`.
 
-![split-screen-3d](../demos/split-screen-3d.gif)
 
 ### [Storage Values](https://github.com/b12n-oss/raylib-clj-demo/tree/main/storage-values)
 
 Save and load scores to a file. Controls: R random, ENTER save, SPACE load, Q to exit. Run it with `bb storage-values`.
 
-![storage-values](../demos/storage-values.gif)
 
 ### [Undo Redo](https://github.com/b12n-oss/raylib-clj-demo/tree/main/undo-redo)
 
 Ring-buffer undo history on a grid. Controls: Arrows move, SPACE colour, CTRL+Z undo, CTRL+Y redo, Q exit. Run it with `bb undo-redo`.
 
-![undo-redo](../demos/undo-redo.gif)
 
 ### [Viewport Scaling](https://github.com/b12n-oss/raylib-clj-demo/tree/main/viewport-scaling)
 
 Six ways to fit a fixed-resolution game onto a resizable window. Controls: Click < > to change resolution and viewport type, resize the window. Run it with `bb viewport-scaling`.
 
-![viewport-scaling](../demos/viewport-scaling.gif)
 
 ### [Window Letterbox](https://github.com/b12n-oss/raylib-clj-demo/tree/main/window-letterbox)
 
 Resolution-independent rendering. Controls: SPACE, Resize window. Run it with `bb window-letterbox`.
 
-![window-letterbox](../demos/window-letterbox.gif)
 
 ### [Window Should Close](https://github.com/b12n-oss/raylib-clj-demo/tree/main/window-should-close)
 
 Custom close confirmation. Controls: Y/N to confirm/cancel. Run it with `bb window-should-close`.
 
-![window-should-close](../demos/window-should-close.gif)
 
 ### [World Screen](https://github.com/b12n-oss/raylib-clj-demo/tree/main/world-screen)
 
 3D to 2D coords. Controls: Mouse, Wheel. Run it with `bb world-screen`.
 
-![world-screen](../demos/world-screen.gif)
 
 ## games (9)
 
@@ -260,55 +219,46 @@ Custom close confirmation. Controls: Y/N to confirm/cancel. Run it with `bb wind
 
 Shoot asteroids. Controls: Arrows, Space. Run it with `bb asteroids`.
 
-![asteroids](../demos/asteroids.gif)
 
 ### [Asteroids 2](https://github.com/b12n-oss/raylib-clj-demo/tree/main/asteroids2)
 
 Alternate version. Controls: Arrows, Space. Run it with `bb asteroids2`.
 
-![asteroids2](../demos/asteroids2.gif)
 
 ### [Floppy](https://github.com/b12n-oss/raylib-clj-demo/tree/main/floppy)
 
 Flappy bird clone. Controls: SPACE, P, ENTER, Q. Run it with `bb floppy`.
 
-![floppy](../demos/floppy.gif)
 
 ### [Hello World](https://github.com/b12n-oss/raylib-clj-demo/tree/main/hello-world)
 
 Basic window test. Controls: Q to exit, F1 for debug stats. Run it with `bb hello-world`.
 
-![hello-world](../demos/hello-world.gif)
 
 ### [Pong](https://github.com/b12n-oss/raylib-clj-demo/tree/main/pong)
 
 Two-player paddle game. Controls: W/S, K/J, Enter. Run it with `bb pong`.
 
-![pong](../demos/pong.gif)
 
 ### [Retro Maze 3D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/retro-maze-3d)
 
 GameBoy-style maze escape. Controls: WASD, Mouse, SPACE, M, ENTER, Q. Run it with `bb retro-maze-3d`.
 
-![retro-maze-3d](../demos/retro-maze-3d.gif)
 
 ### [Snake](https://github.com/b12n-oss/raylib-clj-demo/tree/main/snake)
 
 Classic snake game. Controls: Arrows, P, ENTER, Q. Run it with `bb snake`.
 
-![snake](../demos/snake.gif)
 
 ### [Tetris](https://github.com/b12n-oss/raylib-clj-demo/tree/main/tetris)
 
 Block-stacking puzzle. Controls: Arrows, Space. Run it with `bb tetris`.
 
-![tetris](../demos/tetris.gif)
 
 ### [Vampire Survivors](https://github.com/b12n-oss/raylib-clj-demo/tree/main/vampire-survivors)
 
 Survival action. Controls: WASD. Run it with `bb vampire-survivors`.
 
-![vampire-survivors](../demos/vampire-survivors.gif)
 
 ## models (25)
 
@@ -316,151 +266,126 @@ Survival action. Controls: WASD. Run it with `bb vampire-survivors`.
 
 First-person 8x8x8 voxel world, left-click to remove a cube. Controls: WASD to move, mouse to look, left-click to remove. Run it with `bb basic-voxel`.
 
-![basic-voxel](../demos/basic-voxel.gif)
 
 ### [Billboard Rendering](https://github.com/b12n-oss/raylib-clj-demo/tree/main/billboard-rendering)
 
 Camera-facing sprites drawn far-to-near so alpha blends correctly. Controls: Orbits on its own, no input. Run it with `bb billboard-rendering`.
 
-![billboard-rendering](../demos/billboard-rendering.gif)
 
 ### [Bouncing Spheres](https://github.com/b12n-oss/raylib-clj-demo/tree/main/bouncing-spheres)
 
 Physics in 3D box. Controls: SPACE, R, G, Q. Run it with `bb bouncing-spheres`.
 
-![bouncing-spheres](../demos/bouncing-spheres.gif)
 
 ### [Box Collisions](https://github.com/b12n-oss/raylib-clj-demo/tree/main/box-collisions)
 
 3D collision detection. Controls: Arrow keys, Q. Run it with `bb box-collisions`.
 
-![box-collisions](../demos/box-collisions.gif)
 
 ### [Camera Modes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/camera-modes)
 
 Free/Orbital/FPS cameras. Controls: 1/2/3, WASD, Q. Run it with `bb camera-modes`.
 
-![camera-modes](../demos/camera-modes.gif)
 
 ### [Cubicmap Rendering](https://github.com/b12n-oss/raylib-clj-demo/tree/main/cubicmap-rendering)
 
 A 3D maze mesh generated from a 32x16 PNG, one cube per lit pixel. Controls: P to pause the orbit. Run it with `bb cubicmap-rendering`.
 
-![cubicmap-rendering](../demos/cubicmap-rendering.gif)
 
 ### [DNA Helix](https://github.com/b12n-oss/raylib-clj-demo/tree/main/dna-helix)
 
 Double helix. Controls: Arrows, SPACE, R, Q. Run it with `bb dna-helix`.
 
-![dna-helix](../demos/dna-helix.gif)
 
 ### [First Person Maze](https://github.com/b12n-oss/raylib-clj-demo/tree/main/first-person-maze)
 
 Navigate 3D maze. Controls: WASD, Mouse, R, M, Q. Run it with `bb first-person-maze`.
 
-![first-person-maze](../demos/first-person-maze.gif)
 
 ### [Geometric Shapes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/geometric-shapes)
 
 3D primitives. Controls: Q to exit. Run it with `bb geometric-shapes`.
 
-![geometric-shapes](../demos/geometric-shapes.gif)
 
 ### [Heightmap Rendering](https://github.com/b12n-oss/raylib-clj-demo/tree/main/heightmap-rendering)
 
 Terrain mesh generated from a greyscale PNG, brightness as elevation. Controls: Orbits on its own, no input. Run it with `bb heightmap-rendering`.
 
-![heightmap-rendering](../demos/heightmap-rendering.gif)
 
 ### [Lissajous 3D](https://github.com/b12n-oss/raylib-clj-demo/tree/main/lissajous-3d)
 
 Parametric curves. Controls: 1-5, Arrows, W/S, SPACE, Q. Run it with `bb lissajous-3d`.
 
-![lissajous-3d](../demos/lissajous-3d.gif)
 
 ### [Lorenz Attractor](https://github.com/b12n-oss/raylib-clj-demo/tree/main/lorenz-attractor)
 
 Chaos theory. Controls: 1-3, Arrows, SPACE, R, Q. Run it with `bb lorenz-attractor`.
 
-![lorenz-attractor](../demos/lorenz-attractor.gif)
 
 ### [Mesh Generation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/mesh-generation)
 
 Procedural 3D shapes. Controls: Left/Right, Click, SPACE, R, Q. Run it with `bb mesh-generation`.
 
-![mesh-generation](../demos/mesh-generation.gif)
 
 ### [Orthographic Projection](https://github.com/b12n-oss/raylib-clj-demo/tree/main/orthographic-projection)
 
 Perspective vs orthographic. Controls: SPACE, Q. Run it with `bb orthographic-projection`.
 
-![orthographic-projection](../demos/orthographic-projection.gif)
 
 ### [Particle System](https://github.com/b12n-oss/raylib-clj-demo/tree/main/particle-system)
 
 3D particles. Controls: SPACE, G, W, R, Q. Run it with `bb particle-system`.
 
-![particle-system](../demos/particle-system.gif)
 
 ### [Point Cloud](https://github.com/b12n-oss/raylib-clj-demo/tree/main/point-cloud)
 
 Spherical points. Controls: UP/DOWN, Q. Run it with `bb point-cloud`.
 
-![point-cloud](../demos/point-cloud.gif)
 
 ### [Ray Picking](https://github.com/b12n-oss/raylib-clj-demo/tree/main/ray-picking)
 
 Click to select cubes. Controls: Click, Right-click, Q. Run it with `bb ray-picking`.
 
-![ray-picking](../demos/ray-picking.gif)
 
 ### [Rotating Cube](https://github.com/b12n-oss/raylib-clj-demo/tree/main/rotating-cube)
 
 3D rotation. Controls: Arrows, +/-, R, Q. Run it with `bb rotating-cube`.
 
-![rotating-cube](../demos/rotating-cube.gif)
 
 ### [Solar System](https://github.com/b12n-oss/raylib-clj-demo/tree/main/solar-system)
 
 Orbiting planets. Controls: Q to exit. Run it with `bb solar-system`.
 
-![solar-system](../demos/solar-system.gif)
 
 ### [Spinning Cubes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/spinning-cubes)
 
 Color-cycling cubes. Controls: Q to exit. Run it with `bb spinning-cubes`.
 
-![spinning-cubes](../demos/spinning-cubes.gif)
 
 ### [Terrain Generation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/terrain-generation)
 
 Procedural terrain. Controls: 1-3, Arrows, G, W, SPACE, Q. Run it with `bb terrain-generation`.
 
-![terrain-generation](../demos/terrain-generation.gif)
 
 ### [Tesseract View](https://github.com/b12n-oss/raylib-clj-demo/tree/main/tesseract-view)
 
 4D hypercube. Controls: Q to exit. Run it with `bb tesseract-view`.
 
-![tesseract-view](../demos/tesseract-view.gif)
 
 ### [Waving Cubes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/waving-cubes)
 
 Animated cube wave. Controls: Q to exit. Run it with `bb waving-cubes`.
 
-![waving-cubes](../demos/waving-cubes.gif)
 
 ### [Wireframe Shapes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/wireframe-shapes)
 
 Custom wireframes. Controls: SPACE, Q. Run it with `bb wireframe-shapes`.
 
-![wireframe-shapes](../demos/wireframe-shapes.gif)
 
 ### [Yaw Pitch Roll](https://github.com/b12n-oss/raylib-clj-demo/tree/main/yaw-pitch-roll)
 
 3D rotation demo. Controls: Arrows, SPACE, R, Q. Run it with `bb yaw-pitch-roll`.
 
-![yaw-pitch-roll](../demos/yaw-pitch-roll.gif)
 
 ## shaders (3)
 
@@ -468,19 +393,16 @@ Custom wireframes. Controls: SPACE, Q. Run it with `bb wireframe-shapes`.
 
 Post-process the scene into ASCII glyphs via a render texture. Controls: LEFT/RIGHT to change the glyph cell size. Run it with `bb ascii-rendering`.
 
-![ascii-rendering](../demos/ascii-rendering.gif)
 
 ### [Basic Lighting](https://github.com/b12n-oss/raylib-clj-demo/tree/main/basic-lighting)
 
 Dynamic lighting. Controls: Mouse, Y/R/G/B. Run it with `bb basic-lighting`.
 
-![basic-lighting](../demos/basic-lighting.gif)
 
 ### [Palette Switch](https://github.com/b12n-oss/raylib-clj-demo/tree/main/palette-switch)
 
 Fragment shader remaps index-encoded bands through a palette. Controls: LEFT/RIGHT to switch palette. Run it with `bb palette-switch`.
 
-![palette-switch](../demos/palette-switch.gif)
 
 ## shapes (28)
 
@@ -488,169 +410,141 @@ Fragment shader remaps index-encoded bands through a palette. Controls: LEFT/RIG
 
 Grab and throw balls. Controls: Click, Right-click, Wheel, Middle. Run it with `bb ball-physics`.
 
-![ball-physics](../demos/ball-physics.gif)
 
 ### [Basic Shapes](https://github.com/b12n-oss/raylib-clj-demo/tree/main/basic-shapes)
 
 Circles, rectangles, triangles, polygons. Controls: ESC to exit. Run it with `bb basic-shapes`.
 
-![basic-shapes](../demos/basic-shapes.gif)
 
 ### [Bullet Hell](https://github.com/b12n-oss/raylib-clj-demo/tree/main/bullet-hell)
 
 Throughput test firing rows of bullets from a rotating circle. Controls: RIGHT/LEFT rows, UP/DOWN speed, Z/X cooldown, SPACE angle, ENTER draw method, C clear. Run it with `bb bullet-hell`.
 
-![bullet-hell](../demos/bullet-hell.gif)
 
 ### [Circle Sector Drawing](https://github.com/b12n-oss/raylib-clj-demo/tree/main/circle-sector-drawing)
 
 Circle sector angles, radius and segments on raygui sliders. Controls: Drag the four sliders on the right. Run it with `bb circle-sector-drawing`.
 
-![circle-sector-drawing](../demos/circle-sector-drawing.gif)
 
 ### [Clock Of Clocks](https://github.com/b12n-oss/raylib-clj-demo/tree/main/clock-of-clocks)
 
 Digits drawn from a grid of analogue clocks. Controls: Space to toggle 12/24h, Q to exit. Run it with `bb clock-of-clocks`.
 
-![clock-of-clocks](../demos/clock-of-clocks.gif)
 
 ### [Dashed Line](https://github.com/b12n-oss/raylib-clj-demo/tree/main/dashed-line)
 
 Interactive dashed line. Controls: Arrows, C. Run it with `bb dashed-line`.
 
-![dashed-line](../demos/dashed-line.gif)
 
 ### [Double Pendulum](https://github.com/b12n-oss/raylib-clj-demo/tree/main/double-pendulum)
 
 Chaotic pendulum simulation. Controls: ESC to exit. Run it with `bb double-pendulum`.
 
-![double-pendulum](../demos/double-pendulum.gif)
 
 ### [Easings Ball](https://github.com/b12n-oss/raylib-clj-demo/tree/main/easings-ball)
 
 Easing function animation. Controls: ENTER to replay. Run it with `bb easings-ball`.
 
-![easings-ball](../demos/easings-ball.gif)
 
 ### [Easings Box](https://github.com/b12n-oss/raylib-clj-demo/tree/main/easings-box)
 
 Box animation with easing functions. Controls: SPACE to reset. Run it with `bb easings-box`.
 
-![easings-box](../demos/easings-box.gif)
 
 ### [Easings Rectangles](https://github.com/b12n-oss/raylib-clj-demo/tree/main/easings-rectangles)
 
 Grid animation with easing functions. Controls: SPACE to replay. Run it with `bb easings-rectangles`.
 
-![easings-rectangles](../demos/easings-rectangles.gif)
 
 ### [Easings Testbed](https://github.com/b12n-oss/raylib-clj-demo/tree/main/easings-testbed)
 
 All 28 easing curves, one per axis. Controls: LEFT/RIGHT x-curve, UP/DOWN y-curve, ENTER play, SPACE restart, Q/W/A/S duration, T bound. Run it with `bb easings-testbed`.
 
-![easings-testbed](../demos/easings-testbed.gif)
 
 ### [Ellipse Collision](https://github.com/b12n-oss/raylib-clj-demo/tree/main/ellipse-collision)
 
 Steer one ellipse into another. Controls: A/B to switch control, Mouse to move, Q to exit. Run it with `bb ellipse-collision`.
 
-![ellipse-collision](../demos/ellipse-collision.gif)
 
 ### [Hilbert Curve](https://github.com/b12n-oss/raylib-clj-demo/tree/main/hilbert-curve)
 
 Space-filling curve drawn stroke by stroke with hue along its length. Controls: Spinner sets order, sliders set thickness and size. Run it with `bb hilbert-curve`.
 
-![hilbert-curve](../demos/hilbert-curve.gif)
 
 ### [Kaleidoscope](https://github.com/b12n-oss/raylib-clj-demo/tree/main/kaleidoscope)
 
 Mouse strokes repeated around six-fold symmetry and mirrored. Controls: Drag to draw, < > to step through lines, Reset to clear. Run it with `bb kaleidoscope`.
 
-![kaleidoscope](../demos/kaleidoscope.gif)
 
 ### [Lines Bezier](https://github.com/b12n-oss/raylib-clj-demo/tree/main/lines-bezier)
 
 Interactive bezier curve. Controls: Drag endpoints. Run it with `bb lines-bezier`.
 
-![lines-bezier](../demos/lines-bezier.gif)
 
 ### [Lines Drawing](https://github.com/b12n-oss/raylib-clj-demo/tree/main/lines-drawing)
 
 Draw rainbow lines on canvas. Controls: Click, Right-click, Wheel, Middle. Run it with `bb lines-drawing`.
 
-![lines-drawing](../demos/lines-drawing.gif)
 
 ### [Logo Raylib](https://github.com/b12n-oss/raylib-clj-demo/tree/main/logo-raylib)
 
 Raylib logo drawn with shapes. Controls: ESC to exit. Run it with `bb logo-raylib`.
 
-![logo-raylib](../demos/logo-raylib.gif)
 
 ### [Logo Raylib Anim](https://github.com/b12n-oss/raylib-clj-demo/tree/main/logo-raylib-anim)
 
 Animated logo construction. Controls: R to replay. Run it with `bb logo-raylib-anim`.
 
-![logo-raylib-anim](../demos/logo-raylib-anim.gif)
 
 ### [Math Angle Rotation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/math-angle-rotation)
 
 Fixed and sweeping angle lines. Controls: Q to exit. Run it with `bb math-angle-rotation`.
 
-![math-angle-rotation](../demos/math-angle-rotation.gif)
 
 ### [Math Sine Cosine](https://github.com/b12n-oss/raylib-clj-demo/tree/main/math-sine-cosine)
 
 Unit circle with sine, cosine, tangent and related angles drawn live. Controls: Angle slider, Pause toggle. Run it with `bb math-sine-cosine`.
 
-![math-sine-cosine](../demos/math-sine-cosine.gif)
 
 ### [Mouse Trail](https://github.com/b12n-oss/raylib-clj-demo/tree/main/mouse-trail)
 
 Circles following mouse cursor. Controls: Move mouse. Run it with `bb mouse-trail`.
 
-![mouse-trail](../demos/mouse-trail.gif)
 
 ### [Penrose Tile](https://github.com/b12n-oss/raylib-clj-demo/tree/main/penrose-tile)
 
 L-system Penrose tiling drawn by turtle. Controls: UP/DOWN change generations, Q to exit. Run it with `bb penrose-tile`.
 
-![penrose-tile](../demos/penrose-tile.gif)
 
 ### [Rectangle Scaling](https://github.com/b12n-oss/raylib-clj-demo/tree/main/rectangle-scaling)
 
 Drag to resize rectangle. Controls: Drag bottom-right corner. Run it with `bb rectangle-scaling`.
 
-![rectangle-scaling](../demos/rectangle-scaling.gif)
 
 ### [Recursive Tree](https://github.com/b12n-oss/raylib-clj-demo/tree/main/recursive-tree)
 
 Binary tree grown by splitting each branch in two. Controls: Drag Angle/Length/Decay/Depth/Thick, toggle Bezier. Run it with `bb recursive-tree`.
 
-![recursive-tree](../demos/recursive-tree.gif)
 
 ### [Ring Drawing](https://github.com/b12n-oss/raylib-clj-demo/tree/main/ring-drawing)
 
 Ring inner/outer radius, angles and segments on raygui sliders. Controls: Drag the sliders, toggle the three draw modes. Run it with `bb ring-drawing`.
 
-![ring-drawing](../demos/ring-drawing.gif)
 
 ### [Rounded Rectangle Drawing](https://github.com/b12n-oss/raylib-clj-demo/tree/main/rounded-rectangle-drawing)
 
 Corner roundness, size, thickness and segments on raygui sliders. Controls: Drag the sliders, toggle the three draw modes. Run it with `bb rounded-rectangle-drawing`.
 
-![rounded-rectangle-drawing](../demos/rounded-rectangle-drawing.gif)
 
 ### [Simple Particles](https://github.com/b12n-oss/raylib-clj-demo/tree/main/simple-particles)
 
 Water/smoke/fire effects. Controls: Arrows, Click. Run it with `bb simple-particles`.
 
-![simple-particles](../demos/simple-particles.gif)
 
 ### [Starfield Effect](https://github.com/b12n-oss/raylib-clj-demo/tree/main/starfield-effect)
 
 3D starfield simulation. Controls: SPACE, Wheel. Run it with `bb starfield-effect`.
 
-![starfield-effect](../demos/starfield-effect.gif)
 
 ## text (3)
 
@@ -658,19 +552,16 @@ Water/smoke/fire effects. Controls: Arrows, Click. Run it with `bb simple-partic
 
 Formatted score/timer display. Controls: ESC to exit. Run it with `bb format-text`.
 
-![format-text](../demos/format-text.gif)
 
 ### [Input Box](https://github.com/b12n-oss/raylib-clj-demo/tree/main/input-box)
 
 Text input field. Controls: Click, type, Backspace. Run it with `bb input-box`.
 
-![input-box](../demos/input-box.gif)
 
 ### [Writing Animation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/writing-anim)
 
 Typewriter text effect. Controls: SPACE speed up, ENTER restart. Run it with `bb writing-anim`.
 
-![writing-anim](../demos/writing-anim.gif)
 
 ## textures (4)
 
@@ -678,22 +569,18 @@ Typewriter text effect. Controls: SPACE speed up, ENTER restart. Run it with `bb
 
 Parallax demo. Controls: Watch. Run it with `bb background-scrolling`.
 
-![background-scrolling](../demos/background-scrolling.gif)
 
 ### [Sprite Animation](https://github.com/b12n-oss/raylib-clj-demo/tree/main/sprite-animation)
 
 Spritesheet. Controls: LEFT/RIGHT. Run it with `bb sprite-animation`.
 
-![sprite-animation](../demos/sprite-animation.gif)
 
 ### [Srcrec Dstrec](https://github.com/b12n-oss/raylib-clj-demo/tree/main/srcrec-dstrec)
 
 Source/destination rects with rotation. Controls: Q to exit. Run it with `bb srcrec-dstrec`.
 
-![srcrec-dstrec](../demos/srcrec-dstrec.gif)
 
 ### [Tiled Drawing](https://github.com/b12n-oss/raylib-clj-demo/tree/main/tiled-drawing)
 
 Tile a texture patch with selectable pattern, tint, scale and rotation. Controls: Click a pattern or colour, UP/DOWN scale, LEFT/RIGHT rotate, SPACE reset. Run it with `bb tiled-drawing`.
 
-![tiled-drawing](../demos/tiled-drawing.gif)

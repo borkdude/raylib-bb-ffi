@@ -10,21 +10,20 @@
 ;;   bb check              compile every scene, no window
 ;;   bb lint               clj-kondo over every demo; errors fail, warnings are reported
 ;;   bb lint:strict        bb lint, but warnings fail too
-;;   bb doctor             java 22+, clojure, the raylib-clj dependency, libraylib
+;;   bb doctor             is java 25+ and libraylib installed?
 ;;   bb gen [--check]      rebuild deps.edn, check.clj, these tasks and the gallery
 ;;   bb record [opts]      record demo GIFs with screen-grab (maintainer-only), then sync
 ;;   bb sync-recordings    copy docs/demos/ recordings into each demo's own docs/demos/
 ;;
-;; Every demo runs from its own directory (`clojure -M:run`), because the ones
+;; Every demo runs from its own directory (`bb run`), because the ones
 ;; with assets load them from ./resources by relative path. The demo list is
 ;; demos.edn, edited by hand, and the per-demo tasks at the bottom are written
 ;; from it by `bb gen`.
 ;;
-;; GUI apps need `clojure`, not `clj`: rlwrap breaks them.
-;;
 ;; NOTE: task bodies are EDN-parsed. No #"regex", no @deref, no #(...).
-{:min-bb-version "1.3.0"
+{:min-bb-version "1.13.225"
  :paths ["scripts"]
+ :deps {net.b12n/raylib-clj-demo {:local/root "."}}
  :tasks
  {:requires ([babashka.fs :as fs]
              [babashka.process :as p]
@@ -49,7 +48,7 @@
       "Run one demo from its own directory, where its resources/ resolve."
       [name]
       (let [d (demo! name)]
-        (shell {:continue true :dir (:name d)} "clojure" "-M:run")))
+        (shell {:continue true :dir (:name d)} "bb" "run")))
 
     (defn exit-with [{:keys [exit]}]
       (when-not (zero? exit) (System/exit exit)))
@@ -79,7 +78,7 @@
      (row "list" "flat list of demos with descriptions")
      (row "run-all [secs]" "every demo for N seconds each (default 4), unattended")
      (hdr "Verify")
-     (row "doctor" "java 22+, clojure, the raylib-clj dependency, libraylib")
+     (row "doctor" "check java 25+ and libraylib")
      (row "check" "compile every scene, no window")
      (row "lint" "clj-kondo over every demo; errors fail (lint:strict: warnings too)")
      (hdr "Maintenance")
@@ -108,12 +107,12 @@
   run-all
   {:doc "Every demo for N seconds each (default 4), unattended; exits 1 if any fail"
    ;; The examples have no auto-quit, so this stops each one itself. Its clock
-   ;; starts when raylib logs "DISPLAY: Device initialized", so JVM start-up
-   ;; costs nothing extra. A demo still running at the end passed. One that
+   ;; starts when raylib logs "DISPLAY: Device initialized", so start-up costs
+   ;; nothing extra. A demo still running at the end passed. One that
    ;; exits non-zero, or never opens its window within 60s, failed.
    :task (let [secs (Long/parseLong (or (first *command-line-args*) "4"))
                run-one (fn [n]
-                         (let [proc (p/process {:dir n :err :out} "clojure" "-M:run")
+                         (let [proc (p/process {:dir n :err :out} "bb" "run")
                                rdr (java.io.BufferedReader. (java.io.InputStreamReader. (:out proc)))
                                ready (promise)
                                ;; Keeps draining stdout after the window is up, so
@@ -147,7 +146,7 @@
 
   check
   {:doc "Compile every scene, no window"
-   :task (exit-with (shell {:continue true} "clojure" "-M:check"))}
+   :task (exit-with (shell {:continue true} "bb" "-m" "net.b12n.raylib-clj-demo.check"))}
 
   lint
   {:doc "clj-kondo over every demo: warnings are reported, errors fail"
@@ -164,25 +163,17 @@
    :task (exit-with (kondo!))}
 
   doctor
-  {:doc "Check java 22+, clojure, the raylib-clj dependency and libraylib"
-   :task (let [java-major (try (let [v (:err (shell {:err :string :continue true} "java" "-version"))
+  {:doc "Check java 25+ and libraylib before anything else"
+   :task (let [lib-paths ["/opt/homebrew/lib/libraylib.dylib" "/usr/local/lib/libraylib.dylib"
+                          "/usr/lib/libraylib.so" "/usr/local/lib/libraylib.so"
+                          "/usr/lib/x86_64-linux-gnu/libraylib.so"]
+               java-major (try (let [v (:err (shell {:err :string :continue true} "java" "-version"))
                                      m (re-find (re-pattern "version \"(\\d+)") (or v ""))]
                                  (some-> m second Long/parseLong))
                                (catch Exception _ nil))
-               lib-paths ["/opt/homebrew/lib/libraylib.6.0.0.dylib" "/usr/local/lib/libraylib.6.0.0.dylib"
-                          "/usr/lib/libraylib.so" "/usr/local/lib/libraylib.so"
-                          "/usr/lib/x86_64-linux-gnu/libraylib.so"]
-               checks [["java 22+ (coffi needs the final FFM API)" (and java-major (>= java-major 22))
-                        "install a JDK 22 or newer"]
-                       ["clojure on PATH" (fs/which "clojure") "install the Clojure CLI: https://clojure.org/guides/install_clojure"]
-                       ;; Resolving the classpath fetches the pinned raylib-clj the
-                       ;; first time, so this also proves the network can reach it.
-                       ["raylib-clj (the bindings, pinned in common/deps.edn)"
-                        (and (fs/which "clojure")
-                             (str/includes? (:out (shell {:out :string :err :string :continue true} "clojure" "-Spath"))
-                                            "raylib-clj"))
-                        "check network access to github.com, then common/deps.edn's :git/sha"]
-                       ["libraylib 6.0" (some fs/exists? lib-paths)
+               checks [["java 25+ (for JVM runs)" (and java-major (>= java-major 25))
+                        "install JDK 25 or newer"]
+                       ["libraylib 6.0" (or (System/getenv "RAYLIB_LIBRARY") (some fs/exists? lib-paths))
                         "brew install raylib, or your distro's raylib package (6.0+)"]
                        ["demos.edn" (fs/exists? "demos.edn") "restore it from git"]]]
            (doseq [[what ok fix] checks]
@@ -199,7 +190,7 @@
                       :group (:category d)
                       :desc (:desc d)
                       :src (str n "/src/net/b12n/raylib_clj/scenes/" (str/replace n "-" "_") ".clj")
-                      :run (str "sh -c 'cd " n " && exec clojure -M:run'")})))}
+                      :run (str "sh -c 'cd " n " && exec bb run'")})))}
 
   record
   {:doc "Record demo GIFs into docs/demos/ (screen-grab), then sync each demo's copy and the gallery"

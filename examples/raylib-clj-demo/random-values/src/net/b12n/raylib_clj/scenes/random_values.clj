@@ -6,12 +6,12 @@
    Difficulty: ⭐☆☆☆ (1/4)
    Based on: core/core_random_values.c"
   (:require
-   [net.b12n.raylib-clj.core.window :as rcw]
-   [net.b12n.raylib-clj.core.timing :as rct]
-   [net.b12n.raylib-clj.core.drawing :as rcd]
-   [net.b12n.raylib-clj.text.drawing :as rtd]
-   [net.b12n.raylib-clj.utils :as ru]
-   [net.b12n.raylib-clj.colors :as colors]))
+   [raylib-clj.core.window :as rcw]
+   [raylib-clj.core.timing :as rct]
+   [raylib-clj.core.drawing :as rcd]
+   [raylib-clj.text.drawing :as rtd]
+   [raylib-clj.utils :as ru]
+   [raylib-clj.colors :as colors]))
 
 (def screen-width 800)
 (def screen-height 450)
