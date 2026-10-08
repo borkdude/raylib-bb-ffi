@@ -63,7 +63,7 @@
    :down 264
    :up 265
    :page-up 266
-   :page-down 264
+   :page-down 267
    :home 268
    :end 269
    :caps-lock 280
