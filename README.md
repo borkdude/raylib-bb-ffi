@@ -3,10 +3,8 @@
 [raylib](https://github.com/raysan5/raylib) bindings for
 [babashka](https://babashka.org) via [babashka/ffi](https://github.com/babashka/ffi).
 
-Status: experimental. This is an LLM-automated port. Use it at your own risk.
-The API is not stable and can change without notice.
-
-This repository is an experiment. It exists only to test whether the examples
+This repository is an experiment, ported with an LLM. Use it at your own
+risk. It exists only to test whether the examples
 of [raylib-jlt](https://github.com/jlt-commons/raylib-jlt) and
 [raylib-clj](https://github.com/b12n-oss/raylib-clj) run in babashka and in
 Clojure on the JVM through babashka/ffi, each through its own API. That is why
