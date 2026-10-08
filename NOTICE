@@ -1,0 +1,52 @@
+Third-party attribution
+=======================
+
+This project is licensed under the Eclipse Public License 2.0, see LICENSE.
+
+raylib-jlt
+----------
+  Copyright (c) 2026 Burin Choomnuan (@burinc)
+  https://github.com/jlt-commons/raylib-jlt
+  Licensed under the Eclipse Public License 2.0.
+
+  This project is a port of raylib-jlt, the raylib bindings for jolt
+  written by Burin Choomnuan. The port started from raylib-jlt commit
+  ffd97a91727b02c8f2a5ee2c194bfb64d10c2d4a (2026-10-06):
+
+    https://github.com/jlt-commons/raylib-jlt/tree/ffd97a91727b02c8f2a5ee2c194bfb64d10c2d4a
+
+  The module layout, the bindings, the keyword-argument drawing API and the
+  color palette come from raylib-jlt. The port replaces jolt.ffi calls with
+  babashka.ffi calls and renames the namespaces from net.b12n.raylib.* to
+  raylib.*.
+
+  The raylib example programs ported by raylib-jlt live in
+  https://github.com/jlt-commons/raylib-jolt-demo.
+
+raylib
+------
+  Copyright (c) 2013-2026 Ramon Santamaria (@raysan5)
+  https://github.com/raysan5/raylib
+  Licensed under the zlib/libpng license, reproduced below.
+
+  This project does not redistribute raylib. It loads the system-installed
+  libraylib shared library at runtime over its C ABI.
+
+  raylib's licence notice, as shipped in its LICENSE file:
+
+    Copyright (c) 2013-2026 Ramon Santamaria (@raysan5)
+
+    This software is provided "as-is", without any express or implied warranty. In no event
+    will the authors be held liable for any damages arising from the use of this software.
+
+    Permission is granted to anyone to use this software for any purpose, including commercial
+    applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+      1. The origin of this software must not be misrepresented; you must not claim that you
+      wrote the original software. If you use this software in a product, an acknowledgment
+      in the product documentation would be appreciated but is not required.
+
+      2. Altered source versions must be plainly marked as such, and must not be misrepresented
+      as being the original software.
+
+      3. This notice may not be removed or altered from any source distribution.
