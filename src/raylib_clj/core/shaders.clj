@@ -1,9 +1,8 @@
 (ns raylib-clj.core.shaders
   "Shader loading and management functions"
   (:require
-   [raylib-clj.core]
-   [coffi.mem :as mem :refer [defalias]]
-   [coffi.ffi :refer [defcfn]]))
+   [babashka.ffi :as ffi]
+   [raylib-clj.core]))
 
 ;; Shader uniform types
 (def SHADER_UNIFORM_FLOAT 0)
@@ -54,51 +53,51 @@
 ;; Shader struct: { unsigned int id; int *locs; }
 ;; On 64-bit: id (4) + padding (4) + locs pointer (8) = 16 bytes
 ;; We treat this as an opaque 16-byte struct to avoid alignment issues
-(defalias ::shader
-  [::mem/struct
-   [[:id ::mem/int]
-    [:_pad ::mem/int] ; padding for 8-byte alignment
-    [:locs-lo ::mem/int] ; pointer as two ints
-    [:locs-hi ::mem/int]]])
+(def shader
+  [:struct
+   [[:id :int]
+    [:_pad :int] ; padding for 8-byte alignment
+    [:locs-lo :int] ; pointer as two ints
+    [:locs-hi :int]]])
 
-(defcfn load-shader
+(ffi/defcfn load-shader
   "Load shader from files and bind default locations"
   {:arglists '([vs-filename fs-filename])}
   "LoadShader"
-  [::mem/c-string ::mem/c-string] ::shader)
+  [:string :string] shader)
 
-(defcfn unload-shader!
+(ffi/defcfn unload-shader!
   "Unload shader from GPU memory (VRAM)"
   {:arglists '([shader])}
   "UnloadShader"
-  [::shader] ::mem/void)
+  [shader] :void)
 
-(defcfn get-shader-location
+(ffi/defcfn get-shader-location
   "Get shader uniform location"
   {:arglists '([shader uniform-name])}
   "GetShaderLocation"
-  [::shader ::mem/c-string] ::mem/int)
+  [shader :string] :int)
 
-(defcfn get-shader-location-attrib
+(ffi/defcfn get-shader-location-attrib
   "Get shader attribute location"
   {:arglists '([shader attrib-name])}
   "GetShaderLocationAttrib"
-  [::shader ::mem/c-string] ::mem/int)
+  [shader :string] :int)
 
 ;; SetShaderValue needs special handling for different value types
 ;; We'll create helper functions for each type
 
-(defcfn set-shader-value-raw!
+(ffi/defcfn set-shader-value-raw!
   "Set shader uniform value (internal)"
   {:arglists '([shader loc-index value uniform-type])}
   "SetShaderValue"
-  [::shader ::mem/int ::mem/pointer ::mem/int] ::mem/void)
+  [shader :int :pointer :int] :void)
 
-(defcfn set-shader-value-v-raw!
+(ffi/defcfn set-shader-value-v-raw!
   "Set shader uniform value vector (internal)"
   {:arglists '([shader loc-index value uniform-type count])}
   "SetShaderValueV"
-  [::shader ::mem/int ::mem/pointer ::mem/int ::mem/int] ::mem/void)
+  [shader :int :pointer :int :int] :void)
 
 (defn set-shader-value-ints!
   "Set a shader uniform to an array of ints.
@@ -120,60 +119,51 @@
                       {:values n
                        :per-group per-group
                        :uniform-type uniform-type})))
-    (let [buf (mem/alloc (* 4 n))]
-      (dotimes [i n]
-        (mem/write-int (mem/slice buf (* 4 i)) 0 (int (nth values i))))
-      (set-shader-value-v-raw! shader loc-index buf uniform-type (quot n per-group)))))
+    (with-open [arena (ffi/confined-arena)]
+      (let [buf (ffi/alloc arena (* 4 (max 1 n)))]
+        (when (pos? n) (ffi/write buf [:array :int n] values))
+        (set-shader-value-v-raw! shader loc-index buf uniform-type (quot n per-group))))))
+
+(defn- set-shader-value! [shader loc-index t values uniform-type]
+  (with-open [arena (ffi/confined-arena)]
+    (let [n (count values)
+          buf (ffi/alloc arena (* 4 n))]
+      (ffi/write buf [:array t n] values)
+      (set-shader-value-raw! shader loc-index buf uniform-type))))
 
 (defn set-shader-value-float!
-  "Set shader uniform float value"
+  "Sets a float shader uniform."
   [shader loc-index value]
-  (let [buf (mem/alloc 4)] ; 4 bytes for float
-    (mem/write-float buf 0 (float value))
-    (set-shader-value-raw! shader loc-index buf SHADER_UNIFORM_FLOAT)))
+  (set-shader-value! shader loc-index :float [value] SHADER_UNIFORM_FLOAT))
 
 (defn set-shader-value-vec2!
-  "Set shader uniform vec2 value"
+  "Sets a vec2 shader uniform from [x y]."
   [shader loc-index [x y]]
-  (let [buf (mem/alloc 8)] ; 2 floats = 8 bytes
-    (mem/write-float buf 0 (float x))
-    (mem/write-float (mem/slice buf 4) 0 (float y))
-    (set-shader-value-raw! shader loc-index buf SHADER_UNIFORM_VEC2)))
+  (set-shader-value! shader loc-index :float [x y] SHADER_UNIFORM_VEC2))
 
 (defn set-shader-value-vec3!
-  "Set shader uniform vec3 value"
+  "Sets a vec3 shader uniform from [x y z]."
   [shader loc-index [x y z]]
-  (let [buf (mem/alloc 12)] ; 3 floats = 12 bytes
-    (mem/write-float buf 0 (float x))
-    (mem/write-float (mem/slice buf 4) 0 (float y))
-    (mem/write-float (mem/slice buf 8) 0 (float z))
-    (set-shader-value-raw! shader loc-index buf SHADER_UNIFORM_VEC3)))
+  (set-shader-value! shader loc-index :float [x y z] SHADER_UNIFORM_VEC3))
 
 (defn set-shader-value-vec4!
-  "Set shader uniform vec4 value"
+  "Sets a vec4 shader uniform from [x y z w]."
   [shader loc-index [x y z w]]
-  (let [buf (mem/alloc 16)] ; 4 floats = 16 bytes
-    (mem/write-float buf 0 (float x))
-    (mem/write-float (mem/slice buf 4) 0 (float y))
-    (mem/write-float (mem/slice buf 8) 0 (float z))
-    (mem/write-float (mem/slice buf 12) 0 (float w))
-    (set-shader-value-raw! shader loc-index buf SHADER_UNIFORM_VEC4)))
+  (set-shader-value! shader loc-index :float [x y z w] SHADER_UNIFORM_VEC4))
 
 (defn set-shader-value-int!
-  "Set shader uniform int value"
+  "Sets an int shader uniform."
   [shader loc-index value]
-  (let [buf (mem/alloc 4)] ; 4 bytes for int
-    (mem/write-int buf 0 (int value))
-    (set-shader-value-raw! shader loc-index buf SHADER_UNIFORM_INT)))
+  (set-shader-value! shader loc-index :int [value] SHADER_UNIFORM_INT))
 
-(defcfn begin-shader-mode!
+(ffi/defcfn begin-shader-mode!
   "Begin custom shader drawing"
   {:arglists '([shader])}
   "BeginShaderMode"
-  [::shader] ::mem/void)
+  [shader] :void)
 
-(defcfn end-shader-mode!
+(ffi/defcfn end-shader-mode!
   "End custom shader drawing (use default shader)"
   {:arglists '([])}
   "EndShaderMode"
-  [] ::mem/void)
+  [] :void)

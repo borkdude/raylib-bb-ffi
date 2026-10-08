@@ -1,26 +1,25 @@
 (ns raylib-clj.core.timing
   (:require
-   [raylib-clj.core]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [babashka.ffi :as ffi]
+   [raylib-clj.core]))
 
-(defcfn set-target-fps!
+(ffi/defcfn set-target-fps!
   "Set target FPS (maximum)"
   {:arglists '([fps])}
   "SetTargetFPS"
-  [::mem/int] ::mem/void)
+  [:int] :void)
 
-(defcfn get-fps
+(ffi/defcfn get-fps
   "Get current FPS"
   "GetFPS"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-frame-time
+(ffi/defcfn get-frame-time
   "Get time in seconds for last frame drawn (delta time)"
   "GetFrameTime"
-  [] ::mem/float)
+  [] :float)
 
-(defcfn get-time
+(ffi/defcfn get-time
   "Get elapsed time in seconds since `init-window!`"
   "GetTime"
-  [] ::mem/double)
+  [] :double)

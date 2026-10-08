@@ -2,10 +2,10 @@
   "A Clojure port of the raygui controls raylib's own examples use.
 
    Third of the header-only companions ported rather than bound, after
-   `net.b12n.raylib-clj.easings` (reasings.h) and `net.b12n.raylib-clj.raymath` (raymath.h) - but this
+   `raylib-clj.easings` (reasings.h) and `raylib-clj.raymath` (raymath.h) - but this
    one had no choice in the matter. raygui is immediate-mode C compiled into
-   the including translation unit, so the bundled libraylib exports zero
-   `Gui*` symbols and there is nothing a `defcfn` could point at.
+   the including translation unit, so libraylib exports no `Gui*` symbols
+   and there is nothing a `defcfn` could point at.
 
    Scope is the controls the examples actually reach for, not all of raygui:
    19 of raylib's 218 examples include raygui.h, and across them
@@ -28,12 +28,12 @@
    Colours are stored as raygui does it, 0xRRGGBBAA ints, so a style value
    copied straight out of a C example works unchanged."
   (:require
+   [raylib-clj.core.collision :as rcol]
    [raylib-clj.core.keyboard :as rck]
    [raylib-clj.core.mouse :as rcm]
-   [raylib-clj.core.collision :as rcol]
+   [raylib-clj.enums :as enums]
    [raylib-clj.shapes.basic :as rsb]
-   [raylib-clj.text.drawing :as rtd]
-   [raylib-clj.enums :as enums]))
+   [raylib-clj.text.drawing :as rtd]))
 
 ;; ------------------------------------------------------------------ state
 
@@ -137,10 +137,10 @@
 ;; the icons the ported examples ask for are here - the full set is 200+ and
 ;; there is no reason to carry the rest.
 (def icons
-  {16  [0x0ff00000 0x381c0810 0x28042804 0x28042804 0x28042804 0x28042804 0x20102ffc 0x00003ff0] ; file-copy
-   17  [0x00000000 0x701c0000 0x079c1e14 0x55a000f0 0x079c00f0 0x701c1e14 0x00000000 0x00000000] ; file-cut
-   18  [0x01c00000 0x13e41bec 0x3f841004 0x204420c4 0x20442044 0x20442044 0x207c2044 0x00003fc0] ; file-paste
-   77  [0x00000000 0x06000200 0x26042ffc 0x20042204 0x20442004 0x3ff42064 0x00400060 0x00000000] ; repeat-fill
+  {16 [0x0ff00000 0x381c0810 0x28042804 0x28042804 0x28042804 0x28042804 0x20102ffc 0x00003ff0] ; file-copy
+   17 [0x00000000 0x701c0000 0x079c1e14 0x55a000f0 0x079c00f0 0x701c1e14 0x00000000 0x00000000] ; file-cut
+   18 [0x01c00000 0x13e41bec 0x3f841004 0x204420c4 0x20442044 0x20442044 0x207c2044 0x00003fc0] ; file-paste
+   77 [0x00000000 0x06000200 0x26042ffc 0x20042204 0x20442004 0x3ff42064 0x00400060 0x00000000] ; repeat-fill
    143 [0x00000000 0x08080ff8 0x08081ffc 0x0aa80aa8 0x0aa80aa8 0x0aa80aa8 0x08080aa8 0x00000ff8]}) ; bin
 
 (def icon-size 16)

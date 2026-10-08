@@ -1,16 +1,11 @@
 (ns raylib-clj.textures.drawing
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem]
-   [coffi.ffi :as ffi]))
+   [raylib-clj.structs :as rs]))
 
-(def draw-texture!*
-  (let [primfn (ffi/make-downcall "DrawTexture" [::rs/texture ::mem/int ::mem/int ::rs/color] ::mem/void)]
-    (fn [texture x y tint]
-      (primfn texture (int x) (int y) tint))))
-
-(def draw-texture!
-  (ffi/make-serde-wrapper draw-texture!* [::rs/texture ::mem/int ::mem/int ::rs/color] ::mem/void))
-
-; ...
+(ffi/defcfn draw-texture!
+  "Draws texture at x y with tint."
+  {:arglists '([texture x y tint])}
+  "DrawTexture"
+  [rs/texture :int :int rs/color] :void)

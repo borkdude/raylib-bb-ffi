@@ -1,6 +1,6 @@
 (ns check-signatures
-  "Compares every defcfn under src/raylib with the prototypes in raylib.h,
-  rlgl.h and raymath.h.
+  "Compares every defcfn under src/raylib and src/raylib_clj with the
+  prototypes in raylib.h, rlgl.h and raymath.h.
   Run with: bb check:signatures [include-dir]"
   (:require [clojure.java.io :as io]
             [clojure.string :as str])
@@ -47,26 +47,38 @@
 
 (defn- ffi-kind [t]
   (cond (#{:float :double :bool :void} t) t
+        (#{:int8 :uint8 :char :byte} t) :byte
         (#{:pointer :string} t) :ptr
         (= :& t) :va
         (keyword? t) :int
         :else :struct))
 
-(defn- compatible? [c ffi]
+(defn- compatible-arg? [c ffi]
   (or (= c ffi)
-      (and (#{:color :bool} c) (= :int ffi))))
+      (and (= :color c) (contains? #{:int :struct} ffi))
+      (and (= :bool c) (contains? #{:int :byte} ffi))
+      (and (= :int c) (= :byte ffi))))
+
+(defn- compatible-ret?
+  "Like compatible-arg?, but a C bool return needs a one-byte type, because
+  the rest of the register is undefined."
+  [c ffi]
+  (if (= :bool c)
+    (contains? #{:bool :byte} ffi)
+    (compatible-arg? c ffi)))
 
 (defn mismatches [include-dir]
   (let [protos (prototypes include-dir)]
-    (for [f (file-seq (io/file "src/raylib"))
+    (for [dir ["src/raylib" "src/raylib_clj"]
+          f (file-seq (io/file dir))
           :when (str/ends-with? (str f) ".clj")
           [sym args ret] (mapcat defcfns (forms f))
           :when (not (non-raylib sym))
           :let [[cret cparams] (protos sym)]
           :when (or (nil? cret)
                     (not= (count cparams) (count args))
-                    (not (every? true? (map compatible? (map c-kind cparams) (map ffi-kind args))))
-                    (not (compatible? (c-kind cret) (ffi-kind ret))))]
+                    (not (every? true? (map compatible-arg? (map c-kind cparams) (map ffi-kind args))))
+                    (not (compatible-ret? (c-kind cret) (ffi-kind ret))))]
       [(.getName f) sym (if cret [cret cparams] :no-prototype) [args ret]])))
 
 (defn -main [& [include-dir]]

@@ -1,87 +1,85 @@
 (ns raylib-clj.core.window
   (:require
-   [raylib-clj.core]
-   [raylib-clj.internals :as ri]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [babashka.ffi :as ffi]
+   [raylib-clj.core]))
 
-(defcfn init-window!
+(ffi/defcfn init-window!
   "Initialize window and OpenGL context"
   {:arglists '([width height title])}
   "InitWindow"
-  [::mem/int ::mem/int ::mem/c-string] ::mem/void)
+  [:int :int :string] :void)
 
-(defcfn window-should-close?
+(ffi/defcfn window-should-close?
   "Check if KEY_ESCAPE pressed or Close icon pressed"
   "WindowShouldClose"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn close-window!
+(ffi/defcfn close-window!
   "Close window and unload OpenGL context"
-  "CloseWindow" [] ::mem/void)
+  "CloseWindow" [] :void)
 
-(defcfn is-window-ready?
+(ffi/defcfn is-window-ready?
   "Check if window has been initialized successfully"
   "IsWindowReady"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-fullscreen?
+(ffi/defcfn is-window-fullscreen?
   "Check if window is currently fullscreen"
   "IsWindowFullscreen"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-hidden?
+(ffi/defcfn is-window-hidden?
   "Check if window is currently hidden (only PLATFORM_DESKTOP)"
   "IsWindowHidden"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-minimized?
+(ffi/defcfn is-window-minimized?
   "Check if window is currently minimized (only PLATFORM_DESKTOP)"
   "IsWindowMinimized"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-maximized?
+(ffi/defcfn is-window-maximized?
   "Check if window is currently maximized (only PLATFORM_DESKTOP)"
   "IsWindowMaximized"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-focused?
+(ffi/defcfn is-window-focused?
   "Check if window is currently focused (only PLATFORM_DESKTOP)"
   "IsWindowFocused"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn is-window-resized?
+(ffi/defcfn is-window-resized?
   "Check if window has been resized last frame"
   "IsWindowResized"
-  [] ::ri/bool)
+  [] :bool)
 
 ; ...
 
-(defcfn get-screen-width
+(ffi/defcfn get-screen-width
   "Get current screen width"
   "GetScreenWidth"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-screen-height
+(ffi/defcfn get-screen-height
   "Get current screen height"
   "GetScreenHeight"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-render-width
+(ffi/defcfn get-render-width
   "Get current render width (considers HiDPI)"
   "GetRenderWidth"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-render-height
+(ffi/defcfn get-render-height
   "Get current render height (considers HiDPI)"
   "GetRenderHeight"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn set-config-flags!
+(ffi/defcfn set-config-flags!
   "Setup init configuration flags (view FLAGS)"
   {:arglists '([flags])}
   "SetConfigFlags"
-  [::mem/int] ::mem/void)
+  [:int] :void)
 
 (def config-flag
   {:flag/vsync-hint 0x00000040
@@ -106,56 +104,56 @@
     (set-config-flags! (->> flags first (get config-flag)))
     (set-config-flags! (apply bit-or (map config-flag flags)))))
 
-(defcfn toggle-fullscreen!
+(ffi/defcfn toggle-fullscreen!
   "Toggle window state: fullscreen/windowed (only PLATFORM_DESKTOP)"
   "ToggleFullscreen"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn toggle-borderless-windowed!
+(ffi/defcfn toggle-borderless-windowed!
   "Toggle window state: borderless windowed (only PLATFORM_DESKTOP)"
   "ToggleBorderlessWindowed"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn set-window-size!
+(ffi/defcfn set-window-size!
   "Set window dimensions"
   {:arglists '([width height])}
   "SetWindowSize"
-  [::mem/int ::mem/int] ::mem/void)
+  [:int :int] :void)
 
-(defcfn set-window-min-size!
+(ffi/defcfn set-window-min-size!
   "Set window minimum dimensions (for FLAG_WINDOW_RESIZABLE)"
   {:arglists '([width height])}
   "SetWindowMinSize"
-  [::mem/int ::mem/int] ::mem/void)
+  [:int :int] :void)
 
-(defcfn get-current-monitor
+(ffi/defcfn get-current-monitor
   "Get current connected monitor"
   "GetCurrentMonitor"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-monitor-width
+(ffi/defcfn get-monitor-width
   "Get specified monitor width (current video mode used by monitor)"
   {:arglists '([monitor])}
   "GetMonitorWidth"
-  [::mem/int] ::mem/int)
+  [:int] :int)
 
-(defcfn get-monitor-height
+(ffi/defcfn get-monitor-height
   "Get specified monitor height (current video mode used by monitor)"
   {:arglists '([monitor])}
   "GetMonitorHeight"
-  [::mem/int] ::mem/int)
+  [:int] :int)
 
 ;; Clipboard
 
-(defcfn get-clipboard-text
+(ffi/defcfn get-clipboard-text
   "Get clipboard text content"
   "GetClipboardText"
-  [] ::mem/c-string)
+  [] :string)
 
-(defcfn set-clipboard-text!
+(ffi/defcfn set-clipboard-text!
   "Set clipboard text content"
   {:arglists '([text])}
   "SetClipboardText"
-  [::mem/c-string] ::mem/void)
+  [:string] :void)
 
 ; ...

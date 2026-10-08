@@ -1,66 +1,59 @@
 (ns raylib-clj.core.collision
   "Ray casting and collision detection functions"
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   ;; ::ray's camera param is :net.b12n.raylib-clj.core.camera3d/camera3d, so that
-   ;; namespace's defalias must be registered before this one loads.
-   ;; This was an implicit dependency until 2026-08-22 - it happened to
-   ;; work because another namespace loaded camera3d first.
-   [raylib-clj.core.camera3d]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem :refer [defalias]]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
 ;; Ray struct: position (Vector3) + direction (Vector3) = 24 bytes
-(defalias ::ray
-  [::mem/struct
-   [[:position ::rs/vector-3]
-    [:direction ::rs/vector-3]]])
+(def ray
+  [:struct
+   [[:position rs/vector-3]
+    [:direction rs/vector-3]]])
 
-;; RayCollision struct: hit (bool/4 bytes padded) + distance (float) + point (Vector3) + normal (Vector3) = 32 bytes
-;; bool is typically 1 byte but padded to 4 for alignment
-(defalias ::ray-collision
-  [::mem/struct
-   [[:hit ::mem/int] ; bool as int (4 bytes)
-    [:distance ::mem/float]
-    [:point ::rs/vector-3]
-    [:normal ::rs/vector-3]]])
+;; RayCollision: bool hit, then 3 bytes of padding, 32 bytes in all.
+(def ray-collision
+  [:struct
+   [[:hit :uint8]
+    [:distance :float]
+    [:point rs/vector-3]
+    [:normal rs/vector-3]]])
 
-(defcfn get-screen-to-world-ray
+(ffi/defcfn get-screen-to-world-ray
   "Get a ray trace from screen position (i.e. mouse)"
   {:arglists '([position camera])}
   "GetScreenToWorldRay"
-  [::rs/vector-2 :net.b12n.raylib-clj.core.camera3d/camera3d] ::ray)
+  [rs/vector-2 rs/camera-3d] ray)
 
-(defcfn get-ray-collision-box
+(ffi/defcfn get-ray-collision-box
   "Get collision info between ray and box"
   {:arglists '([ray box])}
   "GetRayCollisionBox"
-  [::ray ::rs/bounding-box] ::ray-collision)
+  [ray rs/bounding-box] ray-collision)
 
-(defcfn draw-ray!
+(ffi/defcfn draw-ray!
   "Draw a ray line"
   {:arglists '([ray color])}
   "DrawRay"
-  [::ray ::rs/color] ::mem/void)
+  [ray rs/color] :void)
 
-(defcfn get-ray-collision-sphere
+(ffi/defcfn get-ray-collision-sphere
   "Get collision info between ray and sphere"
   {:arglists '([ray center radius])}
   "GetRayCollisionSphere"
-  [::ray ::rs/vector-3 ::mem/float] ::ray-collision)
+  [ray rs/vector-3 :float] ray-collision)
 
-(defcfn get-ray-collision-triangle
+(ffi/defcfn get-ray-collision-triangle
   "Get collision info between ray and triangle"
   {:arglists '([ray p1 p2 p3])}
   "GetRayCollisionTriangle"
-  [::ray ::rs/vector-3 ::rs/vector-3 ::rs/vector-3] ::ray-collision)
+  [ray rs/vector-3 rs/vector-3 rs/vector-3] ray-collision)
 
-(defcfn get-ray-collision-quad
+(ffi/defcfn get-ray-collision-quad
   "Get collision info between ray and quad"
   {:arglists '([ray p1 p2 p3 p4])}
   "GetRayCollisionQuad"
-  [::ray ::rs/vector-3 ::rs/vector-3 ::rs/vector-3 ::rs/vector-3] ::ray-collision)
+  [ray rs/vector-3 rs/vector-3 rs/vector-3 rs/vector-3] ray-collision)
 
 ;; Helper to create a bounding box from position and size
 (defn make-bounding-box
@@ -78,39 +71,39 @@
          :z (+ pz (/ sz 2))}})
 
 ;; 3D Collision detection functions
-(defcfn check-collision-boxes?
+(ffi/defcfn check-collision-boxes?
   "Check collision between two bounding boxes"
   {:arglists '([box1 box2])}
   "CheckCollisionBoxes"
-  [::rs/bounding-box ::rs/bounding-box] ::mem/byte)
+  [rs/bounding-box rs/bounding-box] :int8)
 
-(defcfn check-collision-box-sphere?
+(ffi/defcfn check-collision-box-sphere?
   "Check collision between box and sphere"
   {:arglists '([box center radius])}
   "CheckCollisionBoxSphere"
-  [::rs/bounding-box ::rs/vector-3 ::mem/float] ::mem/byte)
+  [rs/bounding-box rs/vector-3 :float] :int8)
 
 ;; Moved from raylib-ext (2026-08-22 consolidation)
-(defcfn check-collision-circle-rec?
+(ffi/defcfn check-collision-circle-rec?
   "Check collision between circle and rectangle"
   {:arglists '([center radius rec])}
   "CheckCollisionCircleRec"
-  [::rs/vector-2 ::mem/float ::rs/rectangle] ::mem/byte)
+  [rs/vector-2 :float rs/rectangle] :int8)
 
-(defcfn check-collision-point-circle?
+(ffi/defcfn check-collision-point-circle?
   "Check if point is inside circle"
   {:arglists '([point center radius])}
   "CheckCollisionPointCircle"
-  [::rs/vector-2 ::rs/vector-2 ::mem/float] ::mem/byte)
+  [rs/vector-2 rs/vector-2 :float] :int8)
 
-(defcfn check-collision-circles?
+(ffi/defcfn check-collision-circles?
   "Check collision between two circles"
   {:arglists '([center1 radius1 center2 radius2])}
   "CheckCollisionCircles"
-  [::rs/vector-2 ::mem/float ::rs/vector-2 ::mem/float] ::mem/byte)
+  [rs/vector-2 :float rs/vector-2 :float] :int8)
 
-(defcfn check-collision-point-rec?
+(ffi/defcfn check-collision-point-rec?
   "Check if point is inside rectangle"
   {:arglists '([point rec])}
   "CheckCollisionPointRec"
-  [::rs/vector-2 ::rs/rectangle] ::mem/byte)
+  [rs/vector-2 rs/rectangle] :int8)

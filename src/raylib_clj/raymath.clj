@@ -1,7 +1,7 @@
 (ns raylib-clj.raymath
   "Clojure port of raylib's `raymath.h`.
 
-   Same category as `net.b12n.raylib-clj.easings` (from `reasings.h`) and `net.b12n.raylib-clj.lights`
+   Same category as `raylib-clj.easings` (from `reasings.h`) and `raylib-clj.lights`
    (from `rlights.h`): a header-only companion that ships alongside raylib
    rather than inside it, ported rather than bound.
 
@@ -16,7 +16,7 @@
 
    Vectors are the same plain maps the struct aliases use: `{:x :y}` for
    Vector2 and `{:x :y :z}` for Vector3, so results pass straight into any
-   binding taking `::rs/vector-2` or `::rs/vector-3`.
+   binding taking `rs/vector-2` or `rs/vector-3`.
 
    One difference from the C worth stating: raymath computes in 32-bit
    `float` and this computes in Clojure doubles. Values handed back to a

@@ -1,10 +1,9 @@
 (ns raylib-clj.core.camera3d
   "3D Camera and rendering functions"
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem :refer [defalias]]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
 ;; Camera3D struct (also known as Camera in raylib)
 ;; typedef struct Camera3D {
@@ -14,80 +13,78 @@
 ;;     float fovy;             // Camera field-of-view aperture in Y (degrees) in perspective, used as near plane width in orthographic
 ;;     int projection;         // Camera projection: CAMERA_PERSPECTIVE or CAMERA_ORTHOGRAPHIC
 ;; } Camera3D;
-;; The struct moved to net.b12n.raylib-clj.structs so net.b12n.raylib-clj.models can use it too.
-;; Kept as a local alias so existing ::camera3d references still resolve.
-(defalias ::camera3d ::rs/camera-3d)
+(def camera3d rs/camera-3d)
 
 ;; Camera projection constants
 (def CAMERA_PERSPECTIVE 0)
 (def CAMERA_ORTHOGRAPHIC 1)
 
 ;; 3D Mode functions
-(defcfn begin-mode-3d!
+(ffi/defcfn begin-mode-3d!
   "Begin 3D mode with custom camera (3D)"
   {:arglists '([camera])}
   "BeginMode3D"
-  [::camera3d] ::mem/void)
+  [camera3d] :void)
 
-(defcfn end-mode-3d!
+(ffi/defcfn end-mode-3d!
   "Ends 3D mode and returns to default 2D orthographic mode"
   "EndMode3D"
-  [] ::mem/void)
+  [] :void)
 
 ;; 3D Shape drawing functions
-(defcfn draw-cube!
+(ffi/defcfn draw-cube!
   "Draw cube"
   {:arglists '([position width height length color])}
   "DrawCube"
-  [::rs/vector-3 ::mem/float ::mem/float ::mem/float ::rs/color] ::mem/void)
+  [rs/vector-3 :float :float :float rs/color] :void)
 
-(defcfn draw-cube-v!
+(ffi/defcfn draw-cube-v!
   "Draw cube (Vector version)"
   {:arglists '([position size color])}
   "DrawCubeV"
-  [::rs/vector-3 ::rs/vector-3 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 rs/color] :void)
 
-(defcfn draw-cube-wires!
+(ffi/defcfn draw-cube-wires!
   "Draw cube wires"
   {:arglists '([position width height length color])}
   "DrawCubeWires"
-  [::rs/vector-3 ::mem/float ::mem/float ::mem/float ::rs/color] ::mem/void)
+  [rs/vector-3 :float :float :float rs/color] :void)
 
-(defcfn draw-cube-wires-v!
+(ffi/defcfn draw-cube-wires-v!
   "Draw cube wires (Vector version)"
   {:arglists '([position size color])}
   "DrawCubeWiresV"
-  [::rs/vector-3 ::rs/vector-3 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 rs/color] :void)
 
-(defcfn draw-plane!
+(ffi/defcfn draw-plane!
   "Draw a plane XZ"
   {:arglists '([center-pos size color])}
   "DrawPlane"
-  [::rs/vector-3 ::rs/vector-2 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-2 rs/color] :void)
 
-(defcfn draw-grid!
+(ffi/defcfn draw-grid!
   "Draw a grid (centered at (0, 0, 0))"
   {:arglists '([slices spacing])}
   "DrawGrid"
-  [::mem/int ::mem/float] ::mem/void)
+  [:int :float] :void)
 
-(defcfn draw-sphere!
+(ffi/defcfn draw-sphere!
   "Draw sphere"
   {:arglists '([center-pos radius color])}
   "DrawSphere"
-  [::rs/vector-3 ::mem/float ::rs/color] ::mem/void)
+  [rs/vector-3 :float rs/color] :void)
 
-(defcfn draw-sphere-ex!
+(ffi/defcfn draw-sphere-ex!
   "Draw sphere with extended parameters"
   {:arglists '([center-pos radius rings slices color])}
   "DrawSphereEx"
-  [::rs/vector-3 ::mem/float ::mem/int ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 :float :int :int rs/color] :void)
 
-(defcfn draw-sphere-wires!
+(ffi/defcfn draw-sphere-wires!
   "Draw sphere wires"
   {:arglists '([center-pos radius rings slices color])}
   "DrawSphereWires"
-  [::rs/vector-3 ::mem/float ::mem/int ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 :float :int :int rs/color] :void)
 
 ;; Camera mode constants (for UpdateCamera)
 (def CAMERA_CUSTOM 0)
@@ -97,105 +94,103 @@
 (def CAMERA_THIRD_PERSON 4)
 
 ;; Camera update function
-(defcfn update-camera!
+(ffi/defcfn update-camera!
   "Update camera position for selected mode"
   {:arglists '([camera mode])}
   "UpdateCamera"
-  [::mem/pointer ::mem/int] ::mem/void)
+  [:pointer :int] :void)
 
-(defcfn get-world-to-screen
+(ffi/defcfn get-world-to-screen
   "Get the screen space position for a 3D world space position"
   {:arglists '([position camera])}
   "GetWorldToScreen"
-  [::rs/vector-3 ::camera3d] ::rs/vector-2)
+  [rs/vector-3 camera3d] rs/vector-2)
 
-;; Helper function that updates camera and returns the new state
-;; #region camera-arena
 (defn update-camera
-  "Update camera position for selected mode. Returns updated camera map.
-   mode: CAMERA_FREE, CAMERA_ORBITAL, CAMERA_FIRST_PERSON, CAMERA_THIRD_PERSON"
+  "Returns camera, a Camera3D map, updated by UpdateCamera for mode.
+  mode is CAMERA_FREE, CAMERA_ORBITAL, CAMERA_FIRST_PERSON or
+  CAMERA_THIRD_PERSON."
   [camera mode]
-  (let [arena (mem/confined-arena)
-        seg (mem/alloc-instance ::camera3d arena)]
-    (mem/serialize-into camera ::camera3d seg arena)
-    (update-camera! seg mode)
-    (mem/deserialize-from seg ::camera3d)))
-;; #endregion
+  (with-open [arena (ffi/confined-arena)]
+    (let [p (ffi/alloc arena camera3d)]
+      (ffi/write p camera3d camera)
+      (update-camera! p mode)
+      (ffi/read p camera3d))))
 
 ;; Additional 3D shape drawing functions
 
-(defcfn draw-cylinder!
+(ffi/defcfn draw-cylinder!
   "Draw a cylinder/cone"
   {:arglists '([position radius-top radius-bottom height slices color])}
   "DrawCylinder"
-  [::rs/vector-3 ::mem/float ::mem/float ::mem/float ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 :float :float :float :int rs/color] :void)
 
-(defcfn draw-cylinder-ex!
+(ffi/defcfn draw-cylinder-ex!
   "Draw a cylinder with base at startPos and top at endPos"
   {:arglists '([start-pos end-pos start-radius end-radius sides color])}
   "DrawCylinderEx"
-  [::rs/vector-3 ::rs/vector-3 ::mem/float ::mem/float ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 :float :float :int rs/color] :void)
 
-(defcfn draw-cylinder-wires!
+(ffi/defcfn draw-cylinder-wires!
   "Draw a cylinder/cone wires"
   {:arglists '([position radius-top radius-bottom height slices color])}
   "DrawCylinderWires"
-  [::rs/vector-3 ::mem/float ::mem/float ::mem/float ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 :float :float :float :int rs/color] :void)
 
-(defcfn draw-cylinder-wires-ex!
+(ffi/defcfn draw-cylinder-wires-ex!
   "Draw a cylinder wires with base at startPos and top at endPos"
   {:arglists '([start-pos end-pos start-radius end-radius sides color])}
   "DrawCylinderWiresEx"
-  [::rs/vector-3 ::rs/vector-3 ::mem/float ::mem/float ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 :float :float :int rs/color] :void)
 
-(defcfn draw-capsule!
+(ffi/defcfn draw-capsule!
   "Draw a capsule with the center of its sphere caps at startPos and endPos"
   {:arglists '([start-pos end-pos radius slices rings color])}
   "DrawCapsule"
-  [::rs/vector-3 ::rs/vector-3 ::mem/float ::mem/int ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 :float :int :int rs/color] :void)
 
-(defcfn draw-capsule-wires!
+(ffi/defcfn draw-capsule-wires!
   "Draw a capsule wireframe with the center of its sphere caps at startPos and endPos"
   {:arglists '([start-pos end-pos radius slices rings color])}
   "DrawCapsuleWires"
-  [::rs/vector-3 ::rs/vector-3 ::mem/float ::mem/int ::mem/int ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 :float :int :int rs/color] :void)
 
 ;; Line and circle 3D drawing
 
-(defcfn draw-line-3d!
+(ffi/defcfn draw-line-3d!
   "Draw a line in 3D world space"
   {:arglists '([start-pos end-pos color])}
   "DrawLine3D"
-  [::rs/vector-3 ::rs/vector-3 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 rs/color] :void)
 
-(defcfn draw-point-3d!
+(ffi/defcfn draw-point-3d!
   "Draw a point in 3D space"
   {:arglists '([position color])}
   "DrawPoint3D"
-  [::rs/vector-3 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/color] :void)
 
-(defcfn draw-circle-3d!
+(ffi/defcfn draw-circle-3d!
   "Draw a circle in 3D world space"
   {:arglists '([center radius rotation-axis rotation-angle color])}
   "DrawCircle3D"
-  [::rs/vector-3 ::mem/float ::rs/vector-3 ::mem/float ::rs/color] ::mem/void)
+  [rs/vector-3 :float rs/vector-3 :float rs/color] :void)
 
-(defcfn draw-triangle-3d!
+(ffi/defcfn draw-triangle-3d!
   "Draw a triangle in 3D space"
   {:arglists '([v1 v2 v3 color])}
   "DrawTriangle3D"
-  [::rs/vector-3 ::rs/vector-3 ::rs/vector-3 ::rs/color] ::mem/void)
+  [rs/vector-3 rs/vector-3 rs/vector-3 rs/color] :void)
 
 ;; Ray drawing (useful for picking/debugging)
 
-(defalias ::ray
-  [::mem/struct
-   [[:position ::rs/vector-3]
-    [:direction ::rs/vector-3]]])
+(def ray
+  [:struct
+   [[:position rs/vector-3]
+    [:direction rs/vector-3]]])
 
-(defcfn draw-ray!
+(ffi/defcfn draw-ray!
   "Draw a ray line"
   {:arglists '([ray color])}
   "DrawRay"
-  [::ray ::rs/color] ::mem/void)
+  [ray rs/color] :void)
 

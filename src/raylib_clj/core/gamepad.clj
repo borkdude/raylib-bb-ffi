@@ -1,9 +1,8 @@
 (ns raylib-clj.core.gamepad
   "Gamepad input functions"
   (:require
-   [raylib-clj.core]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [babashka.ffi :as ffi]
+   [raylib-clj.core]))
 
 ;; Gamepad buttons
 (def GAMEPAD_BUTTON_UNKNOWN 0)
@@ -34,61 +33,61 @@
 (def GAMEPAD_AXIS_RIGHT_TRIGGER 5)
 
 ;; Gamepad functions
-(defcfn is-gamepad-available?
+(ffi/defcfn is-gamepad-available?
   "Check if a gamepad is available"
   {:arglists '([gamepad])}
   "IsGamepadAvailable"
-  [::mem/int] ::mem/byte)
+  [:int] :int8)
 
-(defcfn get-gamepad-name
+(ffi/defcfn get-gamepad-name
   "Get gamepad internal name id"
   {:arglists '([gamepad])}
   "GetGamepadName"
-  [::mem/int] ::mem/c-string)
+  [:int] :string)
 
-(defcfn is-gamepad-button-pressed?
+(ffi/defcfn is-gamepad-button-pressed?
   "Check if a gamepad button has been pressed once"
   {:arglists '([gamepad button])}
   "IsGamepadButtonPressed"
-  [::mem/int ::mem/int] ::mem/byte)
+  [:int :int] :int8)
 
-(defcfn is-gamepad-button-down?
+(ffi/defcfn is-gamepad-button-down?
   "Check if a gamepad button is being pressed"
   {:arglists '([gamepad button])}
   "IsGamepadButtonDown"
-  [::mem/int ::mem/int] ::mem/byte)
+  [:int :int] :int8)
 
-(defcfn is-gamepad-button-released?
+(ffi/defcfn is-gamepad-button-released?
   "Check if a gamepad button has been released once"
   {:arglists '([gamepad button])}
   "IsGamepadButtonReleased"
-  [::mem/int ::mem/int] ::mem/byte)
+  [:int :int] :int8)
 
-(defcfn is-gamepad-button-up?
+(ffi/defcfn is-gamepad-button-up?
   "Check if a gamepad button is NOT being pressed"
   {:arglists '([gamepad button])}
   "IsGamepadButtonUp"
-  [::mem/int ::mem/int] ::mem/byte)
+  [:int :int] :int8)
 
-(defcfn get-gamepad-button-pressed
+(ffi/defcfn get-gamepad-button-pressed
   "Get the last gamepad button pressed"
   "GetGamepadButtonPressed"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-gamepad-axis-count
+(ffi/defcfn get-gamepad-axis-count
   "Get gamepad axis count for a gamepad"
   {:arglists '([gamepad])}
   "GetGamepadAxisCount"
-  [::mem/int] ::mem/int)
+  [:int] :int)
 
-(defcfn get-gamepad-axis-movement
+(ffi/defcfn get-gamepad-axis-movement
   "Get axis movement value for a gamepad axis"
   {:arglists '([gamepad axis])}
   "GetGamepadAxisMovement"
-  [::mem/int ::mem/int] ::mem/float)
+  [:int :int] :float)
 
-(defcfn set-gamepad-vibration!
+(ffi/defcfn set-gamepad-vibration!
   "Set gamepad vibration for both motors"
   {:arglists '([gamepad left-motor right-motor duration])}
   "SetGamepadVibration"
-  [::mem/int ::mem/float ::mem/float ::mem/float] ::mem/void)
+  [:int :float :float :float] :void)

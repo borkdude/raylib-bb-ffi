@@ -3,7 +3,7 @@
 
   Not a binding layer: reasings.h is a header-only helper that ships with
   raylib's examples rather than part of the library, so there is no C symbol
-  to bind. Same situation as net.b12n.raylib-clj.lights, which ports rlights.h.
+  to bind. Same situation as raylib-clj.lights, which ports rlights.h.
 
   Every function takes the same four arguments as the C, and the argument
   order is worth stating because it is not the usual normalised 0..1 form:
@@ -114,7 +114,7 @@
   (let [t' (/ t d)]
     (cond
       (zero? t) b
-      (= t' 1.0) (+ b c)
+      (= 1.0 t') (+ b c)
       :else (let [p (* d 0.3) s (/ p 4.0) t (- t' 1.0)]
               (+ (- (* c (Math/pow 2.0 (* 10.0 t))
                        (Math/sin (/ (* (- (* t d) s) 2.0 PI) p)))) b)))))
@@ -122,7 +122,7 @@
   (let [t' (/ t d)]
     (cond
       (zero? t) b
-      (= t' 1.0) (+ b c)
+      (= 1.0 t') (+ b c)
       :else (let [p (* d 0.3) s (/ p 4.0)]
               (+ (* c (Math/pow 2.0 (* -10.0 t'))
                     (Math/sin (/ (* (- (* t' d) s) 2.0 PI) p))) c b)))))
@@ -130,7 +130,7 @@
   (let [t' (/ t (/ d 2.0))]
     (cond
       (zero? t) b
-      (= t' 2.0) (+ b c)
+      (= 2.0 t') (+ b c)
       :else (let [p (* d (* 0.3 1.5)) s (/ p 4.0)]
               (if (< t' 1.0)
                 (let [t (- t' 1.0)]

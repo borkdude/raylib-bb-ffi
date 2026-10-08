@@ -1,10 +1,9 @@
 (ns raylib-clj.core.gestures
   "Touch gesture detection functions"
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
 ;; Gesture constants
 (def GESTURE_NONE 0)
@@ -20,72 +19,72 @@
 (def GESTURE_PINCH_OUT 512)
 
 ;; Gesture functions
-(defcfn set-gestures-enabled!
+(ffi/defcfn set-gestures-enabled!
   "Enable a set of gestures using flags"
   {:arglists '([flags])}
   "SetGesturesEnabled"
-  [::mem/int] ::mem/void)
+  [:int] :void)
 
-(defcfn is-gesture-detected?
+(ffi/defcfn is-gesture-detected?
   "Check if a gesture have been detected"
   {:arglists '([gesture])}
   "IsGestureDetected"
-  [::mem/int] ::mem/byte)
+  [:int] :int8)
 
-(defcfn get-gesture-detected
+(ffi/defcfn get-gesture-detected
   "Get latest detected gesture"
   "GetGestureDetected"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-gesture-hold-duration
+(ffi/defcfn get-gesture-hold-duration
   "Get gesture hold time in seconds"
   "GetGestureHoldDuration"
-  [] ::mem/float)
+  [] :float)
 
-(defcfn get-gesture-drag-vector
+(ffi/defcfn get-gesture-drag-vector
   "Get gesture drag vector"
   "GetGestureDragVector"
-  [] ::rs/vector-2)
+  [] rs/vector-2)
 
-(defcfn get-gesture-drag-angle
+(ffi/defcfn get-gesture-drag-angle
   "Get gesture drag angle"
   "GetGestureDragAngle"
-  [] ::mem/float)
+  [] :float)
 
-(defcfn get-gesture-pinch-vector
+(ffi/defcfn get-gesture-pinch-vector
   "Get gesture pinch delta"
   "GetGesturePinchVector"
-  [] ::rs/vector-2)
+  [] rs/vector-2)
 
-(defcfn get-gesture-pinch-angle
+(ffi/defcfn get-gesture-pinch-angle
   "Get gesture pinch angle"
   "GetGesturePinchAngle"
-  [] ::mem/float)
+  [] :float)
 
 ;; Touch functions
-(defcfn get-touch-x
+(ffi/defcfn get-touch-x
   "Get touch position X for touch point 0 (relative to screen size)"
   "GetTouchX"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-touch-y
+(ffi/defcfn get-touch-y
   "Get touch position Y for touch point 0 (relative to screen size)"
   "GetTouchY"
-  [] ::mem/int)
+  [] :int)
 
-(defcfn get-touch-position
+(ffi/defcfn get-touch-position
   "Get touch position XY for a touch point index (relative to screen size)"
   {:arglists '([index])}
   "GetTouchPosition"
-  [::mem/int] ::rs/vector-2)
+  [:int] rs/vector-2)
 
-(defcfn get-touch-point-id
+(ffi/defcfn get-touch-point-id
   "Get touch point identifier for given index"
   {:arglists '([index])}
   "GetTouchPointId"
-  [::mem/int] ::mem/int)
+  [:int] :int)
 
-(defcfn get-touch-point-count
+(ffi/defcfn get-touch-point-count
   "Get number of touch points"
   "GetTouchPointCount"
-  [] ::mem/int)
+  [] :int)

@@ -1,33 +1,32 @@
 (ns raylib-clj.core.drawing
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
-(defcfn clear-background!
+(ffi/defcfn clear-background!
   "Set background color (framebuffer clear color)"
   {:arglists '([color])}
   "ClearBackground"
-  [::rs/color] ::mem/void)
+  [rs/color] :void)
 
-(defcfn begin-drawing!
+(ffi/defcfn begin-drawing!
   "Setup canvas (framebuffer) to start drawing"
   "BeginDrawing"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn end-drawing!
+(ffi/defcfn end-drawing!
   "End canvas drawing and swap buffers (double buffering)"
   "EndDrawing"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn begin-scissor-mode!
+(ffi/defcfn begin-scissor-mode!
   "Begin scissor mode (define screen area for following drawing)"
   {:arglists '([x y width height])}
   "BeginScissorMode"
-  [::mem/int ::mem/int ::mem/int ::mem/int] ::mem/void)
+  [:int :int :int :int] :void)
 
-(defcfn end-scissor-mode!
+(ffi/defcfn end-scissor-mode!
   "End scissor mode"
   "EndScissorMode"
-  [] ::mem/void)
+  [] :void)

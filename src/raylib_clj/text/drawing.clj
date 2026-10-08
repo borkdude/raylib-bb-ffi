@@ -1,29 +1,28 @@
 (ns raylib-clj.text.drawing
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
-(defcfn draw-fps!
+(ffi/defcfn draw-fps!
   "Draw current FPS"
   {:arglists '([x y])}
   "DrawFPS"
-  [::mem/int ::mem/int] ::mem/void)
+  [:int :int] :void)
 
-(defcfn draw-text!
+(ffi/defcfn draw-text!
   "Draw text (using default font)"
   {:arglists '([text x y size color])}
   "DrawText"
-  [::mem/c-string ::mem/int ::mem/int ::mem/int ::rs/color] ::mem/void)
+  [:string :int :int :int rs/color] :void)
 
 (defmacro draw-text [{:keys [text x y size color]}]
   `(draw-text! ~text ~x ~y ~size ~color))
 
 ;; Moved from raylib-ext (2026-08-22 consolidation)
-(defcfn measure-text
+(ffi/defcfn measure-text
   "Measure string width for default font"
   {:arglists '([text font-size])}
   "MeasureText"
-  [::mem/c-string ::mem/int] ::mem/int)
+  [:string :int] :int)
 

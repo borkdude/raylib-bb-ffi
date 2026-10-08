@@ -10,7 +10,7 @@
 
    Example:
    (ns my-game
-     (:require [net.b12n.raylib-clj.debug-stats :as debug-stats]))
+     (:require [raylib-clj.debug-stats :as debug-stats]))
 
    (defn init []
      (debug-stats/enable!))
@@ -27,11 +27,11 @@
      (rcd/end-drawing!))"
   (:require
    [clojure.string :as str]
-   [raylib-clj.core.keyboard :as rck]
-   [raylib-clj.text.drawing :as rtd]
-   [raylib-clj.shapes.basic :as rsb]
    [raylib-clj.colors :as colors]
-   [raylib-clj.enums :as enums])
+   [raylib-clj.core.keyboard :as rck]
+   [raylib-clj.enums :as enums]
+   [raylib-clj.shapes.basic :as rsb]
+   [raylib-clj.text.drawing :as rtd])
   (:import [java.lang Runtime]))
 
 ;; State

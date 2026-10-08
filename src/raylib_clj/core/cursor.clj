@@ -3,40 +3,38 @@
 
    Mirrors raylib.h's own \"Cursor-related functions\" section, which sits
    between the window and drawing groups. Three of these previously lived
-   in `net.b12n.raylib-clj.core.camera3d`, where a first-person example had needed them
+   in `raylib-clj.core.camera3d`, where a first-person example had needed them
    first; they are not camera functions."
   (:require
-   [raylib-clj.core]
-   [raylib-clj.internals :as ri]
-   [coffi.ffi :refer [defcfn]]
-   [coffi.mem :as mem]))
+   [babashka.ffi :as ffi]
+   [raylib-clj.core]))
 
-(defcfn show-cursor!
+(ffi/defcfn show-cursor!
   "Show cursor"
   "ShowCursor"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn hide-cursor!
+(ffi/defcfn hide-cursor!
   "Hide cursor"
   "HideCursor"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn is-cursor-hidden?
+(ffi/defcfn is-cursor-hidden?
   "Check if cursor is not visible"
   "IsCursorHidden"
-  [] ::ri/bool)
+  [] :bool)
 
-(defcfn enable-cursor!
+(ffi/defcfn enable-cursor!
   "Enable cursor (unlock cursor)"
   "EnableCursor"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn disable-cursor!
+(ffi/defcfn disable-cursor!
   "Disable cursor (lock cursor)"
   "DisableCursor"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn is-cursor-on-screen?
+(ffi/defcfn is-cursor-on-screen?
   "Check if cursor is on the screen"
   "IsCursorOnScreen"
-  [] ::ri/bool)
+  [] :bool)

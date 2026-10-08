@@ -1,26 +1,25 @@
 (ns raylib-clj.utils
   "Utility functions (random values, colors, misc)"
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
 ;; Random value generation
-(defcfn get-random-value
+(ffi/defcfn get-random-value
   "Get a random value between min and max (both included)"
   {:arglists '([min max])}
   "GetRandomValue"
-  [::mem/int ::mem/int] ::mem/int)
+  [:int :int] :int)
 
-(defcfn set-random-seed!
+(ffi/defcfn set-random-seed!
   "Set the seed for the random number generator"
   {:arglists '([seed])}
   "SetRandomSeed"
-  [::mem/int] ::mem/void)
+  [:int] :void)
 
 ;; Color utilities
-(defcfn fade
+(ffi/defcfn fade
   "Get color with alpha applied, alpha goes from 0.0f to 1.0f.
 
    This is also raylib's `ColorAlpha`. The two are separate exported
@@ -28,31 +27,31 @@
    is deliberately not bound - a C example calling it ports to `fade`."
   {:arglists '([color alpha])}
   "Fade"
-  [::rs/color ::mem/float] ::rs/color)
+  [rs/color :float] rs/color)
 
-(defcfn color-to-int
+(ffi/defcfn color-to-int
   "Get hexadecimal value for a Color"
   {:arglists '([color])}
   "ColorToInt"
-  [::rs/color] ::mem/int)
+  [rs/color] :int)
 
-(defcfn color-from-hsv
+(ffi/defcfn color-from-hsv
   "Get a Color from HSV values, hue [0..360], saturation/value [0..1]"
   {:arglists '([hue saturation value])}
   "ColorFromHSV"
-  [::mem/float ::mem/float ::mem/float] ::rs/color)
+  [:float :float :float] rs/color)
 
 ;; Moved from raylib-ext (2026-08-22 consolidation)
-(defcfn get-color
+(ffi/defcfn get-color
   "Get Color structure from hexadecimal value"
   {:arglists '([hex-value])}
   "GetColor"
-  [::mem/int] ::rs/color)
+  [:int] rs/color)
 
 ;; Additional shape drawing functions
 
-(defcfn color-lerp
+(ffi/defcfn color-lerp
   "Get color lerp interpolation between two colors"
   {:arglists '([color1 color2 factor])}
   "ColorLerp"
-  [::rs/color ::rs/color ::mem/float] ::rs/color)
+  [rs/color rs/color :float] rs/color)

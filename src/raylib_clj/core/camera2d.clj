@@ -1,42 +1,41 @@
 (ns raylib-clj.core.camera2d
   "2D Camera functions"
   (:require
+   [babashka.ffi :as ffi]
    [raylib-clj.core]
-   [raylib-clj.structs :as rs]
-   [coffi.mem :as mem :refer [defalias]]
-   [coffi.ffi :refer [defcfn]]))
+   [raylib-clj.structs :as rs]))
 
 ;; Camera2D struct (24 bytes)
 ;; { Vector2 offset; Vector2 target; float rotation; float zoom; }
-(defalias ::camera-2d
-  [::mem/struct
-   [[:offset ::rs/vector-2] ; 8 bytes - screen space offset
-    [:target ::rs/vector-2] ; 8 bytes - world space target
-    [:rotation ::mem/float] ; 4 bytes - rotation in degrees
-    [:zoom ::mem/float]]]) ; 4 bytes - zoom/scale
+(def camera-2d
+  [:struct
+   [[:offset rs/vector-2] ; 8 bytes - screen space offset
+    [:target rs/vector-2] ; 8 bytes - world space target
+    [:rotation :float] ; 4 bytes - rotation in degrees
+    [:zoom :float]]]) ; 4 bytes - zoom/scale
 
-(defcfn begin-mode-2d!
+(ffi/defcfn begin-mode-2d!
   "Begin 2D mode with custom camera (2D)"
   {:arglists '([camera])}
   "BeginMode2D"
-  [::camera-2d] ::mem/void)
+  [camera-2d] :void)
 
-(defcfn end-mode-2d!
+(ffi/defcfn end-mode-2d!
   "Ends 2D mode with custom camera"
   "EndMode2D"
-  [] ::mem/void)
+  [] :void)
 
-(defcfn get-screen-to-world-2d
+(ffi/defcfn get-screen-to-world-2d
   "Get world space position for a 2d camera screen space position"
   {:arglists '([position camera])}
   "GetScreenToWorld2D"
-  [::rs/vector-2 ::camera-2d] ::rs/vector-2)
+  [rs/vector-2 camera-2d] rs/vector-2)
 
-(defcfn get-world-to-screen-2d
+(ffi/defcfn get-world-to-screen-2d
   "Get screen space position for a 2d camera world space position"
   {:arglists '([position camera])}
   "GetWorldToScreen2D"
-  [::rs/vector-2 ::camera-2d] ::rs/vector-2)
+  [rs/vector-2 camera-2d] rs/vector-2)
 
 ;; Helper to create a Camera2D map
 (defn make-camera-2d
