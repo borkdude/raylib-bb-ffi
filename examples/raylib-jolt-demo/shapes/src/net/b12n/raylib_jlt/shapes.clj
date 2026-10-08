@@ -7,7 +7,7 @@
   scalar path (see net.b12n.raylib.rlgl's rl-* bindings)."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (defn- triangle!
   "An immediate-mode filled triangle (scalar, avoids DrawTriangle's by-value

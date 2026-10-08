@@ -3,7 +3,7 @@
   Gravity + scrolling pipes + AABB/circle collision, all in Clojure."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def width 800)
 (def height 450)

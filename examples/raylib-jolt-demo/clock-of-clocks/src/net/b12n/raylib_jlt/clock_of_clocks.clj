@@ -18,7 +18,7 @@
   See analog-clock for the same idea reduced to one large face."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const W 800)
 (def ^:const H 450)

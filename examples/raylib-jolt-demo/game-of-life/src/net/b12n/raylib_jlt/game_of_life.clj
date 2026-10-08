@@ -4,7 +4,7 @@
   cells."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def cols 80)
 (def rows 45)

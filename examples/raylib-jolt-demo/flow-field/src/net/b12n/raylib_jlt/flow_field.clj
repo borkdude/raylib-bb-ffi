@@ -4,7 +4,7 @@
   trails are per-particle position history (double-buffer-safe), redrawn each frame."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def width 800)
 (def height 450)

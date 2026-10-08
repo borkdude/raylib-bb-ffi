@@ -5,7 +5,7 @@
   second. Port of shapes_digital_clock (digital half)."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 ;; segments: a=top g=middle d=bottom  f=top-left b=top-right  e=bot-left c=bot-right
 (def ^:private segs

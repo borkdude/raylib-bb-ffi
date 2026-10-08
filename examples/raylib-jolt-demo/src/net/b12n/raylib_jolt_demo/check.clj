@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-jolt-demo.check
-  "Headless compile-check (`jolt -M:check` from the repo root).
+  "Headless compile-check (`bb check` from the repo root).
 
   Requires every demo namespace, which compiles each one WITHOUT opening a
   window. It does not exercise rendering; each demo's own

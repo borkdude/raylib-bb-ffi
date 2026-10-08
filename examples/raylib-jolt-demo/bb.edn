@@ -1,7 +1,6 @@
-;; Task runner for raylib-jolt-demo: 187 raylib examples in jolt, one sub-project each.
+;; Task runner for raylib-jolt-demo: 187 raylib examples, one sub-project each.
 ;;
-;; Run these from the repo root with EITHER `bb <task>` or `jolt <task>`. jolt
-;; reads this file as well as deps.edn, so both runners see the same tasks.
+;; Run these from this directory with `bb <task>`.
 ;;
 ;;   bb info               grouped cheat-sheet, every demo included
 ;;   bb <demo>             run one demo, e.g. bb asteroids
@@ -10,18 +9,18 @@
 ;;   bb run-all [secs]     every demo for N seconds each (default 2), unattended
 ;;   bb check              compile every demo, no window
 ;;   bb lint [--strict]    clj-kondo over every demo and common/ (lint:strict fails on findings)
-;;   bb doctor             is jolt there, does raylib-jlt resolve, is libraylib installed?
+;;   bb doctor             is libraylib installed?
 ;;   bb gen [--check]      rebuild deps.edn, check.clj, these tasks and the gallery
 ;;   bb record [opts]      record demo GIFs with screen-grab (maintainer-only), then sync
 ;;   bb sync-recordings    copy docs/demos/ recordings into each demo's own docs/demos/
 ;;
-;; Demos run through the root deps.edn alias, from this directory, exactly as
-;; `jolt -M:<alias>` does. The demo list is demos.edn, edited by hand, and the
+;; Each demo runs from its own directory with `bb run`. The demo list is demos.edn, edited by hand, and the
 ;; per-demo tasks at the bottom are written from it by `bb gen`.
 ;;
 ;; NOTE: task bodies are EDN-parsed. No #"regex", no @deref, no #(...).
-{:min-bb-version "1.3.0"
+{:min-bb-version "1.13.225"
  :paths ["scripts"]
+ :deps {net.b12n/raylib-jolt-demo {:local/root "."}}
  :tasks
  {:requires ([babashka.fs :as fs]
              [clojure.edn :as edn]
@@ -29,9 +28,7 @@
 
   :init
   (do
-    ;; bb sets babashka.version, jolt sets jolt.version.
-    (def runner (if (System/getProperty "babashka.version") "bb" "jolt"))
-    (def jolt-cmd (if (fs/which "jolt") "jolt" "joltc"))
+    (def runner "bb")
 
     ;; [{:name :alias :category :desc :old-name?} ...], edited by hand.
     (def demos (if (fs/exists? "demos.edn") (edn/read-string (slurp "demos.edn")) []))
@@ -40,8 +37,8 @@
       (first (filter (fn [d] (some (fn [k] (= s (get d k))) [:name :alias :old-name])) demos)))
 
     (defn run-demo
-      "Run one demo through its root alias. Extra env, e.g. RAYLIB_APP_AUTO_QUIT_MS,
-      goes to the child."
+      "Run one demo with `bb run` in its directory. Extra env, e.g.
+      RAYLIB_APP_AUTO_QUIT_MS, goes to the child."
       ([name] (run-demo name {}))
       ([name env]
        (let [d (find-demo name)]
@@ -49,7 +46,7 @@
            (binding [*out* *err*]
              (println (str "No demo named " name ". `" runner " list` shows them all.")))
            (System/exit 1))
-         (shell {:continue true :extra-env env} jolt-cmd (str "-M:" (:alias d))))))
+         (shell {:continue true :dir (:name d) :extra-env env} "bb" "run"))))
 
     ;; Every source root clj-kondo should see: the shared code, the check
     ;; namespace and each demo listed in demos.edn.
@@ -73,15 +70,14 @@
          col (fn [c s] (str esc c "m" s esc "0m"))
          hdr (fn [s] (println (str "\n" (col "35" (str "── " s " ──")))))
          row (fn [t d] (println (str "  " (col "36" (format "%-32s" (str runner " " t))) d)))]
-     (println (col "1;35" "\nraylib-jolt-demo: 187 raylib examples in jolt, one sub-project each"))
-     (println (col "2" (str "  runner: " runner "   ·   both `bb <task>` and `jolt <task>` work")))
+     (println (col "1;35" "\nraylib-jolt-demo: 187 raylib examples, one sub-project each"))
      (hdr "Run")
      (row "<demo>" "run one demo, e.g. asteroids")
      (row "run <demo>" "the same, by argument; raylib-jlt's old names work too")
      (row "list" "flat list of demos with descriptions")
      (row "run-all [secs]" "every demo for N seconds each (default 2), unattended")
      (hdr "Verify")
-     (row "doctor" "check jolt, the raylib-jlt dependency and libraylib")
+     (row "doctor" "check libraylib")
      (row "check" "compile every demo, no window")
      (row "lint" "clj-kondo over every demo (report only); lint:strict fails on findings")
      (hdr "Maintenance")
@@ -122,7 +118,7 @@
 
   check
   {:doc "Compile every demo, no window"
-   :task (exit-with (shell {:continue true} jolt-cmd "-M:check"))}
+   :task (exit-with (shell {:continue true} "bb" "-m" "net.b12n.raylib-jolt-demo.check"))}
 
   lint
   {:doc "clj-kondo over every demo and common/ (report only)"
@@ -134,20 +130,12 @@
    :task (exit-with (kondo!))}
 
   doctor
-  {:doc "Check jolt, the raylib-jlt dependency and libraylib before anything else"
+  {:doc "Check libraylib before anything else"
    :task (let [lib-paths (if (str/includes? (str/lower-case (System/getProperty "os.name")) "mac")
                            ["/opt/homebrew/lib/libraylib.dylib" "/usr/local/lib/libraylib.dylib"]
                            ["/usr/lib/libraylib.so" "/usr/local/lib/libraylib.so"
                             "/usr/lib/x86_64-linux-gnu/libraylib.so" "/usr/lib/aarch64-linux-gnu/libraylib.so"])
-               checks [["jolt on PATH" (fs/which jolt-cmd) "install jolt: https://github.com/jolt-lang/jolt"]
-                       ;; Resolving the classpath fetches the pinned raylib-jlt the
-                       ;; first time, so this also proves the network can reach it.
-                       ["raylib-jlt (the bindings, pinned in common/deps.edn)"
-                        (and (fs/which jolt-cmd)
-                             (str/includes? (:out (shell {:out :string :err :string :continue true} jolt-cmd "-Spath"))
-                                            "raylib-jlt"))
-                        "check network access to github.com, then common/deps.edn's :git/sha"]
-                       ["libraylib" (some fs/exists? lib-paths)
+               checks [["libraylib" (or (System/getenv "RAYLIB_LIBRARY") (some fs/exists? lib-paths))
                         "brew install raylib, or your distro's raylib package (6.0+)"]
                        ["demos.edn" (fs/exists? "demos.edn") "restore it from git"]]]
            (doseq [[what ok fix] checks]
@@ -162,7 +150,7 @@
                       :group (:category d)
                       :desc (:desc d)
                       :src (str n "/src/net/b12n/raylib_jlt/" (str/replace n "-" "_") ".clj")
-                      :run (str jolt-cmd " -M:" (:alias d))})))}
+                      :run (str "bb run " n)})))}
 
   record
   {:doc "Record demo GIFs into docs/demos/ (screen-grab), then sync each demo's copy and the gallery"

@@ -5,7 +5,7 @@
   docs/guide/rlgl-immediate-mode.md."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def bound 4.0)
 (def gravity 0.01)

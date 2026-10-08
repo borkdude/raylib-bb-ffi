@@ -42,7 +42,7 @@
   the faces the test keeps — see the note in net.b12n.raylib.rlgl."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const W 1000)
 (def ^:const H 560)

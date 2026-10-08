@@ -18,7 +18,7 @@
   Ported from raylib's examples/core/core_3d_camera_free.c."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const W 800)
 (def ^:const H 450)

@@ -4,7 +4,7 @@
   row reversal / transpose. (Handle is game-2048; bb can't name a task '2048'.)"
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (defn- compress
   [row]

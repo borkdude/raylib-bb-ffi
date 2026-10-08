@@ -4,7 +4,7 @@
   resets with new random r/d after a fixed number of points."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def cx 400.0)
 (def cy 225.0)

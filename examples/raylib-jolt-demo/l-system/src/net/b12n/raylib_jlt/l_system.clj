@@ -4,7 +4,7 @@
   the plant reveals itself segment by segment, then regrows."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def rules {\X "F+[[X]-X]-F[-FX]+X"
             \F "FF"})

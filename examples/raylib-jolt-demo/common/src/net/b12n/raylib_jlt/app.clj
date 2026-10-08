@@ -4,10 +4,10 @@
   RAYLIB_APP_AUTO_QUIT_MS ends the loop on a timer and RAYLIB_APP_SHOT dumps one
   PNG, so a windowed example proves itself with nobody at the keyboard. This is
   a property of the example suite rather than of the raylib bindings, which is
-  why it lives here and not in net.b12n.raylib."
+  why it lives here and not in the bindings."
   (:require
-   [net.b12n.raylib.core :as core]
-   [net.b12n.raylib.rlgl :as rlgl]))
+   [raylib.core :as core]
+   [raylib.rlgl :as rlgl]))
 
 ;; --- smoke-test loop guards --------------------------------------------------
 (defn auto-quit-deadline

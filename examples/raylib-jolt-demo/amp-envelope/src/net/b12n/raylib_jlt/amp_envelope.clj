@@ -13,7 +13,7 @@
   Ported from raylib's examples/audio/audio_amp_envelope.c."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const W 800)
 (def ^:const H 450)

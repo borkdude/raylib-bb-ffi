@@ -6,7 +6,7 @@
   none are backface-culled. In the spirit of shapes_penrose_tile."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:private phi (/ (+ 1.0 (Math/sqrt 5.0)) 2.0))
 (def ^:private inv (/ 1.0 phi))

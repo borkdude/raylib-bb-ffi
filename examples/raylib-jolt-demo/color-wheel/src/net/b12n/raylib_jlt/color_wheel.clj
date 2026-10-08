@@ -5,7 +5,7 @@
   rotates slowly so the wheel animates."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (defn- hsv->color
   "HSV -> packed Color for s=1, v=1. h in degrees (wrapped)."

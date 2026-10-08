@@ -5,7 +5,7 @@
   shapes_clock_of_clocks reduced to a single face."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:private d->r (/ Math/PI 180.0))
 

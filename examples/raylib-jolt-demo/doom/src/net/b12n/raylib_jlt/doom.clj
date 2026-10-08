@@ -37,7 +37,7 @@
   and the strips are rlgl quads wound the way `rl/texture!` winds its own."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const W 900)
 (def ^:const H 560)

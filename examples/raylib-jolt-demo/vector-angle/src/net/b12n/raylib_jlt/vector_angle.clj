@@ -5,7 +5,7 @@
   rather than mouse-driven). Screen-space clockwise-from-up angle uses atan2(vx,-vy)."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:private r->d (/ 180.0 Math/PI))
 

@@ -35,7 +35,7 @@
   rectangles, circles and text."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 ;; --- the maze ----------------------------------------------------------------
 ;; # wall, . dot, o power pellet, - ghost-house door, P pac-man start,

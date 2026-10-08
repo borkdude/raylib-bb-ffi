@@ -14,7 +14,7 @@
   support and, correctly at the time, called DrawSpline* unbindable."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:private modes [[:catmull "Catmull-Rom"] [:bezier "cubic Bezier"] [:bspline "uniform B-spline"]])
 

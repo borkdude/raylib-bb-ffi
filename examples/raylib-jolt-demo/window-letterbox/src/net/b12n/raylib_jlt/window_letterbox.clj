@@ -19,7 +19,7 @@
   change."
   (:require
    [net.b12n.raylib-jlt.app :as app]
-   [net.b12n.raylib.all :as rl]))
+   [raylib.all :as rl]))
 
 (def ^:const VW 480)               ; the virtual resolution everything is drawn at
 (def ^:const VH 360)
