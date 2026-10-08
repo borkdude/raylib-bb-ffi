@@ -22,8 +22,7 @@ Add the library to `bb.edn` or `deps.edn`:
 ```clojure
 {:deps {io.github.borkdude/raylib-bb-ffi
         {:git/url "https://github.com/borkdude/raylib-bb-ffi"
-         :git/sha "<sha>"
-         :deps/root "lib"}}}
+         :git/sha "<sha>"}}}
 ```
 
 Require `raylib.all` for every function, or a single module such as
@@ -59,7 +58,7 @@ Then run window code on the main thread from the editor:
 (raylib.repl/run! -main)
 ```
 
-On the JVM, use `clojure -M:repl:mac` in `lib`.
+On the JVM, use `clojure -M:repl:mac`.
 
 ## Development
 
@@ -70,7 +69,7 @@ bb check       # load every namespace
 bb smoke       # open a window and check drawn pixels
 bb smoke:jvm
 bb lint
-bb gen:all     # regenerate lib/src/raylib/all.clj
+bb gen:all     # regenerate src/raylib/all.clj
 ```
 
 ## Credits

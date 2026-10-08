@@ -39,4 +39,4 @@
          "\n")))
 
 (defn -main [& _]
-  (spit "lib/src/raylib/all.clj" (generate)))
+  (spit "src/raylib/all.clj" (generate)))

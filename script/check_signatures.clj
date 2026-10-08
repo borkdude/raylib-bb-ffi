@@ -1,5 +1,5 @@
 (ns check-signatures
-  "Compares every defcfn under lib/src/raylib with the prototypes in raylib.h,
+  "Compares every defcfn under src/raylib with the prototypes in raylib.h,
   rlgl.h and raymath.h.
   Run with: bb check:signatures [include-dir]"
   (:require [clojure.java.io :as io]
@@ -58,7 +58,7 @@
 
 (defn mismatches [include-dir]
   (let [protos (prototypes include-dir)]
-    (for [f (file-seq (io/file "lib/src/raylib"))
+    (for [f (file-seq (io/file "src/raylib"))
           :when (str/ends-with? (str f) ".clj")
           [sym args ret] (mapcat defcfns (forms f))
           :when (not (non-raylib sym))

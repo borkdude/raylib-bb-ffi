@@ -1,32 +1,32 @@
 {:min-bb-version "1.13.225"
- :paths ["lib/src"]
+ :paths ["src"]
  :tasks
  {test {:doc "Run the tests in babashka."
-        :extra-paths ["lib/test"]
+        :extra-paths ["test"]
         :extra-deps {io.github.cognitect-labs/test-runner
                      {:git/tag "v0.5.1"
                       :git/sha "dfb30dd6605cb6c0efc275e1df1736f6e90d4d73"}}
         :task (exec 'cognitect.test-runner.api/test)
-        :exec-args {:dirs ["lib/test"]}}
+        :exec-args {:dirs ["test"]}}
   test:jvm {:doc "Run the tests on the JVM."
-            :task (clojure {:dir "lib"} "-M:test")}
+            :task (clojure "-M:test")}
   check {:doc "Load every namespace without opening a window."
          :task (exec 'raylib.check/-main)}
   check:jvm {:doc "Load every namespace on the JVM."
-             :task (clojure {:dir "lib"} "-M:check")}
+             :task (clojure "-M:check")}
   lint {:doc "Lint the sources and tests with clj-kondo."
-        :task (shell "clj-kondo --lint lib/src lib/test lib/script")}
+        :task (shell "clj-kondo --lint src test script")}
   smoke {:doc "Open a window, draw with each drawing module and check the pixels."
-         :extra-paths ["lib/script"]
+         :extra-paths ["script"]
          :task (exec 'smoke/-main)}
   smoke:jvm {:doc "Run the smoke test on the JVM."
-             :task (clojure {:dir "lib"} (if (= "Mac OS X" (System/getProperty "os.name"))
+             :task (clojure (if (= "Mac OS X" (System/getProperty "os.name"))
                               "-M:smoke:mac"
                               "-M:smoke"))}
   check:signatures {:doc "Compare the bindings with the raylib headers."
-                    :extra-paths ["lib/script"]
+                    :extra-paths ["script"]
                     :requires ([check-signatures])
                     :task (apply check-signatures/-main *command-line-args*)}
-  gen:all {:doc "Regenerate lib/src/raylib/all.clj."
-           :extra-paths ["lib/script"]
+  gen:all {:doc "Regenerate src/raylib/all.clj."
+           :extra-paths ["script"]
            :task (exec 'gen-all/-main)}}}
