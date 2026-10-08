@@ -34,6 +34,8 @@
 (defn -main [& _]
   (let [shot "smoke.png"]
     (rl/window! :width W :height H :title "smoke")
+    (when-not (rl/window-ready?)
+      (throw (ex-info "Could not open a window" {})))
     (try
       (rl/set-target-fps 60)
       (let [tex (rl/image-color 8 8 rl/BLUE)

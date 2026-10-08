@@ -20,6 +20,10 @@
 
 (ffi/defcfn take-screenshot "TakeScreenshot" [:string] :void)
 
+(ffi/defcfn window-ready?
+  "Returns true if init-window opened the window."
+  "IsWindowReady" [] :bool)
+
 (ffi/defcfn window-should-close?
   "Returns true if the user requested to close the window."
   "WindowShouldClose" [] :bool)

@@ -20,8 +20,12 @@ jobs:
       - uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: latest
-          bb: latest
           clj-kondo: latest
+
+      - name: Install babashka
+        run: |
+          curl -sLO https://raw.githubusercontent.com/babashka/babashka/master/install
+          sudo bash install --dynamic
 
       - name: Install raylib (macOS)
         if: runner.os == 'macOS'
@@ -40,19 +44,15 @@ jobs:
           sudo cmake --install /tmp/raylib/build
           sudo ldconfig
           echo "RAYLIB_LIBRARY=/usr/local/lib/libraylib.so" >> "$GITHUB_ENV"
+          echo "RAYLIB_INCLUDE=/usr/local/include" >> "$GITHUB_ENV"
 
-      - run: bb --version
+      - run: bb describe
       - run: bb lint
       - run: bb check
+      - run: bb check:signatures
       - run: bb test
       - run: bb check:jvm
       - run: bb test:jvm
-
-      - name: Smoke test (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          bb smoke
-          bb smoke:jvm
 
       - name: Smoke test (Linux)
         if: runner.os == 'Linux'

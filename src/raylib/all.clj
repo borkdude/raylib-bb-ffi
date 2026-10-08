@@ -222,6 +222,8 @@
 (alter-meta! #'toggle-borderless-windowed! merge (select-keys (meta #'core/toggle-borderless-windowed!) [:doc :arglists :const]))
 (def toggle-fullscreen core/toggle-fullscreen)
 (alter-meta! #'toggle-fullscreen merge (select-keys (meta #'core/toggle-fullscreen) [:doc :arglists :const]))
+(def window-ready? core/window-ready?)
+(alter-meta! #'window-ready? merge (select-keys (meta #'core/window-ready?) [:doc :arglists :const]))
 (def window-resized? core/window-resized?)
 (alter-meta! #'window-resized? merge (select-keys (meta #'core/window-resized?) [:doc :arglists :const]))
 (def window-should-close? core/window-should-close?)

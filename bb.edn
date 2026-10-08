@@ -23,6 +23,10 @@
              :task (clojure (if (= "Mac OS X" (System/getProperty "os.name"))
                               "-M:smoke:mac"
                               "-M:smoke"))}
+  check:signatures {:doc "Compare the bindings with the raylib headers."
+                    :extra-paths ["script"]
+                    :requires ([check-signatures])
+                    :task (apply check-signatures/-main *command-line-args*)}
   gen:all {:doc "Regenerate src/raylib/all.clj."
            :extra-paths ["script"]
            :task (exec 'gen-all/-main)}}}
