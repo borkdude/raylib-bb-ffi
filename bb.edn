@@ -15,6 +15,13 @@
              :task (clojure "-M:check")}
   lint {:doc "Lint the sources and tests with clj-kondo."
         :task (shell "clj-kondo --lint src test script")}
+  smoke {:doc "Open a window, draw with each drawing module and check the pixels."
+         :extra-paths ["script"]
+         :task (exec 'smoke/-main)}
+  smoke:jvm {:doc "Run the smoke test on the JVM."
+             :task (clojure (if (= "Mac OS X" (System/getProperty "os.name"))
+                              "-M:smoke:mac"
+                              "-M:smoke"))}
   gen:all {:doc "Regenerate src/raylib/all.clj."
            :extra-paths ["script"]
            :task (exec 'gen-all/-main)}}}
