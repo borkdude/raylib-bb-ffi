@@ -5,16 +5,10 @@
   mouse wheel to zoom, wheel-press to pan, Z re-targets the origin. The
   cursor is captured while running.
 
-  New FFI: rl/update-camera! is raylib's own UpdateCamera, which reads
-  the mouse/wheel/keys itself and writes position/target/up back into
-  the Camera3D it's given -- the whole free-look feel is one function
-  call, nothing reimplemented here. That means the camera has to be a
-  PERSISTENT native buffer rather than the per-frame map with-camera-3d
-  takes, since UpdateCamera mutates it in place across frames:
-  rl/camera3d-alloc/camera3d-free! manage that buffer, and
-  rl/begin-mode-3d-ptr (now public; end-mode-3d already was) draws
-  through it directly. rl/disable-cursor!/enable-cursor! are the other
-  two new bindings, both plain void calls.
+  rl/update-camera! is raylib's UpdateCamera, which reads the mouse, wheel
+  and keys and writes the new position, target and up into the Camera3D.
+  The camera lives in native memory from rl/camera3d-alloc, which the
+  garbage collector releases, and rl/begin-mode-3d-ptr draws through it.
   Ported from raylib's examples/core/core_3d_camera_free.c."
   (:require
    [net.b12n.raylib-jlt.app :as app]
@@ -97,8 +91,7 @@
           (rl/end-drawing)
           (recur (inc frame))))
       (finally
-        (rl/enable-cursor!)
-        (rl/camera3d-free! cam))))
+        (rl/enable-cursor!))))
   (rl/close-window))
 
 ;; To run this from your editor

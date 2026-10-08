@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-jlt.fog-rendering
-  "raylib [shaders] example - fog rendering (`jolt -M:fog-rendering`).
+  "raylib [shaders] example - fog rendering (`bb fog-rendering`).
 
   Port of raylib's examples/shaders/shaders_fog_rendering.c. The lighting
   shader from net.b12n.raylib-jlt.basic-lighting with two uniforms added, so
@@ -144,17 +144,14 @@ void main()
       (binding [*out* *err*]
         (println "fog-rendering: the fog shader did not link (log above)"))
       (let [checker (rl/texture-from-fn CHECK CHECK checker-pixel)
-            material (doto (rl/material-default)
-                       (rl/material-shader! sh)
-                       (rl/material-diffuse-color! rl/WHITE)
-                       (rl/material-diffuse-texture! checker CHECK CHECK))
-            transform (rl/matrix-alloc)
-            cube (rl/mesh-alloc)
-            ground (rl/mesh-alloc)
+            material (-> (rl/material-default)
+                         (rl/material-diffuse-color! rl/WHITE)
+                         (rl/material-diffuse-texture! checker CHECK CHECK)
+                         (rl/material-shader sh))
+            cube (rl/mesh-cube 1.6 1.6 1.6)
+            ground (rl/mesh-plane 40.0 40.0 12 12)
             view-pos (rl/uniform-loc sh "viewPos")
             fog-density-loc (rl/uniform-loc sh "fogDensity")]
-        (rl/mesh-cube! cube 1.6 1.6 1.6)
-        (rl/mesh-plane! ground 40.0 40.0 12 12)
         (rl/set-uniform-vec4! sh (rl/uniform-loc sh "ambient") 0.22 0.22 0.25 1.0)
         (rl/set-uniform-vec4! sh (rl/uniform-loc sh "fogColor") 0.42 0.45 0.52 1.0)
         (light-uniforms! sh 0 1 [0.0 14.0 0.0] [255 250 235])
@@ -164,10 +161,7 @@ void main()
                density 0.13]
           (if-not (app/keep-running? deadline)
             (do (doseq [m [cube ground]]
-                  (rl/unload-mesh! m)
-                  (rl/mesh-free! m))
-                (rl/matrix-free! transform)
-                (rl/material-free! material)
+                  (rl/unload-mesh! m))
                 (rl/unload-texture! checker)
                 (rl/unload-shader! sh))
             (let [density' (cond
@@ -193,16 +187,14 @@ void main()
                  :up-z 0.0
                  :fovy 45.0}
                 (fn []
-                  (rl/matrix-translate! transform 0.0 -0.85 0.0)
-                  (rl/draw-mesh! ground material transform)
+                  (rl/draw-mesh! ground material (rl/matrix-translate 0.0 -0.85 0.0))
                   (let [half (/ (dec GRID) 2.0)]
                     (dotimes [ix GRID]
                       (dotimes [iz GRID]
-                        (rl/matrix-translate! transform
-                                              (* SPACING (- ix half))
-                                              0.0
-                                              (* SPACING (- iz half)))
-                        (rl/draw-mesh! cube material transform))))))
+                        (rl/draw-mesh! cube material
+                                       (rl/matrix-translate (* SPACING (- ix half))
+                                                            0.0
+                                                            (* SPACING (- iz half)))))))))
               (rl/text! "raylib [shaders] example - fog rendering"
                         {:x 16
                          :y 14

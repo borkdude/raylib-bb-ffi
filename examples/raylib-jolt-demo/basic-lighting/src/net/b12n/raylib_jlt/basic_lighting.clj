@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-jlt.basic-lighting
-  "raylib [shaders] example - basic lighting (`jolt -M:basic-lighting`).
+  "raylib [shaders] example - basic lighting (`bb basic-lighting`).
 
   Port of raylib's examples/shaders/shaders_basic_lighting.c. Four coloured
   point lights over a few generated meshes, shaded per fragment with a
@@ -168,24 +168,17 @@ void main()
             lights (vec (map-indexed (fn [i [pos color]]
                                        (make-light sh i 1 pos [0.0 0.0 0.0] color))
                                      lights-spec))
-            material (doto (rl/material-default)
-                       (rl/material-shader! sh)
-                       (rl/material-diffuse-color! rl/WHITE))
-            transform (rl/matrix-alloc)
-            ground (rl/mesh-alloc)
-            ball (rl/mesh-alloc)
-            post (rl/mesh-alloc)]
-        (rl/mesh-plane! ground 9.0 9.0 3 3)
-        (rl/mesh-sphere! ball 0.9 24 32)
-        (rl/mesh-cylinder! post 0.3 1.4 20)
+            material (-> (rl/material-default)
+                         (rl/material-diffuse-color! rl/WHITE)
+                         (rl/material-shader sh))
+            ground (rl/mesh-plane 9.0 9.0 3 3)
+            ball (rl/mesh-sphere 0.9 24 32)
+            post (rl/mesh-cylinder 0.3 1.4 20)]
         (loop [frame 0
                enabled (vec (repeat MAX-LIGHTS true))]
           (if-not (app/keep-running? deadline)
             (do (doseq [m [ground ball post]]
-                  (rl/unload-mesh! m)
-                  (rl/mesh-free! m))
-                (rl/matrix-free! transform)
-                (rl/material-free! material)
+                  (rl/unload-mesh! m))
                 (rl/unload-shader! sh))
             (let [enabled' (reduce (fn [acc [i k]]
                                      (if (rl/key-pressed? k)
@@ -225,13 +218,10 @@ void main()
                   ;; applies to the default batch instead, so wrapping these
                   ;; calls in with-shader draws everything unlit and looks
                   ;; exactly like a shader that failed to link
-                  (rl/matrix-translate! transform 0.0 0.0 0.0)
-                  (rl/draw-mesh! ground material transform)
-                  (rl/matrix-translate! transform 0.0 0.9 0.0)
-                  (rl/draw-mesh! ball material transform)
+                  (rl/draw-mesh! ground material (rl/matrix-identity))
+                  (rl/draw-mesh! ball material (rl/matrix-translate 0.0 0.9 0.0))
                   (doseq [[dx dz] [[-3.2 -3.2] [3.2 -3.2] [-3.2 3.2] [3.2 3.2]]]
-                    (rl/matrix-translate! transform dx 0.7 dz)
-                    (rl/draw-mesh! post material transform))
+                    (rl/draw-mesh! post material (rl/matrix-translate dx 0.7 dz)))
                   ;; the lamps themselves are drawn unshaded, outside the shader,
                   ;; so each one shows the colour it is casting
                   (dotimes [i MAX-LIGHTS]

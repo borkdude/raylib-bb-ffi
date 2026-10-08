@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-jlt.vertex-displacement
-  "raylib [shaders] example - vertex displacement (`jolt -M:vertex-displacement`).
+  "raylib [shaders] example - vertex displacement (`bb vertex-displacement`).
 
   Port of raylib's examples/shaders/shaders_vertex_displacement.c. A flat
   subdivided plane is pushed into rolling terrain entirely on the GPU: the mesh
@@ -90,16 +90,14 @@ void main()
       (binding [*out* *err*]
         (println "vertex-displacement: the shader did not link (log above)"))
       (let [noise (rl/image-perlin-noise NOISE NOISE 0 0 1.0)
-            material (doto (rl/material-default)
-                       (rl/material-shader! sh)
-                       (rl/material-diffuse-color! rl/WHITE))
-            plane (rl/mesh-alloc)
-            transform (rl/matrix-alloc)
+            material (-> (rl/material-default)
+                         (rl/material-diffuse-color! rl/WHITE)
+                         (rl/material-shader sh))
+            ;; 50 by 50 subdivisions: the shader can only move vertices that exist,
+            ;; and a four-vertex plane stays flat no matter what it samples
+            plane (rl/mesh-plane PLANE-SIZE PLANE-SIZE PLANE-RES PLANE-RES)
             noise-loc (rl/uniform-loc sh "perlinNoiseMap")
             time-loc (rl/uniform-loc sh "time")]
-        ;; 50 by 50 subdivisions: the shader can only move vertices that exist,
-        ;; and a four-vertex plane stays flat no matter what it samples
-        (rl/mesh-plane! plane PLANE-SIZE PLANE-SIZE PLANE-RES PLANE-RES)
         ;; Once, not per frame. set-uniform-texture! would go through
         ;; SetShaderValueTexture, which raylib applies through its render batch
         ;; and DrawMesh does not use, so the vertex stage would sample zeroes
@@ -109,9 +107,6 @@ void main()
         (loop [frame 0]
           (if-not (app/keep-running? deadline)
             (do (rl/unload-mesh! plane)
-                (rl/mesh-free! plane)
-                (rl/matrix-free! transform)
-                (rl/material-free! material)
                 (rl/unload-texture! noise)
                 (rl/unload-shader! sh))
             (let [t (* frame (/ 1.0 60.0))]
@@ -130,8 +125,7 @@ void main()
                  :up-z 0.0
                  :fovy 60.0}
                 (fn []
-                  (rl/matrix-translate! transform 0.0 0.0 0.0)
-                  (rl/draw-mesh! plane material transform)))
+                  (rl/draw-mesh! plane material (rl/matrix-identity))))
               (rl/text! "raylib [shaders] example - vertex displacement"
                         {:x 16
                          :y 14

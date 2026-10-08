@@ -1,5 +1,5 @@
 (ns net.b12n.raylib-jlt.mesh-instancing
-  "raylib [shaders] example - mesh instancing (`jolt -M:mesh-instancing`).
+  "raylib [shaders] example - mesh instancing (`bb mesh-instancing`).
 
   Port of raylib's examples/shaders/shaders_mesh_instancing.c. Ten thousand
   lit cubes in a single draw call.
@@ -153,13 +153,12 @@ void main()
     (if-not sh
       (binding [*out* *err*]
         (println "mesh-instancing: the instancing shader did not link (log above)"))
-      (let [material (doto (rl/material-default)
-                       (rl/material-shader! sh)
-                       (rl/material-diffuse-color! (rl/rgba 210 215 235 255)))
-            cube (rl/mesh-alloc)
+      (let [material (-> (rl/material-default)
+                         (rl/material-diffuse-color! (rl/rgba 210 215 235 255))
+                         (rl/material-shader sh))
+            cube (rl/mesh-cube 0.85 0.85 0.85)
             transforms (rl/matrix-array-alloc INSTANCES)
             view-pos (rl/uniform-loc sh "viewPos")]
-        (rl/mesh-cube! cube 0.85 0.85 0.85)
         (fill-transforms! transforms)
         (rl/set-uniform-vec4! sh (rl/uniform-loc sh "ambient") 0.35 0.35 0.4 1.0)
         (rl/set-uniform-vec4! sh (rl/uniform-loc sh "fogColor") 0.09 0.10 0.14 1.0)
@@ -171,9 +170,6 @@ void main()
         (loop [frame 0]
           (if-not (app/keep-running? deadline)
             (do (rl/unload-mesh! cube)
-                (rl/mesh-free! cube)
-                (rl/matrix-free! transforms)
-                (rl/material-free! material)
                 (rl/unload-shader! sh))
             (let [t (* frame 0.004)
                   cam-x (* 46.0 (Math/sin t))
